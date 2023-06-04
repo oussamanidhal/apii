@@ -1,0 +1,120 @@
+.toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    padding: 0 16px;
+  }
+  
+  .toolbar .logo {
+    height: 40px;
+    margin-right: 16px;
+  }
+  
+  .toolbar-links a {
+    color: rgb(0, 0, 0);
+    margin-left: 16px;
+    text-decoration: none;
+  }
+  
+  .toolbar-links a:hover {
+    text-decoration: underline;
+  }
+  
+  .slider {
+    position: auto;
+    top: 60px;
+    right: 0;
+    left: 0;
+    height: 400px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+  }
+  
+  .slider-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .slider-image {
+    height: 80px;
+    margin-left: auto;
+  }
+  
+  .slider-text {
+    margin-right: 400px;
+    margin-left: 150px;
+  }
+  
+  .slider-text h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .slider-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .invest-section {
+    
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .invest-title {
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .card {
+    width: 250px;
+    margin: 10px;
+    background-color: #557CBE;
+    padding: 16px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  .card-content {
+    margin-bottom: 10px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  .card-description {
+    margin: 0;
+    color: #ffffff;
+  }
+  
+  .card-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  

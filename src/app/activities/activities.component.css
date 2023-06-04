@@ -1,0 +1,51 @@
+/* styles.css */
+
+/* Set background color and text color for the body */
+body {
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  /* Center the container horizontally */
+  .container {
+    margin-top: 80px;
+   
+    max-width: 600px;
+    padding: 20px;
+  }
+  
+  /* Add spacing between elements */
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem;
+  }
+  
+  /* Style the search input */
+  .form-control {
+    border-radius: 0;
+    margin-top: 50px;
+  }
+  
+  /* Style the filter button */
+  .btn-primary {
+    border-radius: 0;
+  }
+  
+  /* Add spacing between sections */
+  .row + .row {
+    margin-top: 2rem;
+  }
+  
+  /* Style the list group */
+  .list-group-item {
+    border-radius: 0;
+    padding: 10px 20px;
+  }
+  
+  /* Add hover effect to list group items */
+  .list-group-item:hover {
+    background-color: #f8f9fa;
+  }

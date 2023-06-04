@@ -1,0 +1,15 @@
+.card-container {
+    margin-top: 100px;
+    margin-left: 20px;
+    
+  }
+  
+  .card {
+    width: 400px;
+    
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
