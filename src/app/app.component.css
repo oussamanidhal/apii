@@ -45,18 +45,21 @@
   }
   
   .slider-image {
-    height: 80px;
-    margin-left: auto;
+    height: 400px;
+    margin-left: 50px;
+    
   }
   
   .slider-text {
-    margin-right: 400px;
-    margin-left: 150px;
+    margin-right: 100px;
+
+    margin-left: 50px;
+    padding-right: auto;
   }
   
   .slider-text h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 30px;
     font-weight: bold;
   }
   
@@ -75,6 +78,7 @@
   .invest-title {
     color: black;
     font-size: 24px;
+    font-family: 'Poppins';
     font-weight: bold;
   }
   
@@ -88,7 +92,7 @@
   .card {
     width: 250px;
     margin: 10px;
-    background-color: #557CBE;
+    background-color: #4DA4E0;
     padding: 16px;
     border-radius: 4px;
     text-align: center;
