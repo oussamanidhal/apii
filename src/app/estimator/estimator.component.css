@@ -1,11 +1,25 @@
+.container {
+  display: flex; /* This will make the child elements sit side-by-side */
+  justify-content: space-between; /* This will add space between the map and the card */
+  align-items: flex-start; /* This will make them start from the same point at the top */
+  margin-top: 100px; /* This moves the whole container down from the top */
+}
+
 .card-container {
-    margin-top: 100px;
-    margin-left: 20px;
-    
-  }
+  width: 40%; /* take up less than half of the container width to leave some space */
+  position: relative; /* Required for z-index to have effect */
+  z-index: 2; /* A value higher than the map's z-index */
+}
+
+/* Remove margin from card-container and mapdiv, container will take care of it */
+.card-container, .mapdiv {
+  margin-top: 0;
+  margin-left: 0;
+}
+
   
   .card {
-    width: 400px;
+    width:800px;
     
   }
   
@@ -13,3 +27,304 @@
     padding: 20px;
   }
   
+
+  .mapdiv {
+    width: 70%; /* take up half of the container width */
+    height: 560px; /* Adjust as needed */
+  }
+  
+
+
+.card-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+}
+
+
+  
+.mapdiv path {
+  fill: #d1d1d1;  /* change to red */
+  stroke: #ffffff;
+  stroke-width: 4px;
+  transition: fill 0.3s;
+}
+
+
+.mapdiv :hover{
+    fill: #0fbb48;
+}
+
+.mapdiv svg {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+  .shlok:hover + #white-box .popup {
+    display: block;
+    fill: #aaa; /* Change the hover color of the governorate */
+    cursor: pointer;
+  
+  }
+
+  select {
+    width: 100%;
+    padding: 10px 10px 10px 100px;  /* Adjust the left padding as needed */
+    font-size: 16px;
+    border: none;
+    appearance: none;
+    background: transparent;
+    color: #000;
+  }
+  
+  /* This styles the dropdown options */
+  select option {
+    font-size: 14px;
+    color: #666;
+  }
+
+  select option[disabled] {
+    color: #000;
+    font-weight: bold;
+  }
+  
+  /* This styles the dropdown label (the title of the dropdown menu) */
+  form label {
+    font-weight: bold; /* Makes the label text bold */
+  }
+
+  
+  .custom-select {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .custom-select::after {
+    content: "\25BC"; /* This is a Unicode character for a down arrow */
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    pointer-events: none;
+    font-size: 12px;
+    color: gray;
+  }
+  
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown:hover .dropdown-content {display: block;}
+  
+
+  .dropdown-label {
+    position: absolute;
+    left: 15px;  /* Adjust as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000;
+    font-weight: bold;
+  }
+
+
+
+
+  .dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.16);
+    background: #fff;
+    margin-bottom: 20px; /* This is the new line */
+  }
+  
+  hr {
+    width: 50%; /* adjust as needed */
+    border: none;
+    border-top: 1px solid rgb(181, 181, 181); /* adjust color as needed */
+    margin-left: 0; /* this will align the hr to the left */
+  }
+  
+  
+
+
+
+
+  .select-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .select-container::after {
+    content: "\25BC"; /* This is a Unicode character for a down arrow */
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+    color: gray;
+  }
+  
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Add some space below each row */
+    align-items: flex-start; /* This will make them start from the same point at the top */
+    margin-top: 50px; /* This moves the whole container down from the top */
+  }
+
+  .col-md-6{
+    margin-right: 50px;
+  }
+  
+  .form-group {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px; /* Add some space below each group */
+ 
+  }
+  
+  .form-group label {
+    margin-right: 10px; /* Add some space between the label and the input */
+  }
+  
+  .input-container {
+    flex-grow: 1; /* This will make the input take up all available space */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.16);
+    padding: 10px;
+    width: 100%; /* It will fill the width of its parent element */
+    max-width: 130px; /* Adjust this value to set the maximum width */
+    position: relative; /* Add this */
+    
+  }
+  
+  .input-container input {
+    border: none;
+    padding: 5px;
+    flex-grow: 1;
+  }
+  
+  .currency-text {
+    margin-left: 10px; /* Add some space between the input and the currency text */
+  }
+  
+  .custom-input {
+    width: 100%;  /* It will fill the width of its parent element */
+    max-width: 130px;  /* Adjust this value to set the maximum width */
+  }
+  
+
+  .input-wrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+
+
+  .calculate-button {
+    display: block;
+    margin: auto;
+    padding: 15px 30px;
+    font-size: 20px;
+    color: white;
+    background-color: #007BFF;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.3s;
+    width: 10%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .calculate-button:hover {
+    background-color: #0069D9;
+  }
+  
+
+  .estimate-card {
+    margin: 30px auto;
+    width: 80%;
+    padding: 20px;
+    background-color: rgb(239, 239, 239);
+    box-shadow: 0px 10px 30px 0px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.estimate-card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.estimate-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.estimate-card p {
+    font-size: 14px;
+    color: #888;
+}
+
+
+.title {
+  margin-bottom: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  color: #343434;
+}
+
+
+.info-circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 16px;
+  font-size: 14px;
+  position: absolute;
+  right: 50px; /* Adjust as per your needs */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
