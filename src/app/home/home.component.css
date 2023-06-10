@@ -1,4 +1,5 @@
 .slider {
+  margin-top: 60px;
     position: auto;
     top: 60px;
     right: 0;
@@ -17,7 +18,10 @@
   
   .slider-image {
     height: 400px;
-    margin-left: 50px;
+    margin-left: auto;
+    margin-right: -20px;
+    
+
     
   }
   
@@ -153,7 +157,7 @@
   background-color: #e9f1ff;
 }
 
-#info-box {
+.info-box {
   width: 20%; /* Adjust based on your design */
   
   margin-top: 5%;
@@ -164,5 +168,6 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   font-family: 'Montserrat', sans-serif;
 }
+
 
 
