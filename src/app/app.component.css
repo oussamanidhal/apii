@@ -7,9 +7,10 @@
     display: flex;
     align-items: center;
     background-color: #ffffff;
-    color: rgb(255, 255, 255);
     font-weight: 600;
     padding: 0 16px;
+    z-index: 0;
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
   }
   
   .toolbar .logo {
@@ -18,107 +19,15 @@
   }
   
   .toolbar-links a {
-    color: rgb(0, 0, 0);
+    color: #000000; 
     margin-left: 16px;
     text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
   }
   
   .toolbar-links a:hover {
     text-decoration: underline;
+    font-family: 'Montserrat', sans-serif;
   }
   
-  .slider {
-    position: auto;
-    top: 60px;
-    right: 0;
-    left: 0;
-    height: 400px;
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-  }
-  
-  .slider-content {
-    display: flex;
-    align-items: center;
-  }
-  
-  .slider-image {
-    height: 400px;
-    margin-left: 50px;
-    
-  }
-  
-  .slider-text {
-    margin-right: 100px;
-
-    margin-left: 50px;
-    padding-right: auto;
-  }
-  
-  .slider-text h3 {
-    margin: 0;
-    font-size: 30px;
-    font-weight: bold;
-  }
-  
-  .slider-text p {
-    margin: 0;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .invest-section {
-    
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .invest-title {
-    color: black;
-    font-size: 24px;
-    font-family: 'Poppins';
-    font-weight: bold;
-  }
-  
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .card {
-    width: 250px;
-    margin: 10px;
-    background-color: #4DA4E0;
-    padding: 16px;
-    border-radius: 4px;
-    text-align: center;
-  }
-  
-  .card-content {
-    margin-bottom: 10px;
-  }
-  
-  .card-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    margin: 0;
-  }
-  
-  .card-description {
-    margin: 0;
-    color: #ffffff;
-  }
-  
-  .card-link {
-    display: inline-block;
-    margin-top: 10px;
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: bold;
-  }
   

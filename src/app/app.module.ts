@@ -6,6 +6,8 @@ import { ActivitiesComponent } from './activities/activities.component';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { EstimatorComponent } from './estimator/estimator.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 // Import the Material Tooltip Module
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -22,7 +24,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     AppRoutingModule, 
     FormsModule,
     // Add it to the list of imports
-    MatTooltipModule
+    MatTooltipModule,
+    MatInputModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

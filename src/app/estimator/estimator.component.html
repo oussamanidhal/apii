@@ -42,7 +42,7 @@
           <div class="dropdown-label">Delegation </div>
           <div class="select-container">
             <select [(ngModel)]="selectedDelegation">
-              <option *ngFor="let delegation of selectedGovernorate.delegations">{{delegation}}</option>
+              <option *ngFor="let delegation of selectedGovernorate.delegations">{{delegation.name}}</option>
           </select>
           </div>
         </div>
