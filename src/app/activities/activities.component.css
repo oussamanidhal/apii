@@ -38,6 +38,14 @@
   .row + .row {
     margin-top: 2rem;
   }
+
+  .row {
+    display: flex; /* This will make the child elements sit side-by-side */
+    justify-content: space-between; /* This will add space between the map and the card */
+    align-items: flex-start; /* This will make them start from the same point at the top */
+
+    margin-left: 5%;
+  }
   
   /* Style the list group */
   .list-group-item {
@@ -98,3 +106,8 @@
     color: #fff;
     
   }
+
+
+.col-md-6{
+  width: 100%;
+}

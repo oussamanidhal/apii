@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { EstimatorComponent } from './estimator/estimator.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Import the Material Tooltip Module
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -26,7 +27,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     // Add it to the list of imports
     MatTooltipModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

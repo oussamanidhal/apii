@@ -11,16 +11,15 @@
       <div class="card-body">
         <h1>Insert your investment details</h1>
 
+
         <div class="dropdown-wrapper">
-          <div class="dropdown-label">Activity </div>
+          <div class="dropdown-label">Activity</div>
           <div class="select-container">
-            <select>
-              <option value="menu1">Dropdown Menu 1</option>
-              <option value="menu2">Dropdown Menu 2</option>
-              <option value="menu3">Dropdown Menu 3</option>
-            </select>
+            <select [(ngModel)]="selectedActivity" (ngModelChange)="calculateTotal()">
+              <option *ngFor="let activity of activities" [ngValue]="activity">{{activity.lib_na9}}</option>
+          </select>
           </div>
-        </div>
+      </div>
         
         
         
@@ -30,7 +29,7 @@
         <div class="dropdown-wrapper">
           <div class="dropdown-label">Governorate </div>
           <div class="select-container">
-            <select [(ngModel)]="selectedGovernorate">
+            <select [(ngModel)]="selectedGovernorate" (ngModelChange)="calculateTotal()">
               <option *ngFor="let governorate of governorates" [ngValue]="governorate">{{governorate.name}}</option>
           </select>
           </div>
@@ -41,7 +40,7 @@
         <div class="dropdown-wrapper">
           <div class="dropdown-label">Delegation </div>
           <div class="select-container">
-            <select [(ngModel)]="selectedDelegation">
+            <select [(ngModel)]="selectedDelegation" (ngModelChange)="calculateTotal()">
               <option *ngFor="let delegation of selectedGovernorate.delegations">{{delegation.name}}</option>
           </select>
           </div>
@@ -313,8 +312,8 @@
 <button class="calculate-button" (click)="calculate()">Estimate</button>
 
 <div class="estimate-card">
-  <h2>Your advantage estimate is :</h2>
-  <h3>Incentive = {{ totalCash }} TND x {{ percent }} ({{ selectedGovernorate.name }} {{ selectedDelegation }})</h3>
+  <h2>Your advantage estimate is : {{incentive}} TND</h2>
+  <h3>Incentive = {{ totalCash }} TND x {{ percentage }} % ({{ selectedGovernorate.name }} ,  {{ selectedDelegation.name }})</h3>
   <p>All results are estimates and are exclusive of tax</p>
 </div>
 
