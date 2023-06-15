@@ -9,11 +9,11 @@
   <div class="card-container">
     <div class="card">
       <div class="card-body">
-        <h1>Insert your investment details</h1>
+        <h1>{{ 'inves' | translate }}</h1>
 
 
         <div class="dropdown-wrapper">
-          <div class="dropdown-label">Activity</div>
+          <div class="dropdown-label">{{ 'activity1' | translate }}</div>
           <div class="select-container">
             <select [(ngModel)]="selectedActivity" (ngModelChange)="calculateTotal()">
               <option *ngFor="let activity of activities" [ngValue]="activity">{{activity.lib_na9}}</option>
@@ -27,7 +27,7 @@
         <hr>
       
         <div class="dropdown-wrapper">
-          <div class="dropdown-label">Governorate </div>
+          <div class="dropdown-label">{{ 'Governorate' | translate }} </div>
           <div class="select-container">
             <select [(ngModel)]="selectedGovernorate" (ngModelChange)="calculateTotal()">
               <option *ngFor="let governorate of governorates" [ngValue]="governorate">{{governorate.name}}</option>
@@ -51,7 +51,7 @@
         <form>
           <div class="form-row">
             <div class="col-md-6">
-              <h2 class="title investment">Investment</h2>
+              <h2 class="title investment">{{ 'Investment' | translate }}</h2>
               <div class="form-group">
                 <div class="input-wrapper">
                   <label for="field1">Terrain </label>
@@ -309,12 +309,12 @@
 
 </div>
 
-<button class="calculate-button" (click)="calculate()">Estimate</button>
+<button class="calculate-button" (click)="calculate()">{{ 'estimate' | translate }}</button>
 
 <div class="estimate-card">
-  <h2>Your advantage estimate is : {{incentive}} TND</h2>
+  <h2> {{ 'result' | translate }} {{incentive}} TND</h2>
   <h3>Incentive = {{ totalCash }} TND x {{ percentage }} % ({{ selectedGovernorate.name }} ,  {{ selectedDelegation.name }})</h3>
-  <p>All results are estimates and are exclusive of tax</p>
+  <p>{{ 'note' | translate }}</p>
 </div>
 
 

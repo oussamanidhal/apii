@@ -13,6 +13,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Import the Material Tooltip Module
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// Import the ngx-translate modules and services
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+
+// Function for translation loader
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,16 +33,25 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule, 
+    AppRoutingModule,
     FormsModule,
-    // Add it to the list of imports
+    // Add ngx-translate and Http Client modules
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    // Add Material modules
     MatTooltipModule,
     MatInputModule,
     MatIconModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [TranslateService], // Add TranslateService to the providers array
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
