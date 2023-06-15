@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import fr from '../assets/fr.json';
-import en from '../assets/en.json';
+import fr from '../assets/i18n/fr.json';
+import en from '../assets/i18n/en.json';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent {
     public route: ActivatedRoute,
     private translate: TranslateService
   ) {
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang('fr');
     this.translate.setTranslation('en', en);
     this.translate.setTranslation('fr', fr);
     this.translate.use('en'); // Set English as the default language

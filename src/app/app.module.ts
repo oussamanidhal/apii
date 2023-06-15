@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 // Function for translation loader
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({

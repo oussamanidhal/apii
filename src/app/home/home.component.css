@@ -50,7 +50,24 @@
     text-align: center;
     margin-top: 20px;
   }
+
+  .map-title {
+    text-align: center;
+    margin: 0 auto;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    background-color: #ebf2ff;
+  }
   
+  
+
+  .blue-container {
+    background-color: #ebf2ff; 
+    padding: 20px; 
+    padding-top: 50px;
+  }
+
   .invest-title {
     color: black;
     font-size: 24px;
@@ -70,13 +87,25 @@
     margin: 10px;
     background-color: #557CBE;
     padding: 16px;
-    border-radius: 4px;
+    border-radius: 15px;
     text-align: center;
-  }
-  
+    transition: all 0.3s ease; /* this will animate the transform property */
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1); /* this adds a shadow that will also be animated */
+    display: flex; /* Add this line */
+    flex-direction: column; /* Add this line */
+}
+
+.card:hover {
+  transform: scale(1.1); /* this will zoom in the card */
+  background-color: #456CA6; /* this changes the color of the card; adjust as needed */
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.2); /* this makes the shadow bigger */
+}
+
+
   .card-content {
     margin-bottom: 10px;
     font-family: 'Montserrat', sans-serif;
+    flex-grow: 1; /* Add this line */
   }
   
   .card-title {
@@ -85,12 +114,14 @@
     font-weight: bold;
     color: #ffffff;
     margin: 0;
+   
   }
   
   .card-description {
-    margin: 0;
+    margin-top: 7%;
     font-family: 'Montserrat', sans-serif;
     color: #ffffff;
+    
   }
   
   .card-link {
@@ -98,9 +129,10 @@
     margin-top: 10px;
     color: #ffffff;
     font-family: 'Montserrat', sans-serif;
-    text-decoration: none;
+    text-decoration: underline; /* this will underline the link */
     font-weight: bold;
-  }
+}
+
   
 
   .mapdiv {
@@ -117,10 +149,20 @@
   }
   
   
-  .mapdiv :hover{
+
+  
+  .second :hover{
       fill: #2DCD7A;
   }
-  
+
+  .first :hover{
+    fill: #FFB859;
+  }
+
+  .mixed :hover{
+    fill: #FF5959;
+  }
+
   .mapdiv svg {
     top: 0;
     left: 0;
@@ -142,13 +184,25 @@
 .map-container {
   display: flex;
   justify-content: space-around; /* Adjust based on your design */
-  background-color: #e9f1ff;
-  padding: 160px;
+  background-color: #ebf2ff;
+  padding-left: 160px;
+  padding-right: 160px;
+  padding-bottom: 80px;
+  padding-top: 80px;
 }
 
+
+
+
 .text-container {
+  margin-top: 10%;
   width: 20%; /* Adjust based on your design */
   font-family: 'Montserrat', sans-serif;
+}
+
+.text-container h2 {
+  font-size: 24px;
+  font-weight: 200;
 }
 
 .mapdiv {
@@ -158,10 +212,10 @@
 }
 
 .info-box {
-  width: 20%; /* Adjust based on your design */
+  width: 25%; /* Adjust based on your design */
   
   margin-top: 5%;
-  margin-bottom: 5%;
+  margin-bottom: 20%;
   background: white;
   border-radius: 35px;
   padding: 16px;
@@ -171,3 +225,6 @@
 
 
 
+#governorate-name {
+  margin-left: 20px; /* Adjust based on your design */
+}

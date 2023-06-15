@@ -7,6 +7,18 @@ import { Component } from '@angular/core';
 })
 export class HomeComponent { 
 
+  
+
+  checkGroup(governorate: { delegations: { group: string }[] }) {
+    const uniqueGroups = new Set(governorate.delegations.map(d => d.group));
+  
+    if (uniqueGroups.size === 1) { // all delegations have the same group
+      return governorate.delegations[0].group === 'Deuxième Groupe' ? 'second-group' : 'first-group';
+    } else { // mixed groups
+      return 'mixed-group';
+    }
+  }
+
   governorates = [
     { 
       name: 'Jendouba', 
@@ -234,7 +246,7 @@ export class HomeComponent {
     },
     {
       name: 'Sfax',
-      group : 'Deuxième Groupe',
+      group : 'Premier Group',
       delegations: [
         {name: 'Agareb', group: 'Premier Groupe'}, 
         {name: 'Djebeniana', group: 'Premier Groupe'}, 
@@ -249,22 +261,40 @@ export class HomeComponent {
     },
     {
       name: 'Sousse',
-      group : 'Deuxième Groupe',
+      group : 'Premier Groupe',
       delegations: [
         {name: 'Sidi El Hani', group: 'Premier Groupe'}
       ]
     }
     ];
 
-  updateInfoBox(name: string) {
-    const governorate = this.governorates.find(g => g.name === name);
+    
 
-    const governorateNameElement = document.getElementById('governorate-name');
-    const delegationsListElement = document.getElementById('delegations-list');
-
-    if (governorate && governorateNameElement && delegationsListElement) {
+    updateInfoBox(name: string) {
+      const governorate = this.governorates.find(g => g.name === name);
+    
+      const governorateNameElement = document.getElementById('governorate-name');
+      const delegationsListElement = document.getElementById('delegations-list');
+    
+      if (governorate && governorateNameElement && delegationsListElement) {
         governorateNameElement.textContent = governorate.name;
-        delegationsListElement.innerHTML = governorate.delegations.map(d => `<li>${d.name}</li>`).join('');
+        delegationsListElement.innerHTML = '';
+    
+        ['Premier Groupe', 'Deuxième Groupe'].forEach(group => {
+          const delegationsInGroup = governorate.delegations.filter(d => d.group === group);
+    
+          if (delegationsInGroup.length > 0) {
+            const financialIncentive = group === 'Premier Groupe' ? '15%' : '30%';
+            delegationsListElement.innerHTML += `<li style="font-weight: 500; font-size: 1.2em; list-style: none; margin-bottom: 10px; margin-top: 10px;">Zone de développement régional ${group}, Incitation financière : ${financialIncentive} de l'investissement approuvé</li>`;
+    
+            delegationsInGroup.forEach(d => {
+              delegationsListElement.innerHTML += `<li style = "margin-left: 20px;">${d.name}</li>`;
+            });
+          }
+        });
+      }
     }
-}
+    
+    
+
 }
