@@ -5,6 +5,7 @@ nav.toolbar {
     right: 0;
     height: 60px;
     display: flex;
+    justify-content: space-between; /* Add this line */
     align-items: center;
     background-color: #ffffff;
     font-weight: 600;
@@ -42,3 +43,18 @@ nav.toolbar {
     display: flex;
     gap: 10px;
   }
+
+  .translation-buttons a {
+    color: #000000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .translation-buttons a:hover {
+    text-decoration: underline;
+  }
+
+  .left-side {
+    display: flex;
+    align-items: center; 
+}

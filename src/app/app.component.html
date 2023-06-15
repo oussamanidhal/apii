@@ -1,17 +1,20 @@
 <nav class="toolbar fixed-top">
-  <img src="assets/logo.jpg" alt="Logo" class="logo">
-
-  <div class="toolbar-links">
-    <a routerLink="/">{{ 'home' | translate }}</a>
-    <a routerLink="/estimator">{{ 'estimator' | translate }}</a> 
-    <a routerLink="/activities">{{ 'activity' | translate }}</a>
+  <div class="left-side">
+    <img src="assets/logo.jpg" alt="Logo" class="logo">
+    <div class="toolbar-links">
+      <a routerLink="/">{{ 'home' | translate }}</a>
+      <a routerLink="/estimator">{{ 'estimator' | translate }}</a> 
+      <a routerLink="/activities">{{ 'activity' | translate }}</a>
+    </div>
   </div>
+  
   <div class="translation-buttons">
-    <button mat-button (click)="changeLanguage('en')">English</button>
-    <button mat-button (click)="changeLanguage('fr')">French</button>
+    <a (click)="changeLanguage('en')">English</a>
+    <a (click)="changeLanguage('fr')">French</a>
   </div>
 </nav>
 <router-outlet></router-outlet>
+
 
   
   

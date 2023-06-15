@@ -125,7 +125,7 @@ export class EstimatorComponent {
     },
     {
       name: 'Beja',
-      group : 'Deuxième Groupe',
+      group : 'mixed',
       delegations: [
         {name : 'Medjez El Bab', group : 'Premier Groupe'}, 
         {name : 'Beja Nord', group : 'Deuxième Groupe'}, 
@@ -203,7 +203,7 @@ export class EstimatorComponent {
     },
     {
       name: 'Zaghouan',
-      group : 'Deuxième Groupe',
+      group : 'mixed',
       delegations: [
         {name: 'Zaghouan', group: 'Premier Groupe'}, 
         {name: 'Bir Mchergua', group: 'Premier Groupe'}, 
@@ -236,7 +236,7 @@ export class EstimatorComponent {
     },
     {
       name: 'Sfax',
-      group : 'Deuxième Groupe',
+      group : 'Premier Groupe',
       delegations: [
         {name: 'Agareb', group: 'Premier Groupe'}, 
         {name: 'Djebeniana', group: 'Premier Groupe'}, 
@@ -251,7 +251,7 @@ export class EstimatorComponent {
     },
     {
       name: 'Sousse',
-      group : 'Deuxième Groupe',
+      group : 'Premier Groupe',
       delegations: [
         {name: 'Sidi El Hani', group: 'Premier Groupe'}
       ]
@@ -323,6 +323,39 @@ export class EstimatorComponent {
 
 
   }
+
+
+  // Current selected governorate's name
+selectedGovernorateName: string =  '';
+
+selectGovernorate(name: string) {
+    const governorate = this.governorates.find(g => g.name === name);
+    
+    if (!governorate) {
+        // You can handle the error here or simply return
+        console.error(`Governorate ${name} not found!`);
+        return;
+    }
+    
+    this.selectedGovernorateName = name;
+    this.selectedGovernorate = governorate;
+}
+
+getFillColor(name: string) {
+    if (this.selectedGovernorateName !== name || !this.selectedGovernorate) {
+        return; // Not selected or governorate not found, don't change color
+    }
+
+    switch(this.selectedGovernorate.group) {
+        case 'Premier Groupe':
+            return '#FFB859';
+        case 'Deuxième Groupe':
+            return '#2DCD7A';
+        default:
+            return '#FF5959'; // mixed
+    }
+}
+
   
 
   
