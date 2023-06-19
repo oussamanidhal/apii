@@ -105,7 +105,7 @@ export class HomeComponent {
         {name : 'Essaida', group : 'Deuxième Groupe'}]
     },
     {
-      name: 'Le Kef',
+      name: 'Kef',
       group : 'Deuxième Groupe',
       delegations: [
         {name : 'Kef Ouest', group : 'Deuxième Groupe'}, 
@@ -134,7 +134,7 @@ export class HomeComponent {
         {name : 'Remada', group : 'Deuxième Groupe'}]
     },
     {
-      name: 'Beja',
+      name: 'Béja',
       group : 'Deuxième Groupe',
       delegations: [
         {name : 'Medjez El Bab', group : 'Premier Groupe'}, 
@@ -147,6 +147,26 @@ export class HomeComponent {
         {name : 'Nefza', group : 'Deuxième Groupe'}, 
         {name : 'Amdoun', group : 'Deuxième Groupe'}]
     },
+    {
+      name: 'Nabeul',
+      group : 'none',
+      delegations: []
+  },
+  {
+      name: 'Tunis',
+      group : 'none',
+      delegations: []
+  },
+  {
+      name: 'Monastir',
+      group : 'none',
+      delegations: []
+  },
+  {
+    name: 'Ben Arous',
+    group : 'none',
+    delegations: []
+  },
     {
       name: 'Gafsa',
       group : 'Deuxième Groupe',
@@ -187,7 +207,7 @@ export class HomeComponent {
       ]
     },
     {
-      name: 'Gabes',
+      name: 'Gabès',
       group : 'Deuxième Groupe',
       delegations: [
         {name: 'Mareth', group: 'Deuxième Groupe'}, 

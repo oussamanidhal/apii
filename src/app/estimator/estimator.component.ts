@@ -95,7 +95,7 @@ export class EstimatorComponent {
         {name : 'Essaida', group : 'Deuxième Groupe'}]
     },
     {
-      name: 'Le Kef',
+      name: 'Kef',
       group : 'Deuxième Groupe',
       delegations: [
         {name : 'Kef Ouest', group : 'Deuxième Groupe'}, 
@@ -112,6 +112,21 @@ export class EstimatorComponent {
         {name : 'Touiref', group : 'Deuxième Groupe'}]
     },
     {
+        name: 'Nabeul',
+        group : 'none',
+        delegations: []
+    },
+    {
+        name: 'Tunis',
+        group : 'none',
+        delegations: []
+    },
+    {
+        name: 'Monastir',
+        group : 'none',
+        delegations: []
+    },
+    {
       name: 'Tataouine',
       group : 'Deuxième Groupe',
       delegations: [
@@ -124,7 +139,7 @@ export class EstimatorComponent {
         {name : 'Remada', group : 'Deuxième Groupe'}]
     },
     {
-      name: 'Beja',
+      name: 'Béja',
       group : 'mixed',
       delegations: [
         {name : 'Medjez El Bab', group : 'Premier Groupe'}, 
@@ -137,6 +152,11 @@ export class EstimatorComponent {
         {name : 'Nefza', group : 'Deuxième Groupe'}, 
         {name : 'Amdoun', group : 'Deuxième Groupe'}]
     },
+    {
+        name: 'Ben Arous',
+        group : 'none',
+        delegations: []
+      },
     {
       name: 'Gafsa',
       group : 'Deuxième Groupe',
@@ -177,7 +197,7 @@ export class EstimatorComponent {
       ]
     },
     {
-      name: 'Gabes',
+      name: 'Gabès',
       group : 'Deuxième Groupe',
       delegations: [
         {name: 'Mareth', group: 'Deuxième Groupe'}, 
@@ -303,23 +323,39 @@ export class EstimatorComponent {
 
     // 30 + 15 = 33.3333
     else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == -1) {
-      this.plafond = 500000;
+      this.plafond = 3000000;
       this.percentage = 0.33333;
     }
 
     // 15 + 0
-    else if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri != -1) {
-      this.plafond = 500000;
+    else if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri != 0) {
+      this.plafond = 1500000;
       this.percentage = 0.15;
     }
 
     // 30 + 0
-    else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri != -1) {
-     this.plafond = 300000;
+    else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri != 0) {
+     this.plafond = 3000000;
      this.percentage = 0.3;
     }
+    // 0 + 15
+    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri != -1) {
+        this.plafond = 1500000;
+        this.percentage = 0.15;
+       }
 
-    this.incentive = Number((this.totalInvestment * this.percentage).toFixed(3));
+    // 0 + 0
+    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri != 0) {
+        this.plafond = 1000000;
+        this.percentage = 0;
+       }
+
+       this.incentive = Number((this.totalInvestment * this.percentage).toFixed(3));
+
+       if(this.incentive > this.plafond) {
+        this.incentive = this.plafond;
+       }
+   
 
 
   }
@@ -356,6 +392,19 @@ getFillColor(name: string) {
     }
 }
 
+
+
+getTooltipText(): string {
+    if (!this.selectedActivity) {
+        return '';
+    }
+    
+    const isSecPrioritaire = this.selectedActivity.sec_pri === -1 ? 'secteur prioritaire' : 'Non secteur prioritaire';
+    const isEligible = this.selectedActivity.ndv_rgn === -1 ? 'Eligible au développement régionale' : 'Non Eligible au développement régionale';
+
+    return `Cette activité est :  ${isSecPrioritaire} ET ${isEligible}`;
+
+}
   
 
   
@@ -367,7 +416,7 @@ getFillColor(name: string) {
   }
 
 
-  activities = [
+  activities: any[] = [
     {
         "lib_na9": "Location et location-bail de voitures et de véhicules automobiles légers",
         "cls_na9": 77.11,
@@ -5672,7 +5721,9 @@ getFillColor(name: string) {
         "cod_api": 0,
         "arb_na9": "أنشطة المنظمات والهيئات الدولية"
     }
-];
+].filter(activity => activity.cod_api === -1);
+
 selectedActivity = this.activities[0];
+
 
 }

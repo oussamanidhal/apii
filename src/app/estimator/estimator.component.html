@@ -12,15 +12,18 @@
         <h1>{{ 'inves' | translate }}</h1>
 
 
-        <div class="dropdown-wrapper">
-          <div class="dropdown-label">{{ 'activity1' | translate }}</div>
-          <div class="select-container">
-            <select [(ngModel)]="selectedActivity" (ngModelChange)="calculateTotal()">
-              <option *ngFor="let activity of activities" [ngValue]="activity">{{activity.lib_na9}}</option>
-          </select>
+        <div class="menu-hover-container ">
+          <div class="dropdown-wrapper">
+              <div class="dropdown-label">{{ 'activity1' | translate }}</div>
+              <div class="select-container">
+                  <select [(ngModel)]="selectedActivity" (ngModelChange)="calculateTotal()">
+                      <option *ngFor="let activity of activities" [ngValue]="activity">{{activity.lib_na9}}</option>
+                  </select>
+              </div>
           </div>
+          <div class="info-circle-activity" [matTooltip]="getTooltipText()" matTooltipClass="pre-line">?</div>
+
       </div>
-        
         
         
       
@@ -171,8 +174,13 @@
   </div>
 
 
-
+  <div class="text-container">
+    <h2><img src="assets/yellow-state.png" alt="green icon" style="height: 24px; width: 24px; margin-right: 8px;">{{ '1st group' | translate }}</h2>
+    <h2><img src="assets/green-state.png" alt="yellow icon" style="height: 24px; width: 24px; margin-right: 8px;">{{ '2nd group' | translate }}</h2>
+    <h2><img src="assets/red-state.png" alt="yellow icon" style="height: 24px; width: 24px; margin-right: 8px;">{{ '3rd group' | translate }}</h2>
+  </div>
     <div class="mapdiv">
+
       <!-- Paste your SVG code here -->
       <svg width="50%" height="50%" viewBox="0 0 1000 2158" xmlns="http://www.w3.org/2000/svg">
 

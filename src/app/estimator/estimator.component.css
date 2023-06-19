@@ -153,7 +153,7 @@
   .dropdown-wrapper {
     position: relative;
     display: inline-block;
-    width: 50%;
+    width:85%;
     padding: 10px;
     border: none;
     border-radius: 20px;
@@ -163,14 +163,17 @@
   }
   
   hr {
-    width: 50%; /* adjust as needed */
+    width: 85%; /* adjust as needed */
     border: none;
     border-top: 1px solid rgb(181, 181, 181); /* adjust color as needed */
     margin-left: 0; /* this will align the hr to the left */
   }
   
   
-
+  .menu-hover-container {
+    display: flex;
+    align-items: center;
+}
 
 
 
@@ -311,6 +314,38 @@
 }
 
 
+.info-circle-activity {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 16px;
+  font-size: 14px;
+ 
+  right: 50px; /* Adjust as per your needs */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  margin-left: 5%;
+}
+
+.pre-line {
+  white-space: pre-line;
+}
+
+.text-container {
+  margin-left: 10%;
+  margin-top: 5%;
+  width: 20%; /* Adjust based on your design */
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+}
+
+
 .info-circle {
   display: inline-block;
   width: 20px;
@@ -322,7 +357,7 @@
   text-align: center;
   line-height: 16px;
   font-size: 14px;
-  position: absolute;
+ position: absolute;
   right: 50px; /* Adjust as per your needs */
   top: 50%;
   transform: translateY(-50%);
