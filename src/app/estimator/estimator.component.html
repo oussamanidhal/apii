@@ -32,9 +32,9 @@
         <div class="dropdown-wrapper">
           <div class="dropdown-label">{{ 'Governorate' | translate }} </div>
           <div class="select-container">
-            <select [(ngModel)]="selectedGovernorate" (ngModelChange)="selectGovernorate(selectedGovernorate.name)">
+            <select [(ngModel)]="selectedGovernorate" (ngModelChange)="selectGovernorate($event)">
               <option *ngFor="let governorate of governorates" [ngValue]="governorate">{{governorate.name}}</option>
-          </select>
+            </select>
           </div>
       </div>
       
@@ -43,9 +43,10 @@
         <div class="dropdown-wrapper">
           <div class="dropdown-label">Delegation </div>
           <div class="select-container">
-            <select [(ngModel)]="selectedDelegation" (ngModelChange)="calculateTotal()">
-              <option *ngFor="let delegation of selectedGovernorate.delegations">{{delegation.name}}</option>
-          </select>
+            <select [(ngModel)]="selectedDelegation" (ngModelChange)="selectDelegation($event)">
+              <option *ngFor="let delegation of selectedGovernorate.delegations" [ngValue]="delegation">{{delegation.name}}</option>
+            </select>
+            
           </div>
         </div>
       

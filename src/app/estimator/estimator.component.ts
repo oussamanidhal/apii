@@ -328,29 +328,32 @@ export class EstimatorComponent {
     }
 
     // 15 + 0
-    else if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri != 0) {
+    else if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri == 0) {
       this.plafond = 1500000;
       this.percentage = 0.15;
     }
 
     // 30 + 0
-    else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri != 0) {
+    else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == 0) {
      this.plafond = 3000000;
      this.percentage = 0.3;
     }
     // 0 + 15
-    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri != -1) {
+    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == -1) {
         this.plafond = 1500000;
         this.percentage = 0.15;
        }
 
     // 0 + 0
-    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri != 0) {
+    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == 0) {
         this.plafond = 1000000;
         this.percentage = 0;
        }
 
-       this.incentive = Number((this.totalInvestment * this.percentage).toFixed(3));
+
+
+
+       this.incentive = Number((this.totalCash * this.percentage).toFixed(3));
 
        if(this.incentive > this.plafond) {
         this.incentive = this.plafond;
@@ -364,18 +367,24 @@ export class EstimatorComponent {
   // Current selected governorate's name
 selectedGovernorateName: string =  '';
 
-selectGovernorate(name: string) {
-    const governorate = this.governorates.find(g => g.name === name);
-    
+
+selectGovernorate(governorate: any) {
     if (!governorate) {
-        // You can handle the error here or simply return
-        console.error(`Governorate ${name} not found!`);
-        return;
+      console.error(`Governorate not found!`);
+      return;
     }
-    
-    this.selectedGovernorateName = name;
     this.selectedGovernorate = governorate;
-}
+    this.selectedGovernorateName = governorate.name;
+    this.selectedDelegation = this.selectedGovernorate.delegations[0]; // reset delegation when governorate changes
+  }
+  
+  selectDelegation(delegation: any) {
+    if (!delegation) {
+      console.error(`Delegation not found!`);
+      return;
+    }
+    this.selectedDelegation = delegation;
+  }
 
 getFillColor(name: string) {
     if (this.selectedGovernorateName !== name || !this.selectedGovernorate) {
