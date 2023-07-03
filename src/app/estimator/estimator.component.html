@@ -58,7 +58,7 @@
               <h2 class="title investment">{{ 'Investment' | translate }}</h2>
               <div class="form-group">
                 <div class="input-wrapper">
-                  <label for="field1">Terrain </label>
+                  <label for="field1">{{ 'Land' | translate }} </label>
                   <div class="input-container">
                     <input id="field1" type="text" class="form-control custom-input" [(ngModel)]="terrain" name="terrain" (ngModelChange)="calculateTotal()" placeholder="0">
                     <span class="currency-text">TND</span>
@@ -68,7 +68,7 @@
               
               <div class="form-group">
                <div class="input-wrapper">
-                <label for="field1">Génie civil </label>
+                <label for="field1">{{ 'Géniecivil' | translate }}  </label>
                 <div class="input-container">
                   <input id="field2" type="text" class="form-control custom-input" [(ngModel)]="genieCivil" name="genieCivil" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -78,7 +78,7 @@
 
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Amenagement </label>
+                <label for="field1">{{ 'Amenagement' | translate }} </label>
                 <div class="input-container">
                   <input id="field3" type="text" class="form-control custom-input" [(ngModel)]="amenagement" name="amenagement" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -88,7 +88,7 @@
 
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Equipments Importés</label>
+                <label for="field1">{{ 'EquipmentsImportés' | translate }}</label>
                 <div class="input-container">
                   <input id="field4" type="text" class="form-control custom-input" [(ngModel)]="equipmentsImportes" name="equipmentsImportes" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -98,7 +98,7 @@
 
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Equipments Locals</label>
+                <label for="field1">{{ 'EquipmentsLocals' | translate }}</label>
                 <div class="input-container">
                   <input id="field5" type="text" class="form-control custom-input" [(ngModel)]="equipmentsLocaux" name="equipmentsLocaux" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -108,7 +108,7 @@
 
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Materiel de transport</label>
+                <label for="field1">{{ 'Materieldetransport' | translate }}</label>
                 <div class="input-container">
                   <input id="field6" type="text" class="form-control custom-input" [(ngModel)]="materielDeTransport" name="materielDeTransport" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -118,7 +118,7 @@
 
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Frais Daipproche vevers</label>
+                <label for="field1">{{ 'FraisDaipproche' | translate }}</label>
                 <div class="input-container">
                   <input id="field7" type="text" class="form-control custom-input" [(ngModel)]="fraisAipprocheVevers" name="fraisAipprocheVevers" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -131,7 +131,7 @@
               
               <div class="form-group">
                 <div class="input-wrapper">
-                    <label for="field8">Fonds de roulement</label>
+                    <label for="field8">{{ 'fondder' | translate }}</label>
                     <div class="input-container">
                         <input id="field8" type="text" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (ngModelChange)="calculateTotal()" placeholder="0">
                         <div class="info-circle" matTooltip="Fond de roulemet <= max 10% du total de l'invistissement retenue">?</div>
@@ -145,10 +145,10 @@
             <h2>Total: {{ totalCash }} TND</h2>
             </div>
             <div class="col-md-6">
-              <h2 class="title investment">Financement</h2>
+              <h2 class="title investment">{{ 'Financement' | translate }}</h2>
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Social Capital / Augmentation du capital social</label>
+                <label for="field1">{{ 'SocialCapital' | translate }}</label>
                 <div class="input-container">
                   <input id="field9" type="text" class="form-control custom-input" [(ngModel)]="socialCapital" name="socialCapital" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
@@ -158,7 +158,7 @@
 
               <div class="form-group">
                 <div class="input-wrapper">
-                <label for="field1">Fonds propres</label>
+                <label for="field1">{{ 'Fondspropres' | translate }}</label>
                 <div class="input-container">
                   <input id="field10" type="text" class="form-control custom-input" [(ngModel)]="fondsPropres" name="fondsPropres" (ngModelChange)="calculateTotal()" placeholder="0">
                   <div class="info-circle" matTooltip="le fond propre >= 30% de investissment  ">?</div>
@@ -322,7 +322,7 @@
 
 <div class="estimate-card">
   <h2> {{ 'result' | translate }} {{incentive}} TND</h2>
-  <h3>Incentive = {{ totalCash }} TND x {{ percentage*100 }} % ({{ selectedGovernorate.name }} ,  {{ selectedDelegation.name }})</h3>
+  <h3>{{ 'Incentive' | translate }} = {{ totalCash }} TND x {{ percentage*100 }} % ({{ selectedGovernorate.name }} ,  {{ selectedDelegation.name }})</h3>
   <p>{{ 'note' | translate }}</p>
 </div>
 

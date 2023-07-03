@@ -28,7 +28,20 @@
     "search1": "Find the detailed list of the different activities.",
     "byact": "By Activity",
     "byprod": "By Product",
-    "citieshover": "Hover over the cities to know more!"
+    "citieshover": "Hover over the cities to know more!", 
+    "fondder": "Working capital", 
+    "Financement": "Funding",
+    "Fondspropres": "Equity" , 
+    "FraisDaipproche": "Fees Daipproche vevers", 
+    "Materieldetransport": "Transport Materiel ", 
+    "EquipmentsLocals": "Local Equipment", 
+    "EquipmentsImportés": "Imported Equipment", 
+    "Amenagement": "Planification", 
+    "Géniecivil": "Civil Engineering", 
+    "Land": "Land", 
+    "SocialCapital": "Social Capital / Increase in share capital"
+    
+
 
 
 
