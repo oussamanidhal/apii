@@ -12,17 +12,17 @@
         <h1>{{ 'inves' | translate }}</h1>
 
 
-        <div class="menu-hover-container ">
+        <div class="menu-hover-container">
           <div class="dropdown-wrapper">
               <div class="dropdown-label">{{ 'activity1' | translate }}</div>
+              <input [(ngModel)]="searchValue" (input)="filterActivities()" placeholder="Search" name="search">
               <div class="select-container">
                   <select [(ngModel)]="selectedActivity" (ngModelChange)="calculateTotal()">
-                      <option *ngFor="let activity of activities" [ngValue]="activity">{{activity.lib_na9}}</option>
+                      <option *ngFor="let activity of filteredActivities" [ngValue]="activity">{{activity.lib_na9}}</option>
                   </select>
               </div>
           </div>
           <div class="info-circle-activity" [matTooltip]="getTooltipText()" matTooltipClass="pre-line">?</div>
-
       </div>
         
         
@@ -318,7 +318,7 @@
 
 </div>
 
-<button class="calculate-button" (click)="calculate()">{{ 'estimate' | translate }}</button>
+<button class="calculate-button" (click)="calculateTotal()">{{ 'estimate' | translate }}</button>
 
 <div class="estimate-card">
   <h2> {{ 'result' | translate }} {{incentive}} TND</h2>

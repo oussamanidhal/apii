@@ -114,17 +114,17 @@ export class EstimatorComponent {
     {
         name: 'Nabeul',
         group : 'none',
-        delegations: []
+        delegations: [{name : '' , group : 'none'}]
     },
     {
         name: 'Tunis',
         group : 'none',
-        delegations: []
+        delegations: [{name : '' , group : 'none'}]
     },
     {
         name: 'Monastir',
         group : 'none',
-        delegations: []
+        delegations: [{name : '' , group : 'none'}]
     },
     {
       name: 'Tataouine',
@@ -155,7 +155,7 @@ export class EstimatorComponent {
     {
         name: 'Ben Arous',
         group : 'none',
-        delegations: []
+        delegations: [{name : '' , group : 'none'}]
       },
     {
       name: 'Gafsa',
@@ -308,6 +308,10 @@ export class EstimatorComponent {
   percentage: number = 0;
   plafond : number = 0;
   incentive: number = 0;
+
+
+
+  
   
   calculateTotal() {
     this.totalInvestment = parseFloat(this.terrain) + parseFloat(this.genieCivil) + parseFloat(this.amenagement) + parseFloat(this.equipmentsImportes) + parseFloat(this.equipmentsLocaux) + parseFloat(this.materielDeTransport) + parseFloat(this.fraisAipprocheVevers) + parseFloat(this.fondsRoulement);
@@ -322,30 +326,30 @@ export class EstimatorComponent {
     }
 
     // 30 + 15 = 33.3333
-    else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == -1) {
+    if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == -1) {
       this.plafond = 3000000;
       this.percentage = 0.33333;
     }
 
     // 15 + 0
-    else if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri == 0) {
+    if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri == 0) {
       this.plafond = 1500000;
       this.percentage = 0.15;
     }
 
     // 30 + 0
-    else if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == 0) {
+    if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == 0) {
      this.plafond = 3000000;
      this.percentage = 0.3;
     }
     // 0 + 15
-    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == -1) {
+    if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == -1) {
         this.plafond = 1500000;
         this.percentage = 0.15;
        }
 
     // 0 + 0
-    else if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == 0) {
+    if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == 0) {
         this.plafond = 1000000;
         this.percentage = 0;
        }
@@ -409,7 +413,7 @@ getTooltipText(): string {
     }
     
     const isSecPrioritaire = this.selectedActivity.sec_pri === -1 ? 'secteur prioritaire' : 'Non secteur prioritaire';
-    const isEligible = this.selectedActivity.ndv_rgn === -1 ? 'Eligible au développement régionale' : 'Non Eligible au développement régionale';
+    const isEligible = this.selectedActivity.ndv_rgn === -1 ? 'Non Eligible au développement régionale' : 'Eligible au développement régionale';
 
     return `Cette activité est :  ${isSecPrioritaire} ET ${isEligible}`;
 
@@ -5735,4 +5739,17 @@ getTooltipText(): string {
 selectedActivity = this.activities[0];
 
 
+
+
+searchValue: string = '';
+filteredActivities: any[] = this.activities;
+
+filterActivities() {
+    this.filteredActivities = this.activities.filter(activity =>
+        activity.lib_na9.toLowerCase().includes(this.searchValue.toLowerCase())
+    );
 }
+
+}
+
+
