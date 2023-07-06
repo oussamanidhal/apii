@@ -159,9 +159,15 @@
     fill: #FFB859;
   }
 
-  .mixed :hover{
+  .none :hover{
     fill: #FF5959;
   }
+
+
+  .mixed :hover{
+    fill: #5E17EB;
+  }
+
 
   .mapdiv svg {
     top: 0;

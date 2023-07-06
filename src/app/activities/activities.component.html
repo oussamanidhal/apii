@@ -22,7 +22,6 @@
         <div class="box" *ngFor="let activity of filteredActivities">
           <h3>{{ activity.lib_na9 }}</h3>
           <p>Code NAT: {{ activity.cls_na9 }}</p>
-          <p>{{ activity.eligible ? 'Eligible' : 'Not Eligible' }}</p>
         </div>
       </div>
 
@@ -32,8 +31,10 @@
           <h3>{{ item.name }}</h3>
           <p>Code NAT: {{ item.code}}</p>
           <p *ngIf="item.eligible !== undefined">{{ item.eligible ? 'Eligible' : 'Not Eligible' }}</p>
+          <p *ngIf="item.relatedActivity">Activité : {{ item.relatedActivity.lib_na9 }}</p>
         </div>
-      </div>
+    </div>
+    
 
     </div>
   

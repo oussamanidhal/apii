@@ -24,11 +24,28 @@ export class ActivitiesComponent {
     this.filteredActivities = this.activities.filter(activity =>
       activity.lib_na9.toLowerCase().includes(this.searchValue.toLowerCase())
     ).slice(0, 10);
-
-    this.filteredProducts = this.products.filter(product =>
-      product.name.toLowerCase().includes(this.searchValue.toLowerCase())
-    ).slice(0, 10);
-}
+  
+    this.filteredProducts = this.products
+      .filter(product =>
+        product.name.toLowerCase().includes(this.searchValue.toLowerCase()) && 
+        product.code.length > 5  // filter out products with code length of 4 or less
+      )
+      .slice(0, 10);
+  
+    // For each product, find the associated activity
+    for (let product of this.filteredProducts) {
+      let productCodePrefix = product.code.substr(0, 4); // Extract first four digits of product code
+  
+      product.relatedActivity = this.activities.find(activity => {
+        // Convert cls_na9 to string with 2 decimal points
+        let activityCode = Number(activity.cls_na9).toFixed(2);
+        return activityCode.startsWith(productCodePrefix);
+      });
+    }
+  }
+  
+  
+  
 
 
 activities: any[] = [

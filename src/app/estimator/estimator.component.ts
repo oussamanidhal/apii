@@ -1,4 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core'; // add ViewEncapsulation import
+import { Component, ViewEncapsulation, ViewChild } from '@angular/core'; // add ViewChild import
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-estimator',
@@ -8,6 +9,20 @@ import { Component, ViewEncapsulation } from '@angular/core'; // add ViewEncapsu
 
 
 export class EstimatorComponent {
+
+    @ViewChild(MatTooltip) tooltip!: MatTooltip;
+
+
+    showTooltipBriefly() {
+        this.tooltip.show();
+        setTimeout(() => {
+            this.tooltip.hide();
+        }, 3000);
+    }
+  
+
+    
+    
 
   governorates = [
     { 
@@ -256,7 +271,7 @@ export class EstimatorComponent {
     },
     {
       name: 'Sfax',
-      group : 'Premier Groupe',
+      group : 'mixed groupe',
       delegations: [
         {name: 'Agareb', group: 'Premier Groupe'}, 
         {name: 'Djebeniana', group: 'Premier Groupe'}, 
@@ -323,29 +338,42 @@ export class EstimatorComponent {
     if (this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri == -1) {
       this.plafond = 1000000;
       this.percentage = 0.3;
+      if(this.selectedActivity.ndv_rgn == -1) {
+        this.percentage = this.percentage - 0.15;
+      }
     }
 
     // 30 + 15 = 33.3333
     if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == -1) {
       this.plafond = 3000000;
       this.percentage = 0.33333;
+      if(this.selectedActivity.ndv_rgn == -1) {
+        this.percentage = this.percentage - 0.30;
+      }
     }
 
     // 15 + 0
     if(this.selectedDelegation.group == 'Premier Groupe' && this.selectedActivity.sec_pri == 0) {
       this.plafond = 1500000;
       this.percentage = 0.15;
+      if(this.selectedActivity.ndv_rgn == -1) {
+        this.percentage = this.percentage - 0.15;
+      }
     }
 
     // 30 + 0
     if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == 0) {
      this.plafond = 3000000;
      this.percentage = 0.3;
+     if(this.selectedActivity.ndv_rgn == -1) {
+        this.percentage = this.percentage - 0.3;
+      }
     }
     // 0 + 15
     if(this.selectedGovernorate.group == 'none' && this.selectedActivity.sec_pri == -1) {
         this.plafond = 1500000;
         this.percentage = 0.15;
+
        }
 
     // 0 + 0
@@ -400,8 +428,10 @@ getFillColor(name: string) {
             return '#FFB859';
         case 'Deuxième Groupe':
             return '#2DCD7A';
+        case 'none':
+            return '#FF5959';
         default:
-            return '#FF5959'; // mixed
+            return '#5E17EB'; // mixed
     }
 }
 
@@ -5739,7 +5769,18 @@ getTooltipText(): string {
 selectedActivity = this.activities[0];
 
 
-
+selectActivity(activity: any) {
+    if (!activity) {
+      console.error(`Activity not found!`);
+      return;
+    }
+    this.selectedActivity = activity;
+    this.calculateTotal(); // recalculate totals after changing the selected activity
+    this.showTooltipBriefly();
+  }
+  
+  
+  
 
 searchValue: string = '';
 filteredActivities: any[] = this.activities;
@@ -5748,7 +5789,10 @@ filterActivities() {
     this.filteredActivities = this.activities.filter(activity =>
         activity.lib_na9.toLowerCase().includes(this.searchValue.toLowerCase())
     );
+    this.showTooltipBriefly();
+    this.selectedActivity = this.filteredActivities[0];
 }
+
 
 }
 
