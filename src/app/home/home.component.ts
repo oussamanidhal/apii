@@ -135,7 +135,7 @@ export class HomeComponent {
     },
     {
       name: 'Béja',
-      group : 'Deuxième Groupe',
+      group : 'Mixed Groupe',
       delegations: [
         {name : 'Medjez El Bab', group : 'Premier Groupe'}, 
         {name : 'Beja Nord', group : 'Deuxième Groupe'}, 
@@ -233,7 +233,7 @@ export class HomeComponent {
     },
     {
       name: 'Zaghouan',
-      group : 'Deuxième Groupe',
+      group : 'Mixed Groupe',
       delegations: [
         {name: 'Zaghouan', group: 'Premier Groupe'}, 
         {name: 'Bir Mchergua', group: 'Premier Groupe'}, 
@@ -266,7 +266,7 @@ export class HomeComponent {
     },
     {
       name: 'Sfax',
-      group : 'Premier Group',
+      group : 'Mixed Groupe',
       delegations: [
         {name: 'Agareb', group: 'Premier Groupe'}, 
         {name: 'Djebeniana', group: 'Premier Groupe'}, 
