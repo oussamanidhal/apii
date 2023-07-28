@@ -335,9 +335,34 @@
 <button class="calculate-button" (click)="calculateTotal()">{{ 'estimate' | translate }}</button>
 
 <div class="estimate-card">
-  <h2> {{ 'result' | translate }} {{incentive}} TND</h2>
-  <h3>{{ 'Incentive' | translate }} = {{ totalCash }} TND x {{ percentage*100 }} % ({{ selectedGovernorate.name }} ,  {{ selectedDelegation.name }})</h3>
-  <p>{{ 'note' | translate }}</p>
+  <h2> {{ 'estimation primes' | translate }}</h2>
+  
+  <!-- Regional Development -->
+  <div class="calculation-breakdown">
+      <h3>1- {{ 'Development Regional' | translate }}</h3>
+      <p>
+        (+{{ getRegionalPercentage() }}%) * M.Investissement 
+        ({{ 'Plafond' | translate }} : {{ plafond | number }} - {{ selectedDelegation.group }}) 
+        = {{ getRegionalBonus() | number }} {{ 'prime de développement régional' | translate }}
+      </p>
+  </div>
+
+  <!-- Secteur Prioritaire -->
+  <div class="calculation-breakdown">
+      <h3>2- {{ 'Secteur Prioritaire' | translate }}</h3>
+      <p>
+        (+0.15%) * M.Investissement 
+        ({{ 'Plafond' | translate }} : 1 Milliard) 
+        = {{ getSecteurBonus() | number }} {{ 'prime du Secteur prioritaire' | translate }}
+      </p>
+  </div>
+
+  <!-- Montant de la prime -->
+  <h3>{{ 'Montant de la prime' | translate }}:</h3>
+  <p>{{ 'plafond' | translate }}: {{ plafond | number }}</p>
+  <p>{{ 'Pourcentage' | translate }}: {{ percentage*100 | number }}%</p>
+  <p>{{ 'Montant de la prime total' | translate }}: {{ incentive | number }} TND</p>
 </div>
+
 
 

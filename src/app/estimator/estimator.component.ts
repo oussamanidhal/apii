@@ -345,10 +345,10 @@ export class EstimatorComponent {
 
     // 30 + 15 = 33.3333
     if(this.selectedDelegation.group == 'Deuxième Groupe' && this.selectedActivity.sec_pri == -1) {
-      this.plafond = 3000000;
+      this.plafond = 5000000;
       this.percentage = 0.33333;
       if(this.selectedActivity.ndv_rgn == -1) {
-        this.percentage = this.percentage - 0.30;
+        this.percentage = 0.15;
       }
     }
 
@@ -448,6 +448,30 @@ getTooltipText(): string {
     return `Cette activité est :  ${isSecPrioritaire} ET ${isEligible}`;
 
 }
+  
+
+//... existing code...
+
+getRegionalPercentage(): number {
+    // Assuming this method is only for the display purposes and 
+    // calculation logic remains in the `calculateTotal()` method.
+    if (this.selectedDelegation.group == 'Premier Groupe') {
+      return 15; // 15% represented as 15
+    } else if (this.selectedDelegation.group == 'Deuxième Groupe') {
+      return 30; // 30% represented as 30
+    }
+    return 0; // default
+  }
+  
+  getRegionalBonus(): number {
+    return this.totalCash * (this.getRegionalPercentage() / 100);
+  }
+  
+  getSecteurBonus(): number {
+    return this.totalCash * 0.15; // As given in your description
+  }
+  
+  //... remaining code...
   
 
   
