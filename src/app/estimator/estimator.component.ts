@@ -456,8 +456,14 @@ getRegionalPercentage(): number {
     // Assuming this method is only for the display purposes and 
     // calculation logic remains in the `calculateTotal()` method.
     if (this.selectedDelegation.group == 'Premier Groupe') {
+        if(this.selectedActivity.ndv_rgn == -1){
+            return 0; // As given in your description
+        }
       return 15; // 15% represented as 15
     } else if (this.selectedDelegation.group == 'Deuxième Groupe') {
+        if(this.selectedActivity.ndv_rgn == -1){
+            return 0; // As given in your description
+        }
       return 30; // 30% represented as 30
     }
     return 0; // default
@@ -468,7 +474,11 @@ getRegionalPercentage(): number {
   }
   
   getSecteurBonus(): number {
-    return this.totalCash * 0.15; // As given in your description
+    if (this.selectedActivity.sec_pri == -1) {
+      return this.totalCash * 0.15; // As given in your description
+ }else{
+        return 0; // As given in your description
+``}
   }
   
   //... remaining code...
