@@ -278,7 +278,9 @@
     background-color: #0069D9;
   }
   
-
+.notee {
+  color: #fd0404;
+}
   .estimate-card {
     margin: 30px auto;
     width: 80%;
@@ -335,6 +337,7 @@
 
 .pre-line {
   white-space: pre-line;
+  
 }
 
 .text-container {

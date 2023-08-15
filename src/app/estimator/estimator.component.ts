@@ -17,7 +17,7 @@ export class EstimatorComponent {
         this.tooltip.show();
         setTimeout(() => {
             this.tooltip.hide();
-        }, 3000);
+        }, 10000);
     }
   
 
@@ -331,7 +331,7 @@ export class EstimatorComponent {
   calculateTotal() {
     this.totalInvestment = parseFloat(this.terrain) + parseFloat(this.genieCivil) + parseFloat(this.amenagement) + parseFloat(this.equipmentsImportes) + parseFloat(this.equipmentsLocaux) + parseFloat(this.materielDeTransport) + parseFloat(this.fraisAipprocheVevers) + parseFloat(this.fondsRoulement);
     this.totalFinancement = parseFloat(this.socialCapital) + parseFloat(this.fondsPropres);
-    this.totalCash = this.totalInvestment + this.totalFinancement;
+    this.totalCash = this.totalInvestment + 0;
 
 
     // 15 + 15

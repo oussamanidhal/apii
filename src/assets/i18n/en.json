@@ -40,7 +40,9 @@
     "Amenagement": "Planification", 
     "Géniecivil": "Civil Engineering", 
     "Land": "Land", 
-    "SocialCapital": "Social Capital / Increase in share capital"
+    "SocialCapital": "Social Capital / Increase in share capital", 
+    "moreinfo": "For more information, visit ", 
+    "notee": "Note that the amount of investment must equal the amount of financing "
     
 
 
