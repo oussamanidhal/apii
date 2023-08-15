@@ -323,6 +323,7 @@ export class EstimatorComponent {
   percentage: number = 0;
   plafond : number = 0;
   incentive: number = 0;
+  regionalPlafond  : number = 0;
 
 
 
@@ -470,16 +471,33 @@ getRegionalPercentage(): number {
   }
   
   getRegionalBonus(): number {
-    return this.totalCash * (this.getRegionalPercentage() / 100);
-  }
-  
-  getSecteurBonus(): number {
+    let calculatedBonus = this.totalCash * (this.getRegionalPercentage() / 100);
+
+    // Setting the plafond based on the regional percentage
+    this.regionalPlafond = 0;
+    if (this.getRegionalPercentage() === 15) {
+        this.regionalPlafond = 1.5 * 1e6;  // 1.5 million
+    } else if (this.getRegionalPercentage() === 30) {
+        this.regionalPlafond = 3 * 1e6;    // 3 million
+    }
+
+    // Return the lesser of the calculatedBonus and plafond
+    return Math.min(calculatedBonus, this.regionalPlafond);
+}
+
+getSecteurBonus(): number {
     if (this.selectedActivity.sec_pri == -1) {
-      return this.totalCash * 0.15; // As given in your description
- }else{
-        return 0; // As given in your description
-``}
-  }
+        const calculatedBonus = this.totalCash * 0.15;
+
+        // Setting the plafond for the secteur bonus
+        const plafond = 1 * 1e6;  // 1 million
+
+        // Return the lesser of the calculatedBonus and plafond
+        return Math.min(calculatedBonus, plafond);
+    } else {
+        return 0;
+    }
+}
   
   //... remaining code...
   

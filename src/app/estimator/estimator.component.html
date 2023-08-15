@@ -357,7 +357,7 @@
       <h3>1- {{ 'Development Regional' | translate }}</h3>
       <p>
         (+{{ getRegionalPercentage() }}%) * M.Investissement 
-        ({{ 'Plafond' | translate }} : {{ plafond | number }} - {{ selectedDelegation.group }}) 
+        ({{ 'Plafond' | translate }} : {{ regionalPlafond | number }} - {{ selectedDelegation.group }}) 
         = {{ getRegionalBonus() | number }} {{ 'prime de développement régional' | translate }}
       </p>
   </div>
