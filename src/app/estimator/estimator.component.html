@@ -176,7 +176,9 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'Fondspropres' | translate }}</label>
                 <div class="input-container">
-                  <input id="field10" type="text" class="form-control custom-input" [(ngModel)]="fondsPropres" name="fondsPropres" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field10" type="text" class="form-control custom-input" 
+                  [ngModel]="totalCash" name="fondsPropres" 
+                  (ngModelChange)="calculateTotal()" placeholder="0">
                   <div class="info-circle" matTooltip="le fond propre >= 30% de investissment  ">?</div>
                   <span class="currency-text">TND</span>
                 </div>
