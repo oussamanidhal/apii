@@ -209,6 +209,9 @@
     <h2><img src="assets/red-state.png" alt="yellow icon" style="height: 24px; width: 24px; margin-right: 8px;">{{ '3rd group' | translate }}</h2>
     <h2><img src="assets/blue-state.png" alt="blue icon" style="height: 24px; width: 24px; margin-right: 8px;">{{ '4rd group' | translate }}</h2>
   </div>
+
+  <div class="map-wrapper">
+    <div class="selected-governorate-label">{{selectedGovernorateName}}</div>
     <div class="mapdiv">
 
       <!-- Paste your SVG code here -->
@@ -344,7 +347,7 @@
         </circle>
        </svg>
     </div>
-
+  </div>
 </div>
 
 <button class="calculate-button" (click)="calculateTotal()">{{ 'estimate' | translate }}</button>
