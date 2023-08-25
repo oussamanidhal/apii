@@ -1,0 +1,86 @@
+/* Center the container horizontally */
+.container {
+  margin-top: 80px;
+  padding: 20px;
+}
+
+/* Add spacing between elements */
+.mb-4 {
+  margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.sub-title {
+  font-weight: 300;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 1rem;
+}
+
+.mt-4 {
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+}
+
+/* Style the filter button */
+.btn-primary {
+  border-radius: 0;
+}
+
+/* Add spacing between sections */
+.row + .row {
+  margin-top: 2rem;
+}
+
+/* Style the list group */
+.list-group-item {
+  border-radius: 0;
+  padding: 10px 20px;
+}
+
+/* Add hover effect to list group items */
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Search container */
+.search-container {
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.1), 0px 2px 2px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  margin: 0 auto; /* Center the container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Full-width input field */
+.example-full-width {
+  width: 80%;
+}
+
+/* Box styles */
+.box {
+  background-color: #557CBE;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.1), 0px 2px 2px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+  margin: 10px 0;
+  padding: 20px;
+  border-radius: 20px;
+  width: 80%;
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+}
+
+.box h3 {
+  margin: 0 0 20px;
+  padding: 0;
+}
+
+/* Moreinfo title */
+.moreinfo-title {
+  color: black;
+  font-size: 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+}

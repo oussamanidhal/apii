@@ -1,137 +1,113 @@
+/* Default styles for larger screens */
 .slider {
   margin-top: 60px;
-    position: auto;
-    top: 60px;
-    right: 0;
-    left: 0;
-    height: 400px;
-    background-color: #ffffff;
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
+  height: 400px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.slider-content {
+  display: flex;
+  align-items: center;
+}
+
+.slider-image {
+  height: 400px;
+  margin-left: auto;
+  margin-right: -20px;
+}
+
+.slider-text {
+  margin-right: 100px;
+  margin-left: 50px;
+  padding-right: auto;
+}
+
+.slider-text h3 {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.slider-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Media query for screens up to 768px width (typical mobile screens) */
+@media (max-width: 768px) {
+  .slider {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px;
+      height: auto;
   }
-  
+
   .slider-content {
-    display: flex;
-    align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
   }
-  
+
   .slider-image {
-    height: 400px;
-    margin-left: auto;
-    margin-right: -20px;
-    
-
-    
+      height: auto;
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: 20px;
   }
-  
+
   .slider-text {
-    margin-right: 100px;
-
-    margin-left: 50px;
-    padding-right: auto;
+      margin-right: 0;
+      margin-left: 0;
+      padding-right: 0;
   }
-  
+
   .slider-text h3 {
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 30px;
-    font-weight: bold;
+      font-size: 24px;
   }
-  
-  .slider-text p {
-    margin: 0;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .invest-section {
-    
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .map-title {
-    text-align: center;
-    margin: 0 auto;
-    font-size: 24px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 200;
-    background-color: #ebf2ff;
-  }
-  
-  
-
-  .blue-container {
-    background-color: #ebf2ff; 
-    padding: 20px; 
-    padding-top: 50px;
-  }
-
-  .invest-title {
-    color: black;
-    font-size: 24px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
-  }
-  
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .card {
-    width: 250px;
-    margin: 10px;
-    background-color: #557CBE;
-    padding: 16px;
-    border-radius: 15px;
-    text-align: center;
-    transition: all 0.3s ease; /* this will animate the transform property */
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1); /* this adds a shadow that will also be animated */
-    display: flex; /* Add this line */
-    flex-direction: column; /* Add this line */
 }
 
-.card:hover {
-  transform: scale(1.1); /* this will zoom in the card */
-  background-color: #456CA6; /* this changes the color of the card; adjust as needed */
-  box-shadow: 0px 5px 20px rgba(0,0,0,0.2); /* this makes the shadow bigger */
+.invest-section {
+  text-align: center;
+  margin-top: 20px;
+  padding: 0 20px; /* Adding some horizontal padding for responsiveness */
 }
 
-
-  .card-content {
-    margin-bottom: 10px;
-    font-family: 'Montserrat', sans-serif;
-    flex-grow: 1; /* Add this line */
-  }
-  
-  .card-title {
-    font-size: 18px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
-    color: #ffffff;
-    margin: 0;
-   
-  }
-  
-  .card-description {
-    margin-top: 7%;
-    font-family: 'Montserrat', sans-serif;
-    color: #ffffff;
-    
-  }
-  
-  .card-link {
-    display: inline-block;
-    margin-top: 10px;
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    text-decoration: underline; /* this will underline the link */
-    font-weight: bold;
+.invest-title {
+  color: black;
+  font-size: 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  margin-bottom: 20px; /* Adding some margin at the bottom */
 }
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card {
+  flex: 1; /* Allow cards to take up equal space */
+  max-width: 300px; /* Limit the maximum width of cards */
+  margin: 10px;
+  background-color: #557CBE;
+  padding: 16px;
+  border-radius: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rest of the CSS remains the same */
+
 
   
 
