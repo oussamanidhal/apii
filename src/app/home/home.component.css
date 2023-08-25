@@ -234,3 +234,66 @@
 #governorate-name {
   margin-left: 20px; /* Adjust based on your design */
 }
+
+
+/* Already existing styles, no changes here. */
+
+/* ... */
+
+/* Media Query for Tablets and below */
+@media (max-width: 768px) {
+
+  /* 1. For the map and related components. */
+  .map-container {
+      flex-direction: column; /* Stack elements vertically. */
+      padding: 40px 10px; /* Reduced padding for smaller screens. */
+  }
+
+  .text-container, .mapdiv, .info-box {
+      width: 100%; /* Make them take the full width. */
+      margin-bottom: 20px; /* Add some spacing between stacked elements. */
+  }
+
+  /* 2. Adjusting the SVG to fit the smaller width. */
+  .mapdiv svg {
+      width: auto;
+      height: auto;
+      max-width: 100%; /* Ensure it doesn't overflow the container. */
+      display: block; /* To remove any unwanted white spaces. */
+      margin: 0 auto; /* Center it if it has smaller width than container. */
+  }
+
+  /* 3. Cards will now stack on top of each other for narrow screens. */
+  .card-container {
+      flex-direction: column;
+      align-items: center;
+  }
+  
+  .card {
+      width: 80%; /* Reduce width to provide some margin on the sides. */
+      margin: 10px 0; /* Vertical spacing. */
+  }
+  
+  /* 4. Slider adjustments */
+  .slider-content {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .slider-text {
+      margin-right: 0;
+      margin-left: 0;
+      padding: 10px 0; /* Some vertical padding for separation. */
+      text-align: center; /* Center the text. */
+  }
+
+  .slider-image {
+      height: auto;
+      width: 80%;
+  }
+
+  .info-box {
+      width: 90%;
+      margin-right: 10px;
+  }
+}

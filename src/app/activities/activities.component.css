@@ -113,8 +113,52 @@
 }
 .moreinfo-title {
   color: black;
-  font-size: 24px;
+  font-size: 20px;
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   margin-left: -5px;
+  text-align: center;
+}
+
+
+
+/* Media Query for Tablets */
+@media (max-width: 768px) {
+  .search-container, .example-full-width {
+    width: 95%;
+    margin-left: 2.5%;
+
+  }
+  
+  .mt-4, .mb-4, .sub-title {
+    margin-left: 4%;
+  }
+
+  .box {
+    width: 80%;
+    margin-left: 10%;
+  }
+}
+
+/* Media Query for Mobile Phones */
+@media (max-width: 576px) {
+  .row {
+    flex-direction: column;
+    margin-left: 0;
+    
+  }
+  
+  .col-md-6 {
+    margin-bottom: 20px;
+  }
+
+  .search-container, .example-full-width, .box {
+    width: 90%;
+    margin-left: 0%;
+  }
+
+  .mt-4, .mb-4, .sub-title {
+    margin-left: 2%;
+  }
+
 }
