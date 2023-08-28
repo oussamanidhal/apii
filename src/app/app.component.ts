@@ -8,9 +8,11 @@ import en from '../assets/i18n/en.json';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
+  
 })
 export class AppComponent {
   title = 'my-app';
+  showMenu: boolean = false; // Add this line
 
   constructor(
     public route: ActivatedRoute,
@@ -24,5 +26,13 @@ export class AppComponent {
 
   changeLanguage(lang: string) {
     this.translate.use(lang);
+  }
+
+  toggleMenu() {
+    this.showMenu = !this.showMenu;
+  }
+
+  hideMenu() {
+    this.showMenu = false;
   }
 }

@@ -1,10 +1,15 @@
 <nav class="toolbar fixed-top">
   <div class="left-side">
     <img src="assets/logo.jpg" alt="Logo" class="logo">
-    <div class="toolbar-links">
-      <a routerLink="/">{{ 'home' | translate }}</a>
-      <a routerLink="/estimator">{{ 'estimator' | translate }}</a> 
-      <a routerLink="/activities">{{ 'activity' | translate }}</a>
+    
+    <!-- Hamburger Menu -->
+    <button class="hamburger-menu" (click)="toggleMenu()">☰</button> 
+    
+    <!-- Dropdown Menu -->
+    <div class="toolbar-links" id="mobileMenu" [class.show]="showMenu">
+      <a (click)="hideMenu()" routerLink="/">{{ 'home' | translate }}</a>
+      <a (click)="hideMenu()" routerLink="/estimator">{{ 'estimator' | translate }}</a> 
+      <a (click)="hideMenu()" routerLink="/activities">{{ 'activity' | translate }}</a>
     </div>
   </div>
   
@@ -13,17 +18,5 @@
     <a (click)="changeLanguage('fr')">French</a>
   </div>
 </nav>
+
 <router-outlet></router-outlet>
-
-
-  
-  
-  
- <!-- Add the router outlet to display the components based on routing -->
-
-<footer class="footer">
-  <p class="p">Visit Our Website : <a href="http://www.tunisieindustrie.nat.tn/">www.tunisieindustrie.nat.tn</a></p>
-  <p>Copy Rights-2023</p>
-</footer>
-
-

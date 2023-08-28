@@ -292,8 +292,14 @@ export class EstimatorComponent {
       ]
     }
     ];
+
+    emptyGovernorate = {
+        name: '',
+        group : 'none',
+        delegations: [{name : '' , group : 'none'}]
+    };
     
-  selectedGovernorate = this.governorates[0];
+  selectedGovernorate = this.emptyGovernorate;
   
   selectedDelegation = this.selectedGovernorate.delegations[0];
 
