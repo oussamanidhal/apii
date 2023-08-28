@@ -21,7 +21,7 @@ export class AppComponent {
     this.translate.setDefaultLang('fr');
     this.translate.setTranslation('en', en);
     this.translate.setTranslation('fr', fr);
-    this.translate.use('en'); // Set English as the default language
+    this.translate.use('fr'); // Set English as the default language
   }
 
   changeLanguage(lang: string) {
