@@ -193,39 +193,7 @@
                         <span class="currency-text">TND</span>
                     </div>
                 </div>
-            </div>
-
-
-            <div class="estimate-card">
-              <!-- <h2> {{ 'estimation primes' | translate }}</h2>-->
-              
-              <!-- Regional Development -->
-              <div class="calculation-breakdown">
-                  <h3>1- {{ 'Development Regional' | translate }}</h3>
-                  <p>
-                    (+{{ getRegionalPercentage() }}%) * M.Investissement 
-                    ({{ 'Plafond' | translate }} : {{ regionalPlafond | number }} - {{ selectedDelegation.group }}) 
-                    = {{ getRegionalBonus() | number }} TND
-                  </p>
-              </div>
-            
-              <!-- Secteur Prioritaire -->
-              <div class="calculation-breakdown">
-                  <h3>2- {{ 'Secteur Prioritaire' | translate }}</h3>
-                  <p>
-                    15% * M.Investissement 
-                    ({{ 'Plafond' | translate }} : 1 Milliard) 
-                    = {{ getSecteurBonus() | number }} TND
-                  </p>
-              </div>
-            
-              <!-- Montant de la prime -->
-              <h3>{{ 'Montant de la prime' | translate }}:</h3>
-              <p>{{ 'Plafond' | translate }}: {{ plafond | number }}</p>
-              <p>{{ 'Pourcentage' | translate }}: {{ percentage*100 | number }}%</p>
-              <p>{{ 'Montant de la prime total' | translate }}: {{ incentive | number }} TND</p>
-            </div>
-            
+            </div> 
 
             </div>
           </div>
@@ -378,7 +346,41 @@
         <circle cx="499.6" cy="579.9" id="2">
         </circle>
        </svg>
+
+       <div class="estimate-card">
+        <!-- <h2> {{ 'estimation primes' | translate }}</h2>-->
+        
+        <!-- Regional Development -->
+        <div class="calculation-breakdown">
+            <h3>1- {{ 'Development Regional' | translate }}</h3>
+            <p>
+              (+{{ getRegionalPercentage() }}%) * M.Investissement 
+              ({{ 'Plafond' | translate }} : {{ regionalPlafond | number }} - {{ selectedDelegation.group }}) 
+              = {{ getRegionalBonus() | number }} TND
+            </p>
+        </div>
+      
+        <!-- Secteur Prioritaire -->
+        <div class="calculation-breakdown">
+            <h3>2- {{ 'Secteur Prioritaire' | translate }}</h3>
+            <p>
+              15% * M.Investissement 
+              ({{ 'Plafond' | translate }} : 1 Milliard) 
+              = {{ getSecteurBonus() | number }} TND
+            </p>
+        </div>
+      
+        <!-- Montant de la prime -->
+        <h3>{{ 'Montant de la prime' | translate }}:</h3>
+        <p>{{ 'Plafond' | translate }}: {{ plafond | number }}</p>
+        <p>{{ 'Pourcentage' | translate }}: {{ percentage*100 | number }}%</p>
+        <p>{{ 'Montant de la prime total' | translate }}: {{ incentive | number }} TND</p>
+      </div>
     </div>
+
+
+ 
+    
   </div>
 </div>
 

@@ -423,6 +423,7 @@
 @media (max-width: 992px) {
   .container {
     flex-direction: column; /* Stack children vertically */
+    margin-bottom: 120%; /* Add some space at the bottom */
   }
   
   .card-container, .mapdiv, .map-wrapper {
@@ -452,7 +453,7 @@
   }
 
   .calculate-button {
-    display : "none"
+    display : none
   }
 }
 
@@ -461,6 +462,7 @@
   .card {
     width: 100%;
   }
+
 
   .mapdiv {
     height: 360px;
