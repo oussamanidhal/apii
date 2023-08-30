@@ -333,7 +333,43 @@ export class EstimatorComponent {
 
 
 
+
+
+  onInputChange(event: any, field: string) {
+    const input = event.target;
+    const inputValue = input.value;
   
+    // Remove any non-numeric characters from the input value
+    const numericValue = inputValue.replace(/[^0-9]/g, '');
+  
+    // Update the input field value with the numeric value
+    input.value = numericValue;
+  
+    // Update the corresponding variable in the component
+    if (field === 'terrain') {
+      this.terrain = numericValue;
+    } else if (field === 'genieCivil') {
+      this.genieCivil = numericValue;
+    } else if (field === 'amenagement') {
+      this.amenagement = numericValue;
+    } else if (field === 'equipmentsImportes') {
+      this.equipmentsImportes = numericValue;
+    } else if (field === 'equipmentsLocaux') {
+      this.equipmentsLocaux = numericValue;
+    } else if (field === 'materielDeTransport') {
+      this.materielDeTransport = numericValue;
+    } else if (field === 'fraisAipprocheVevers') {
+      this.fraisAipprocheVevers = numericValue;
+    } else if (field === 'fondsRoulement') {
+      this.fondsRoulement = numericValue;
+    }
+  
+    // Add similar conditions for other fields
+  }
+  
+  
+
+
   
   calculateTotal() {
     this.totalInvestment = parseFloat(this.terrain) + parseFloat(this.genieCivil) + parseFloat(this.amenagement) + parseFloat(this.equipmentsImportes) + parseFloat(this.equipmentsLocaux) + parseFloat(this.materielDeTransport) + parseFloat(this.fraisAipprocheVevers) + parseFloat(this.fondsRoulement);

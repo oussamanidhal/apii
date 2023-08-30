@@ -76,7 +76,7 @@
                 <div class="input-wrapper">
                   <label for="field1">{{ 'Land' | translate }} </label>
                   <div class="input-container">
-                    <input id="field1" type="text" class="form-control custom-input" [(ngModel)]="terrain" name="terrain" (ngModelChange)="calculateTotal()" placeholder="0">
+                    <input id="field1" type="text" class="form-control custom-input" [(ngModel)]="terrain" name="terrain" (input)="onInputChange($event , 'terrain')" (ngModelChange)="calculateTotal()" placeholder="0">
                     <span class="currency-text">TND</span>
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                <div class="input-wrapper">
                 <label for="field1">{{ 'Géniecivil' | translate }}  </label>
                 <div class="input-container">
-                  <input id="field2" type="text" class="form-control custom-input" [(ngModel)]="genieCivil" name="genieCivil" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field2" type="text" class="form-control custom-input" [(ngModel)]="genieCivil" name="genieCivil" (input)="onInputChange($event , 'genieCivil')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -96,7 +96,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'Amenagement' | translate }} </label>
                 <div class="input-container">
-                  <input id="field3" type="text" class="form-control custom-input" [(ngModel)]="amenagement" name="amenagement" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field3" type="text" class="form-control custom-input" [(ngModel)]="amenagement" name="amenagement" (input)="onInputChange($event , 'amenagement')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -106,7 +106,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'EquipmentsImportés' | translate }}</label>
                 <div class="input-container">
-                  <input id="field4" type="text" class="form-control custom-input" [(ngModel)]="equipmentsImportes" name="equipmentsImportes" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field4" type="text" class="form-control custom-input" [(ngModel)]="equipmentsImportes" name="equipmentsImportes" (input)="onInputChange($event , 'equipmentsImportes')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'EquipmentsLocals' | translate }}</label>
                 <div class="input-container">
-                  <input id="field5" type="text" class="form-control custom-input" [(ngModel)]="equipmentsLocaux" name="equipmentsLocaux" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field5" type="text" class="form-control custom-input" [(ngModel)]="equipmentsLocaux" name="equipmentsLocaux" (input)="onInputChange($event , 'equipmentsLocaux')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -126,7 +126,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'Materieldetransport' | translate }}</label>
                 <div class="input-container">
-                  <input id="field6" type="text" class="form-control custom-input" [(ngModel)]="materielDeTransport" name="materielDeTransport" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field6" type="text" class="form-control custom-input" [(ngModel)]="materielDeTransport" name="materielDeTransport" (input)="onInputChange($event , 'materielDeTransport')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -136,7 +136,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'FraisDaipproche' | translate }}</label>
                 <div class="input-container">
-                  <input id="field7" type="text" class="form-control custom-input" [(ngModel)]="fraisAipprocheVevers" name="fraisAipprocheVevers" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field7" type="text" class="form-control custom-input" [(ngModel)]="fraisAipprocheVevers" name="fraisAipprocheVevers" (input)="onInputChange($event , 'fraisAipprocheVevers')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -149,7 +149,7 @@
                 <div class="input-wrapper">
                     <label for="field8">{{ 'fondder' | translate }}</label>
                     <div class="input-container">
-                        <input id="field8" type="text" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (ngModelChange)="calculateTotal()" placeholder="0">
+                        <input id="field8" type="text" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (input)="onInputChange($event , 'fondsRoulement')" (ngModelChange)="calculateTotal()" placeholder="0">
                         <div class="info-circle" matTooltip="Fond de roulemet <= max 10% du total de l'invistissement retenue">?</div>
                         <span class="currency-text">TND</span>
                     </div>
@@ -178,7 +178,7 @@
                 <div class="input-container">
                   <input id="field10" type="text" class="form-control custom-input" 
                   [ngModel]="fondsPropres" name="fondsPropres" 
-                  (ngModelChange)="calculateTotal()" placeholder="0">
+                  (ngModelChange)="calculateTotal()" (input)="onInputChange($event , 'fondsPropres')" placeholder="0">
                   <div class="info-circle" matTooltip="le fond propre >= 30% de investissment  ">?</div>
                   <span class="currency-text">TND</span>
                 </div>
@@ -189,7 +189,7 @@
                 <div class="input-wrapper">
                     <label for="fieldOther">{{ 'Autre' | translate }}</label>
                     <div class="input-container">
-                        <input id="fieldOther" type="text" class="form-control custom-input" placeholder="0">
+                        <input id="fieldOther" type="number" class="form-control custom-input" placeholder="0">
                         <span class="currency-text">TND</span>
                     </div>
                 </div>
