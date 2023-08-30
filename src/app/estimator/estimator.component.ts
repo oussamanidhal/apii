@@ -313,18 +313,18 @@ export class EstimatorComponent {
   totalCash : number = 0;
   
   // Add each of the fields as properties
-  terrain: string = '0';
-  genieCivil: string = '0';
-  amenagement : string = '0';
-  equipmentsImportes: string = '0';
-  equipmentsLocaux: string = '0';
-  materielDeTransport: string = '0';
-  fraisAipprocheVevers : string = '0';
-  fondsRoulement: string = '0';
+  terrain: number = 0;
+  genieCivil: number = 0;
+  amenagement : number = 0;
+  equipmentsImportes: number = 0;
+  equipmentsLocaux: number = 0;
+  materielDeTransport: number = 0;
+  fraisAipprocheVevers : number = 0;
+  fondsRoulement: number = 0;
 
   // ...rest of the fields...
-  socialCapital: string = '0';
-  fondsPropres: string = '0';
+  socialCapital: number = 0;
+  fondsPropres: number = 0;
 
   percentage: number = 0;
   plafond : number = 0;
@@ -346,23 +346,23 @@ export class EstimatorComponent {
     input.value = numericValue;
   
     // Update the corresponding variable in the component
-    if (field === 'terrain') {
-      this.terrain = numericValue;
-    } else if (field === 'genieCivil') {
-      this.genieCivil = numericValue;
-    } else if (field === 'amenagement') {
-      this.amenagement = numericValue;
-    } else if (field === 'equipmentsImportes') {
-      this.equipmentsImportes = numericValue;
-    } else if (field === 'equipmentsLocaux') {
-      this.equipmentsLocaux = numericValue;
-    } else if (field === 'materielDeTransport') {
-      this.materielDeTransport = numericValue;
-    } else if (field === 'fraisAipprocheVevers') {
-      this.fraisAipprocheVevers = numericValue;
-    } else if (field === 'fondsRoulement') {
-      this.fondsRoulement = numericValue;
-    }
+    // if (field === 'terrain') {
+    //   this.terrain = numericValue;
+    // } else if (field === 'genieCivil') {
+    //   this.genieCivil = numericValue;
+    // } else if (field === 'amenagement') {
+    //   this.amenagement = numericValue;
+    // } else if (field === 'equipmentsImportes') {
+    //   this.equipmentsImportes = numericValue;
+    // } else if (field === 'equipmentsLocaux') {
+    //   this.equipmentsLocaux = numericValue;
+    // } else if (field === 'materielDeTransport') {
+    //   this.materielDeTransport = numericValue;
+    // } else if (field === 'fraisAipprocheVevers') {
+    //   this.fraisAipprocheVevers = numericValue;
+    // } else if (field === 'fondsRoulement') {
+    //   this.fondsRoulement = numericValue;
+    // }
   
     // Add similar conditions for other fields
   }
@@ -372,8 +372,8 @@ export class EstimatorComponent {
 
   
   calculateTotal() {
-    this.totalInvestment = parseFloat(this.terrain) + parseFloat(this.genieCivil) + parseFloat(this.amenagement) + parseFloat(this.equipmentsImportes) + parseFloat(this.equipmentsLocaux) + parseFloat(this.materielDeTransport) + parseFloat(this.fraisAipprocheVevers) + parseFloat(this.fondsRoulement);
-    this.totalFinancement = parseFloat(this.socialCapital) + parseFloat(this.fondsPropres);
+    this.totalInvestment = this.terrain + this.genieCivil + this.amenagement + this.equipmentsImportes + this.equipmentsLocaux + this.materielDeTransport + this.fraisAipprocheVevers + this.fondsRoulement;
+    this.totalFinancement = this.socialCapital + this.fondsPropres;
     this.totalCash = this.totalInvestment + 0;
 
 
