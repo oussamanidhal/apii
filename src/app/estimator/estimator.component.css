@@ -423,7 +423,7 @@
 @media (max-width: 992px) {
   .container {
     flex-direction: column; /* Stack children vertically */
-    margin-bottom: 120%; /* Add some space at the bottom */
+    margin-bottom: 110%; /* Add some space at the bottom */
   }
   
   .card-container, .mapdiv, .map-wrapper {
@@ -444,7 +444,7 @@
   }
 
   .calculate-button {
-    width: 100%;
+    width: 50%;
   }
   
   .text-container {
@@ -452,9 +452,7 @@
     width: 90%;
   }
 
-  .calculate-button {
-    display : none
-  }
+
 }
 
 /* Small devices (landscape phones, less than 768px) */
@@ -504,8 +502,5 @@
     font-size: 14px;
   }
 
-  .calculate-button {
-    display : none ; 
-  }
   
 }
