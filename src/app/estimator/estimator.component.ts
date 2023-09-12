@@ -373,6 +373,12 @@ export class EstimatorComponent {
   
   calculateTotal() {
     this.totalInvestment = this.terrain + this.genieCivil + this.amenagement + this.equipmentsImportes + this.equipmentsLocaux + this.materielDeTransport + this.fraisAipprocheVevers + this.fondsRoulement;
+
+     // Set fondsPropres to 10% of totalInvestment
+     this.fondsPropres = Number((this.totalInvestment * 0.10).toFixed(0));
+
+
+
     this.totalFinancement = this.socialCapital + this.fondsPropres;
     this.totalCash = this.totalInvestment + 0;
 

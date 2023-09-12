@@ -23,31 +23,44 @@ export class ActivitiesComponent {
 
 
 
-  // only limited to 10 results - slice is used to limit the results
   filterActivities() {
-    this.filteredActivities = this.activities.filter(activity =>
-      activity.lib_na9.toLowerCase().includes(this.searchValue.toLowerCase()) ||
-      (activity.description && activity.description.toLowerCase().includes(this.searchValue.toLowerCase()))
-    ).slice(0, 10);
-  
+    let activityCodesFromProducts = new Set();
+
     this.filteredProducts = this.products
-      .filter(product =>
-        product.name.toLowerCase().includes(this.searchValue.toLowerCase()) && 
-        product.code.length > 5  // filter out products with code length of 4 or less
-      )
-      .slice(0, 10);
-  
-    // For each product, find the associated activity
+        .filter(product =>
+            product.name.toLowerCase().includes(this.searchValue.toLowerCase()) && 
+            product.code.length > 5  // filter out products with code length of 4 or less
+        )
+        .slice(0, 30);
+
+    // For each product, find the associated activity code and add to activityCodesFromProducts
     for (let product of this.filteredProducts) {
-      let productCodePrefix = product.code.substr(0, 4); // Extract first four digits of product code
-  
-      product.relatedActivity = this.activities.find(activity => {
-        // Convert cls_na9 to string with 2 decimal points
-        let activityCode = Number(activity.cls_na9).toFixed(2);
-        return activityCode.startsWith(productCodePrefix);
-      });
+        let productCodePrefix = product.code.substr(0, 4); // Extract first four digits of product code
+
+        let relatedActivity = this.activities.find(activity => {
+            let activityCode = Number(activity.cls_na9).toFixed(2);
+            return activityCode.startsWith(productCodePrefix);
+        });
+
+        if (relatedActivity) {
+            activityCodesFromProducts.add(Number(relatedActivity.cls_na9).toFixed(2));
+            product.relatedActivity = relatedActivity;
+        }
     }
+
+    // Filter activities based on search value, valid format, and the activities associated with products
+    this.filteredActivities = this.activities.filter(activity => {
+        let activityCode = Number(activity.cls_na9).toFixed(2);
+        let isValidFormat = /^\d{2}\.\d{2}$/.test(activityCode);
+
+        return isValidFormat && (
+            activity.lib_na9.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+            (activity.description && activity.description.toLowerCase().includes(this.searchValue.toLowerCase()))
+        );
+    }).slice(0, 30);
 }
+
+
 
   
   
@@ -56,5571 +69,3314 @@ export class ActivitiesComponent {
 
 activities: any[] = [
     {
-        "lib_na9": "Location et location-bail de voitures et de véhicules automobiles légers",
-        "cls_na9": 77.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير السيارات والمركبات ذات المحركات الخفيفة",
-        "description": "- la location et la location-bail des types de véhicules suivants:\n• voitures particulières et autres véhicules automobiles légers sans chauffeur (dont le poids est inférieur ou égal à 3,5 tonnes)"
-    },
-    {
-        "lib_na9": "Activités des agences de placement de main-d'oeuvre",
-        "cls_na9": 78.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة وكالات توظيف اليد العاملة"
-    },
-    {
+        "cls_na9": "01.11",
         "lib_na9": "Culture de céréales (à l'exception du riz)",
-        "cls_na9": 1.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الحبوب (باستثناء الأرز)"
+        "description": "• blé • maïs-grain • sorgho • orge • seigle • avoine • millet • autres céréales n.c.a. "
     },
     {
+        "cls_na9": "01.12",
         "lib_na9": "Culture du riz",
-        "cls_na9": 1.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الأرز"
+        "description": ""
     },
     {
+        "cls_na9": "01.13",
         "lib_na9": "Culture de légumes, de melons, de racines et de tubercules",
-        "cls_na9": 1.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الخضر والبطيخات والجذور والدرنيات"
+        "description": "- la culture des légumes à feuilles et à tiges, tels que: • artichauts • asperges • choux • choux-fleurs et brocolis • laitues et chicorées • épinards • autres légumes à feuilles et à tiges - la culture de plantes cultivées pour leurs fruits, telles que: • concombres et cornichons • aubergines • tomates • pastèques • melons cantaloups • autres melons et plantes cultivées pour leurs fruits - la culture des légumes à racines, à bulbes ou à tubercules, tels que: • carottes • navets • ail • oignons (et échalotes) • poireaux et autres légumes alliacés • autres légumes à racines, à bulbes ou à tubercules - la culture des champignons et des truffes - la production de semences de légumes, y compris de graines de betteraves sucrières, à l’exclusion des graines d’autres betteraves - la culture des betteraves sucrières - la culture d’autres légumes - la culture de racines et de tubercules, tels que: • pommes de terre • patates douces • manioc • ignames • autres racines et tubercules "
     },
     {
+        "cls_na9": "01.14",
         "lib_na9": "Culture de la canne à sucre",
-        "cls_na9": 1.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة القصب السكري"
+        "description": ""
     },
     {
-        "lib_na9": "Production de tabac",
-        "cls_na9": 1.15,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة التبغ"
+        "cls_na9": "01.15",
+        "lib_na9": "Culture du tabac",
+        "description": ""
     },
     {
+        "cls_na9": "01.16",
         "lib_na9": "Culture de plantes à fibres",
-        "cls_na9": 1.16,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة النباتات ذات الألياف"
+        "description": "- la culture du coton - la culture de jute, de kenaf et d’autres fibres textiles libériennes - la culture de lin ou de chanvre - la culture de sisal et d’autres fibres textiles du genre agave - la culture de l’abaca, de la ramie et d’autres fibres textiles végétales - la culture d’autres plantes à fibres I n st i t u t N a t i o nal d e la S ta tis tiq u e   "
     },
     {
+        "cls_na9": "01.17",
         "lib_na9": "Culture de légumineuses et de graines oléagineuses",
-        "cls_na9": 1.17,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة البقوليات والبذور الزيتية"
+        "description": "cultures sont souvent combinées au sein des unités agricoles. - la culture de légumineuses telles que: • haricots • fèves • pois chiches • pois à vache • lentilles • lupins • pois • pois cajans • autres légumineuses - la culture de graines oléagineuses telles que: • graines de soja • arachides • graines de ricin • graines de lin • graines de moutarde • graines de niger • graines de colza • graines de carthame • graines de sésame • graines de tournesol • autres graines oléagineuses "
     },
     {
+        "cls_na9": "01.18",
         "lib_na9": "Culture de fourrages",
-        "cls_na9": 1.18,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة النباتات العلفية"
+        "description": "- la culture de rutabagas, betteraves fourragères, racines fourragères, luzerne, trèfle, sainfoin, maïs fourrager, choux fourragers et autres produits fourragers similaires - la production de graines de betteraves (à l’exclusion des graines de betteraves sucrières) et de graines de plantes fourragères "
     },
     {
+        "cls_na9": "01.19",
         "lib_na9": "Horticulture et autres cultures non permanentes",
-        "cls_na9": 1.19,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "بستنة وزراعات أخرى غير دائمة"
+        "description": "- la culture de sarrasin - la culture de fleurs - la production de fleurs coupées et de boutons de fleurs - la production de semences de fleurs  63    01.2 Cultures permanentes Ce groupe comprend les cultures permanentes, c’est-à-dire les plantes dont la durée de vie est supérieure à deux saisons de croissance végétale et qui perdent leurs feuilles après chaque saison ou dont la croissance est continue. La culture de ces plantes aux fins de la production de semences est comprise. "
     },
     {
+        "cls_na9": "01.21",
         "lib_na9": "Culture de la vigne",
-        "cls_na9": 1.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الكروم (العنب)"
+        "description": "- la production de raisins de cuve et de raisins de table dans des vignobles "
     },
     {
+        "cls_na9": "01.22",
         "lib_na9": "Culture de palmiers-dattiers",
-        "cls_na9": 1.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة النخيل المنتج للتمور"
+        "description": "- la culture de dattes - la culture d'autres fruits tropicaux et subtropicaux • avocats • bananes et plantains • figues • mangues • papayes • ananas • autres fruits tropicaux et subtropicaux "
     },
     {
+        "cls_na9": "01.23",
         "lib_na9": "Culture d'agrumes",
-        "cls_na9": 1.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة القوارص (الحمضيات)"
+        "description": "- la culture d’agrumes: • pamplemousses et pomelos • citrons et limettes • oranges • tangerines, mandarines et clémentines • autres agrumes "
     },
     {
+        "cls_na9": "01.24",
         "lib_na9": "Culture de fruits à pépins et à noyau",
-        "cls_na9": 1.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الثمار ذات النواة والعضم"
+        "description": "- la culture de fruits à pépins et à noyau: • pommes • abricots • cerises et griottes • pêches et nectarines • poires et coings • prunes et prunelles • autres fruits à pépins et à noyau    "
     },
     {
+        "cls_na9": "01.25",
         "lib_na9": "Culture d'autres fruits d'arbres ou d'arbustes et de fruits à coque",
-        "cls_na9": 1.25,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الأشجار والشجيرات المثمرة الأخرى والجوزيات"
+        "description": "- la culture de baies: • myrtilles • groseilles • groseilles à maquereaux • kiwis  64 I n st i t u t N a t i o nal d e la S ta tis tiq u e   • framboises • fraises • autres baies - la production de semences de fruits - la production de fruits à coque comestibles: • amandes • noix de cajou • châtaignes • noisettes • pistaches • noix communes • autres fruits à coques - la culture d’autres fruits d’arbres ou d’arbustes • caroubes "
     },
     {
+        "cls_na9": "01.26",
         "lib_na9": "Culture d'oliviers",
-        "cls_na9": 1.26,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة الزياتين"
+        "description": "- la production d'olives fraîches - la culture d'autres fruits oléagineux: • noix de coco • palmiers à huile • autres fruits oléagineux "
     },
     {
+        "cls_na9": "01.27",
         "lib_na9": "Culture de plantes à boissons",
-        "cls_na9": 1.27,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة نباتات المشروبات"
+        "description": "- la culture de plantes à boissons: • café • thé • maté • cacao • autres plantes à boissons "
     },
     {
+        "cls_na9": "01.28",
         "lib_na9": "Culture de plantes à épices, aromatiques, médicinales et pharmaceutiques",
-        "cls_na9": 1.28,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة نباتات التوابل والنباتات العطرية والطبية والصيدلية"
+        "description": "- les cultures permanentes et non permanentes de plantes à épices et aromatiques: • poivre • piments et poivrons • noix muscades, macis, amomes et cardamomes • anis, badiane et fenouil • cannelle • clous de girofle • gingembre • vanille • houblon • autres plantes à épices et aromatiques - la culture de plantes médicinales et narcotiques  65     "
     },
     {
+        "cls_na9": "01.29",
         "lib_na9": "Autres cultures permanentes",
-        "cls_na9": 1.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعات أخرى دائمة"
+        "description": "- la culture d’hévéas pour la récolte de latex - la culture d’arbres de Noël - la culture d’arbres pour l’extraction de sève - la culture de matières végétales des espèces principalement utilisées en vannerie ou en sparterie "
     },
     {
+        "cls_na9": "01.30",
         "lib_na9": "Pépinières",
-        "cls_na9": 1.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة المشاتل"
+        "description": "et semis, en vue de la propagation directe des plantes ou de la création d’un porte-greffe dans lequel sera greffé un scion qui sera planté en vue de la production de plantes. - la culture de plantes destinées à la plantation - la culture de plantes destinées à l’ornementation, y compris le gazon en rouleaux - la culture de plantes vivantes pour la production de bulbes, tubercules ou racines, de boutures et greffons, de blanc de champignon - l’exploitation de pépinières, à l’exception des pépinières forestières "
     },
     {
-        "lib_na9": "Elevage de vaches laitières",
-        "cls_na9": 1.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الأبقار المنتجة للحليب"
+        "cls_na9": "01.41",
+        "lib_na9": "Élevage de vaches laitières",
+        "description": "- l’élevage de vaches laitières - la production de lait cru de vache ou de bufflonne "
     },
     {
-        "lib_na9": "Elevage d'autres bovins à viande",
-        "cls_na9": 1.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الأبقار المنتجة للحم"
+        "cls_na9": "01.42",
+        "lib_na9": "Élevage d'autres bovins à viande",
+        "description": "- l’élevage de bovins pour leur viande - la production de sperme d’animaux de l’espèce bovine  66  - l’élevage de buffles pour leur viande "
     },
     {
-        "lib_na9": "Elevage de chevaux et d'autres équidés",
-        "cls_na9": 1.43,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الخيل والحيوانات الخيلية الأخرى"
+        "cls_na9": "01.43",
+        "lib_na9": "Élevage de chevaux et d'autres équidés",
+        "description": "- l’élevage de chevaux, d’ânes, de mulets ou de bardots "
     },
     {
-        "lib_na9": "Elevage de chameaux et d'autres camélidés",
-        "cls_na9": 1.44,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الإبل"
+        "cls_na9": "01.44",
+        "lib_na9": "Élevage de chameaux et d'autres camélidés",
+        "description": "- l’élevage de chameaux (dromadaires) et de camélidés "
     },
     {
-        "lib_na9": "Elevage d'ovins et de caprins",
-        "cls_na9": 1.45,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الضأن والماعز"
+        "cls_na9": "01.45",
+        "lib_na9": "Élevage d'ovins et de caprins",
+        "description": "- l’élevage d’ovins et de caprins - la production de lait cru de brebis ou de chèvre - la production de laine brute "
     },
     {
-        "lib_na9": "Elevage de porcins",
-        "cls_na9": 1.46,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الخنازير"
+        "cls_na9": "01.46",
+        "lib_na9": "Élevage de porcins",
+        "description": ""
     },
     {
-        "lib_na9": "Elevage de volailles",
-        "cls_na9": 1.47,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الدواجن"
+        "cls_na9": "01.47",
+        "lib_na9": "Élevage de volailles",
+        "description": "- l’élevage de volailles: • coqs, poules, dindes, dindons, canards, oies et pintades - la production d’œufs de volailles - l’exploitation de couvoirs pour volailles "
     },
     {
-        "lib_na9": "Elevage d'autres animaux",
-        "cls_na9": 1.49,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية حيوانات أخرى غ.م.س (غير مذكورة سابقا)"
+        "cls_na9": "01.49",
+        "lib_na9": "Élevage d'autres animaux",
+        "description": "- l’élevage d’animaux semi-domestiqués ou d’autres animaux vivants: • autruches et émeus • autres oiseaux (à l’exception des volailles) • insectes • lapins et autres animaux à fourrure - la production de pelleteries, de peaux de reptiles ou d’oiseaux provenant de l’exploitation de fermes d’élevage - l’exploitation de fermes de lombriculture, de production de crustacés terrestres, d’héliciculture, etc. - la sériciculture et la production de cocons de vers à soie - l’apiculture et la production de miel et de cire d’abeille - l’élevage d’animaux de compagnie (à l’exception des poissons) • chats et chiens • oiseaux, tels que des perruches, etc. • hamsters, etc. - l’élevage d’animaux divers    "
     },
     {
+        "cls_na9": "01.50",
         "lib_na9": "Culture et élevage associés",
-        "cls_na9": 1.5,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "زراعة مقترنة بتربية الحيوانات (فلاحة مختلطة)"
+        "description": ""
     },
     {
+        "cls_na9": "01.61",
         "lib_na9": "Activités de soutien aux cultures",
-        "cls_na9": 1.61,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة دعم الإنتاج الزراعي"
+        "description": "- les activités agricoles exercées pour le compte de tiers: • préparation des terres • création de cultures • traitement des récoltes • pulvérisation des récoltes, y compris par des véhicules aériens • taille des arbres fruitiers et des vignes • transplantation du riz et démariage des betteraves • récolte • lutte contre les animaux nuisibles (y compris les lapins) en relation avec l’agriculture - le maintien des terres agricoles en bon état sur les plans agricole et environnemental - l’exploitation de systèmes d’irrigation pour l’agriculture - la mise à disposition de machines agricoles avec conducteur et personnel "
     },
     {
+        "cls_na9": "01.62",
         "lib_na9": "Activités de soutien à la production animale",
-        "cls_na9": 1.62,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة دعم الإنتاج الحيواني"
+        "description": "- les activités agricoles exercées pour le compte de tiers: • activités visant à promouvoir le repeuplement, la croissance et le rendement d’animaux • services de comparaison du rendement des troupeaux, de conduite de troupeaux, de paissance, de castration de volailles,de nettoyage de poulaillers, etc. • activités en rapport avec l’insémination artificielle • services de haras • tonte d’ovins • hébergement et entretien d’animaux de ferme  68 I n st i t u t N a t i o nal d e la S ta tis tiq u e   - les activités des maréchaux-ferrants "
     },
     {
+        "cls_na9": "01.63",
         "lib_na9": "Traitement primaire des récoltes",
-        "cls_na9": 1.63,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "المعالجة الأولية للمحاصيل (ما بعد الجني)"
+        "description": "- la préparation des cultures en vue de leur commercialisation primaire: nettoyage, taille, triage, désinfection - l’égrenage du coton - la préparation des feuilles de tabac, par exemple: séchage - la préparation des fèves de cacao, par exemple: écabossage - le paraffinage de fruits "
     },
     {
+        "cls_na9": "01.64",
         "lib_na9": "Traitement des semences",
-        "cls_na9": 1.64,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "معالجة البذور (قبل التخزين أو التسويق)"
+        "description": "semences en les débarrassant des impuretés, des semences de trop petite taille ou rongées par la machine ou par des insectes et des semences immatures ou encore en enlevant la moisissure afin de garantir des bonnes conditions d’entreposage. Cette activité comprend le séchage, le nettoyage, le triage et le traitement des semences jusqu’à leur commercialisation. Le traitement de céréales génétiquement modifiées est compris. "
     },
     {
+        "cls_na9": "01.70",
         "lib_na9": "Chasse, piégeage et services annexes",
-        "cls_na9": 1.7,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الصيد والقنص وأنشطة الخدمات المتصلة بهما"
+        "description": "- la chasse et le piégeage à des fins commerciales - le prélèvement d’animaux (vivants ou morts) pour l’alimentation, leur fourrure, leur peau, ou pour les destiner à la recherche, à des parcs zoologiques ou les utiliser comme animaux de compagnie - la production de pelleteries, de peaux de reptiles ou d’oiseaux provenant d’activités de chasse ou de piégeage - la capture sur le rivage de mammifères marins, par exemple: les morses et les phoques    "
     },
     {
+        "cls_na9": "02.10",
         "lib_na9": "Sylviculture et autres activités forestières",
-        "cls_na9": 2.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "حراجة وأنشطة غابية أخرى"
+        "description": "- la production de bois sur pied: boisement, reboisement, transplantation, éclaircie et conservation des forêts et des coupes - la culture de taillis, de bois de trituration et de bois de chauffage - l’exploitation de pépinières forestières Ces activités peuvent être effectuées dans des forêts naturelles ou dans des plantations. "
     },
     {
+        "cls_na9": "02.20",
         "lib_na9": "Exploitation forestière",
-        "cls_na9": 2.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "إستغلال الغابات (قطع الأخشاب)"
+        "description": "- la production de bois rond pour les industries forestières de transformation - la production de bois rond utilisé sous une forme brute, comme le bois de mine, les pieux de clôtures et les poteaux électriques - la production de bois à des fins énergétiques - la production de résidus de l’exploitation forestière à des fins énergétiques - la fabrication de charbon de bois en forêt (en utilisant des méthodes traditionnelles) Le résultat de cette activité peut prendre la forme de grumes ou de bois de chauffage. "
     },
     {
+        "cls_na9": "02.31",
         "lib_na9": "Récolte de l'alfa",
-        "cls_na9": 2.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "جني الحلفاء"
+        "description": "- la récolte d'alfa "
     },
     {
+        "cls_na9": "02.32",
         "lib_na9": "Récolte du liège",
-        "cls_na9": 2.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "جني الفلّين (الخفاف)"
+        "description": "- la récolte de liège  70 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "02.33",
         "lib_na9": "Récolte d'autres produits forestiers non ligneux poussant à l'état sauvage",
-        "cls_na9": 2.33,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "جني المنتجات الغابية البرية الأخرى"
+        "description": "- la récolte de produits poussant à l’état sauvage: • champignons et truffes • baies • fruits à coque • balata et autres gommes caoutchouteuses • laque et résines • sucs et extraits végétaux • crin végétal • crin marin • glands et marrons d’Inde • mousses et lichens "
     },
     {
+        "cls_na9": "02.40",
         "lib_na9": "Services de soutien à l'exploitation forestière",
-        "cls_na9": 2.4,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "خدمات الدعم في مجال استغلال الغابات"
+        "description": "- les services annexes à la sylviculture: • inventaire des forêts • conseil en gestion et administration de la forêt • évaluation du bois • protection et lutte contre les feux de forêt • lutte contre les parasites forestiers - services annexes à l’exploitation forestière: • transport de grumes dans les forêts "
     },
     {
+        "cls_na9": "03.11",
         "lib_na9": "Pêche en mer",
-        "cls_na9": 3.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صيد الأسماك في المياه البحرية"
+        "description": "- la pêche à des fins commerciales dans les eaux océaniques et côtières - la capture de crustacés et de mollusques marins - la pêche à la baleine - la capture d’animaux aquatiques marins: tortues, holothuries, tuniciers, oursins, etc. - les activités des navires se livrant tant à la pêche en mer qu’à la transformation et à la conservation du poisson - la récolte d’autres produits marins: perles naturelles, éponges, coraux et algues "
     },
     {
+        "cls_na9": "03.12",
         "lib_na9": "Pêche en eau douce",
-        "cls_na9": 3.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صيد الأسماك في المياه العذبة"
+        "description": "- la pêche à des fins commerciales en eaux intérieures - la capture de crustacés et de mollusques d’eau douce - la capture d’animaux aquatiques d’eau douce - la récolte de produits d’eau douce "
     },
     {
+        "cls_na9": "03.21",
         "lib_na9": "Aquaculture en mer",
-        "cls_na9": 3.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الأحياء المائية في المياه البحرية"
+        "description": "- l’aquaculture en eau de mer, y compris l’élevage de poissons ornementaux marins - la production de naissains de bivalves (huîtres, moules, etc.), de jeunes langoustes, de larves de crevettes, d’alevins et de saumoneaux - la culture d’algues et d’autres plantes aquatiques comestibles - la culture de crustacés, de bivalves, d’autres mollusques et d’autres animaux aquatiques d’eau de mer. - l’aquaculture dans les eaux saumâtres - l’aquaculture dans des citernes et des réservoirs remplis d’eau salée - la pisciculture marine - l’exploitation de fermes d’élevage de vers marins "
     },
     {
+        "cls_na9": "03.22",
         "lib_na9": "Aquaculture en eau douce",
-        "cls_na9": 3.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تربية الأحياء المائية في المياه العذبة"
+        "description": "- l’aquaculture en eau douce, y compris l’élevage de poissons ornementaux d’eau douce - la culture de crustacés, de bivalves, d’autres mollusques et d’autres animaux aquatiques d’eau douce - la pisciculture en eau douce - l’élevage de grenouilles "
     },
     {
+        "cls_na9": "05.10",
         "lib_na9": "Extraction de houille",
-        "cls_na9": 5.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج الفحم الحجري"
+        "description": "- l’extraction de la houille: extraction souterraine ou à ciel ouvert, ainsi que l’extraction minière en ayant recours à des procédés de liquéfaction - le lavage, le triage, le calibrage, la pulvérisation, la compression ou d’autres opérations destinées à classer, à accroître la qualité ou à faciliter le transport ou le stockage. - l’opération destinée à récupérer l’anthracite des poussiers    "
     },
     {
+        "cls_na9": "05.20",
         "lib_na9": "Extraction de lignite",
-        "cls_na9": 5.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج اللينيت"
+        "description": "- l’extraction du lignite: extraction souterraine ou à ciel ouvert, ainsi que l’extraction minière en ayant recours à des procédés de liquéfaction  74 I n st i t u t N a t i o nal d e la S ta tis tiq u e    - le lavage, la déshydratation, la pulvérisation, la compression du lignite ou les autres opérations destinées à accroître la qualité, à faciliter le transport ou le stockage. "
     },
     {
+        "cls_na9": "06.10",
         "lib_na9": "Extraction de pétrole brut",
-        "cls_na9": 6.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج النفط الخام"
+        "description": "- l’extraction d’huiles brutes de pétrole - l’extraction de schistes et de sables bitumineux - la production de pétrole brut à partir de schistes et de sables bitumineux - les processus employés pour obtenir des huiles brutes: décantation, dessalement, déshydratation, stabilisation, etc. "
     },
     {
+        "cls_na9": "06.20",
         "lib_na9": "Extraction de gaz naturel",
-        "cls_na9": 6.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج الغاز الطبيعي"
+        "description": "- l’extraction d’hydrocarbures liquides par les procédés de liquéfaction ou de pyrolyse - la production d’hydrocarbures gazeux bruts (gaz naturel) - l’extraction de condensats - la décantation et la séparation de fractions d’hydrocarbures liquides - la désulfuration du gaz  75     - la récupération du gaz de pétrole liquéfié provenant du raffinage du pétrole, voir 19.20 - la fabrication de gaz industriels, voir 20.11 - l’exploitation d’oléoducs ou de gazoducs, voir 49.50 07 Extraction de minerais métalliques Cette division comprend l’extraction, souterraine, à ciel ouvert ou par l’exploitation minière des fonds marins, de minerais métalliques Cette division comprend également: - les opérations de traitement et d’enrichissement du minerai: concassage, broyage, lavage, séchage, agglomération, calcination ou lixiviation du minerai, ou qui effectuent les opérations de séparation gravitaire ou de flottation. Cette division ne comprend pas: - le grillage de la pyrite de fer, voir 20.13 - la production d’oxyde d’aluminium, voir 24.42 - l’exploitation de hauts fourneaux, voir division 24 07.1 Extraction de minerais de fer "
     },
     {
+        "cls_na9": "07.10",
         "lib_na9": "Extraction de minerais de fer",
-        "cls_na9": 7.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج خامات الحديد"
+        "description": "- l’extraction de minerais exploités principalement en raison de leur teneur en fer - l’enrichissement et l’agglomération des minerais de fer "
     },
     {
+        "cls_na9": "07.21",
         "lib_na9": "Extraction de minerais d'uranium et de thorium",
-        "cls_na9": 7.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج خامات الأورانيوم والثوريوم"
+        "description": "- l’extraction de minerais renfermant de l’uranium ou du thorium: pechblende, etc. - la concentration de ces minerais - la fabrication de concentré d’uranium (\"yellow cake\") "
     },
     {
+        "cls_na9": "07.29",
         "lib_na9": "Extraction d'autres minerais de métaux non ferreux",
-        "cls_na9": 7.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج خامات معدنية أخرى غير حديدية"
+        "description": "- l’extraction et la préparation de minerais exploités principalement en raison de leur teneur en métaux non ferreux: • aluminium (bauxite), cuivre, plomb, zinc, étain, manganèse, chrome, nickel, cobalt, molybdène, tantale, vanadium, etc. • métaux précieux: or, argent, platine    "
     },
     {
+        "cls_na9": "08.11",
         "lib_na9": "Extraction de pierres ornementales et de construction, de calcaire industriel, de gypse, de craie et d'ardoise",
-        "cls_na9": 8.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج أحجارالبناء والزينة، الكلس الصناعي، الجبس، الطباشير والأردواز"
+        "description": "- l’extraction, la taille grossière et le sciage de pierres de taille et de construction, par exemple: le marbre, le granit, le grès, etc. - le concassage et le broyage de pierres ornementales et de construction - l’extraction, le broyage et le concassage des pierres calcaires - l’extraction du gypse et de l’anhydrite - l’extraction de la craie et de la dolomite non calcinée "
     },
     {
+        "cls_na9": "08.12",
         "lib_na9": "Exploitation de gravières et sablières, extraction d'argiles et de kaolin",
-        "cls_na9": 8.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "استغلال المحاجر وحقول الرمال والصلصال والكاولين"
+        "description": "- l’extraction et le dragage de sables industriels, de sables pour la construction et de graviers - le concassage et le broyage de graviers - l’extraction de sables - l’extraction d’argiles, de terres réfractaires et de kaolin "
     },
     {
+        "cls_na9": "08.20",
         "lib_na9": "Extraction de phosphates naturels",
-        "cls_na9": 8.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج الفسفاط الطبيعي"
+        "description": "- l'extraction de phosphates naturels - le broyage, le lavage et l'enrechissement de phosphates naturels 08.9 Activités extractives n.c.a. "
     },
     {
+        "cls_na9": "08.91",
         "lib_na9": "Extraction des minéraux chimique et d'engrais minéraux (sauf phosphates)",
-        "cls_na9": 8.91,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج خامات معدنية للصناعة الكيميائية والأسمدة الطبيعية (ما عدا الفسفاط)"
+        "description": "- l'extraction de sels potassiques naturels - l’extraction du soufre natif - l’extraction et la préparation de la pyrite et de la pyrrhotite, à l’exception du grillage - l’extraction de sulfates et de carbonates naturels de baryum (barytine et withérite), de borates naturels, de sulfates naturels de magnésium (kiesérite) - l’extraction de terres colorantes, de \"spath fluor\" et d’autres minéraux exploités principalement parce qu’ils constituent une source de produits chimiques - le ramassage du guano    "
     },
     {
+        "cls_na9": "08.92",
         "lib_na9": "Extraction de tourbe",
-        "cls_na9": 8.92,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إستخراج الخثّ (التورب)"
+        "description": "- l’extraction de la tourbe - la préparation de la tourbe afin d’accroître la qualité et de faciliter le transport ou le stockage. "
     },
     {
+        "cls_na9": "08.93",
         "lib_na9": "Production de sel",
-        "cls_na9": 8.93,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إنتاج الملح"
+        "description": "- l’extraction souterraine du sel, y compris par dissolution et pompage - la production de sel par évaporation de l’eau de mer ou d’autres eaux salées - le broyage, la purification et le raffinage du sel par le producteur "
     },
     {
+        "cls_na9": "08.99",
         "lib_na9": "Autres activités extractives n.c.a.",
-        "cls_na9": 8.99,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة إستخراجية أخرى غ.م.س"
+        "description": "- l’extraction de minéraux et de matériaux divers: • matières abrasives, amiante, farines siliceuses fossiles, graphite naturel, stéatite (talc), feldspath, etc. • asphaltes naturels, asphaltites et roches asphaltiques, bitumes solides naturels • pierres gemmes, quartz, mica, etc.  09 Services de soutien aux industries extractives Cette division comprend les services spécialisés de soutien à l’extraction exécutés pour le compte de tiers. Elle comprend les services d’exploration par les méthodes classiques de prospection, comme le prélèvement d’échantillons et les observations géologiques, ainsi que les forages, les forages d’essai ou les reforages des puits de pétrole ou pour les minerais métalliques et non métalliques. D’autres services couvrent la construction des fondations de puits de pétrole ou de gaz, la cimentation des revêtements (tubages) de puits de pétrole ou de gaz, le nettoyage, le vidage, le pompage à vide des puits de pétrole et de gaz, le drainage ou le pompage des mines, les services d’enlèvement des déblais dans les mines, etc. 09.1 Activités de soutien à l'extraction d'hydrocarbures    "
     },
     {
+        "cls_na9": "09.10",
         "lib_na9": "Activités de soutien à l'extraction d'hydrocarbures",
-        "cls_na9": 9.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الدعم لإستخراج النفط والغاز الطبيعي"
+        "description": "- les services liés à l’extraction de pétrole et de gaz, exécutés pour le compte de tiers: • les services d’exploration liés à l’extraction du pétrole et du gaz, par exemple: par les méthodes classiques de prospection, comme les observations géologiques sur les sites de prospection • forage et reforage dirigés; démarrage du forage; montage in situ, réparation et démontage de tours de forage; cimentation des revêtements (tubages) de puits de pétrole ou de gaz; pompage de puits; comblement et abandon de puits, etc. • la liquéfaction et la regazéification du gaz naturel en vue de son transport, effectuées sur le site minier • le drainage ou le pompage des mines pour le compte de tiers • les sondages d’essai liés à l’extraction du pétrole et du gaz - la protection et la lutte contre les incendies sur les champs de pétrole et de gaz  78 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "09.90",
         "lib_na9": "Activités de soutien aux autres industries extractives",
-        "cls_na9": 9.9,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الدعم للصناعات الإستخراجية الأخرى"
+        "description": "- les services de soutien exécutés pour le compte de tiers liés aux activités minières des divisions 05, 07 et 08 • les services d’exploration par les méthodes classiques de prospection, comme le prélèvement d’échantillons et les observations géologiques sur les sites de prospection • le drainage ou le pompage des mines pour le compte de tiers • les sondages et forages d’essai "
     },
     {
+        "cls_na9": "10.11",
         "lib_na9": "Transformation et conservation de la viande de boucherie",
-        "cls_na9": 10.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل وحفظ  لحوم الجزارة",
-        "description": "- l’exploitation d’abattoirs se livrant à l’abattage, à la préparation et à l’emballage de la viande: bœuf, porc, agneau,\nlapin, mouton, chameau, etc.\n- la production de viandes de boucherie, fraîches, congelées ou surgelées, en carcasses\n- la production de viandes de boucherie, fraîches, congelées ou surgelées, en morceaux\nCette classe comprend également:\n- l’abattage et la transformation des baleines à terre ou à bord de bateaux spécialement équipés\n- la production de cuirs et de peaux bruts provenant de l’activité des abattoirs, y compris le délainage\n- la production de saindoux et d’autres graisses animales comestibles\n- la transformation des abats\n- la production de laine de délainage"
+        "description": "- l’exploitation d’abattoirs se livrant à l’abattage, à la préparation et à l’emballage de la viande: bœuf, porc, agneau, lapin, mouton, chameau, etc. - la production de viandes de boucherie, fraîches, congelées ou surgelées, en carcasses - la production de viandes de boucherie, fraîches, congelées ou surgelées, en morceaux - l’abattage et la transformation des baleines à terre ou à bord de bateaux spécialement équipés - la production de cuirs et de peaux bruts provenant de l’activité des abattoirs, y compris le délainage - la production de saindoux et d’autres graisses animales comestibles - la transformation des abats - la production de laine de délainage "
     },
     {
+        "cls_na9": "10.12",
         "lib_na9": "Transformation et conservation de la viande de volaille",
-        "cls_na9": 10.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل وحفظ  لحوم الدواجن"
+        "description": "- la production de plumes et de duvets - l’exploitation d’abattoirs se livrant à l’abattage, à la préparation et à l’emballage de volailles - la production de viandes de volailles en portions individuelles, fraîches, congelées ou surgelées - l’extraction de graisses de volailles comestibles  81     "
     },
     {
+        "cls_na9": "10.13",
         "lib_na9": "Préparation de produits à base de viande",
-        "cls_na9": 10.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إعداد منتجات من اللحوم",
-        "description": "- la production de viandes séchées, salées ou fumées\n- la production de produits de charcuterie:\n• saucisses, salamis, boudins, andouillettes, cervelas, mortadelles, pâtés, rillettes, jambons cuits"
+        "description": "- la production de viandes séchées, salées ou fumées - la production de produits de charcuterie: • saucisses, salamis, boudins, andouillettes, cervelas, mortadelles, pâtés, rillettes, jambons cuits "
     },
     {
+        "cls_na9": "10.20",
         "lib_na9": "Transformation et conservation de poisson, de crustacés et de mollusques",
-        "cls_na9": 10.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل وحفظ الأسماك والقشريات والرخويات"
+        "description": "- la préparation et la conservation de poissons, de crustacés et de mollusques: congélation, surgélation, séchage, cuisson, fumage, salage, saumurage, mise en conserve, etc. - la préparation de produits à base de poissons, de crustacés et de mollusques: filets de poisson, laitances, caviar et ses succédanés, etc. - la production de farines de poissons destinées à l’alimentation humaine ou animale - la production de farines et de solubles à partir de poissons et d’autres animaux aquatiques impropres à la consommation humaine - les activités des navires se livrant uniquement à la transformation et à la conservation du poisson - la transformation d’algues marines "
     },
     {
+        "cls_na9": "10.31",
         "lib_na9": "Transformation et conservation de pommes de terre",
-        "cls_na9": 10.31,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل وحفظ البطاطا",
-        "description": "- la transformation et la conservation de pommes de terre:\n• la production de pommes de terre précuites surgelées\n• la production de purée de pommes de terre déshydratées\n• la production de produits apéritifs à base de pommes de terre\n• la production de pommes chips à base de pommes de terre\n• la fabrication de farines et de fécules de pommes de terre\nCette classe comprend également:\n- l’épluchage industriel de pommes de terre"
+        "description": "- la transformation et la conservation de pommes de terre: • la production de pommes de terre précuites surgelées • la production de purée de pommes de terre déshydratées • la production de produits apéritifs à base de pommes de terre • la production de pommes chips à base de pommes de terre • la fabrication de farines et de fécules de pommes de terre - l’épluchage industriel de pommes de terre    "
     },
     {
+        "cls_na9": "10.32",
         "lib_na9": "Préparation de jus de fruits et légumes",
-        "cls_na9": 10.32,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عصير الفواكه والخضر",
-        "description": "- la préparation de jus de fruits et légumes\nCette classe comprend également:\n- la production de concentrés à partir de fruits et légumes frais"
+        "description": "- la préparation de jus de fruits et légumes - la production de concentrés à partir de fruits et légumes frais  82 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "10.33",
         "lib_na9": "Transformation et conservation de tomates",
-        "cls_na9": 10.33,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل الطماطم وتصبيرها",
-        "description": "- la production de produits alimentaires principalement à base de tomates, à l’exception des plats préparés, frais, surgelés ou en\nconserve\n- la conservation de tomates: mise en conserve, séchage, immersion dans l’huile ou le vinaigre, congélation, etc.\n- la production de préparations alimentaires à base de tomates (concentré de tomates…)\nCette classe comprend également:\n- la préparation d’aliments préparés périssables à base de tomates, tels que:\n• tomates pelées et coupées"
+        "description": "- la production de produits alimentaires principalement à base de tomates, à l’exception des plats préparés, frais, surgelés ou en conserve - la conservation de tomates: mise en conserve, séchage, immersion dans l’huile ou le vinaigre, congélation, etc. - la production de préparations alimentaires à base de tomates (concentré de tomates…) - la préparation d’aliments préparés périssables à base de tomates, tels que: • tomates pelées et coupées "
     },
     {
+        "cls_na9": "10.34",
         "lib_na9": "Transformation et conservation d'autres légumes, sauf tomates",
-        "cls_na9": 10.34,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل خضر أخرى وتصبيرها (ما عدى الطماطم)",
-        "description": "- la production de produits alimentaires principalement à base d'autres légumes, à l’exception des plats préparés, frais,\nsurgelés ou en conserve\n- la conservation d'autres légumes: mise en conserve, séchage, immersion dans l’huile ou le vinaigre, congélation, etc.\n- la production de préparations alimentaires à base d'autres légumes\nCette classe comprend également:\n- la préparation d’aliments préparés périssables à base d'autres légumes, tels que:\n• salades et salades mélangées, emballées\n• légumes pelés et coupés\n• tofu (caillé de soja)"
+        "description": "- la production de produits alimentaires principalement à base d'autres légumes, à l’exception des plats préparés, frais, surgelés ou en conserve - la conservation d'autres légumes: mise en conserve, séchage, immersion dans l’huile ou le vinaigre, congélation, etc. - la production de préparations alimentaires à base d'autres légumes - la préparation d’aliments préparés périssables à base d'autres légumes, tels que: • salades et salades mélangées, emballées • légumes pelés et coupés • tofu (caillé de soja) "
     },
     {
+        "cls_na9": "10.39",
         "lib_na9": "Transformation et conservation de fruits",
-        "cls_na9": 10.39,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل الفواكه وتصبيرها"
+        "description": "- la préparation d’aliments préparés périssables à base de fruits, tels que: • salades de fruits emballées - la production de produits alimentaires principalement à base de fruits, à l’exception des plats préparés, frais, surgelés ou en conserve - la conservation des fruits (y compris à coque): congélation, séchage, immersion dans l’huile ou le vinaigre, mise en conserve, etc. - la production de préparations alimentaires à base de fruits - la fabrication de confitures, de marmelades et de gelées - le grillage et le décorticage des fruits à coque - la fabrication d’aliments et de pâtes à base de fruits à coque  83     - la conservation dans le sucre de fruits (y compris à coque), voir 10.82 - la préparation de plats préparées à base de fruits, voir 10.85 - la production de concentrés artificiels, voir 10.89 10.4 Fabrication d’huiles et graisses végétales et animales Ce groupe comprend la fabrication d’huiles et de graisses brutes et raffinées d’origine végétale ou animale, à l’exception de la production et du raffinage du saindoux et d’autres graisses animales comestibles. "
     },
     {
+        "cls_na9": "10.41",
         "lib_na9": "Fabrication d'huiles d'olives",
-        "cls_na9": 10.41,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع زيت الزيتون",
-        "description": "- la production d’huiles d'olives de toutes natures (brutes, vierges et raffinées)\nCette classe comprend également:\n- la fabrication d'huiles de grignons brutes ou raffinées\n10.42 Fabrication d'huiles et graisses brutes\nCette classe comprend:\n- la production d’huiles végétales brutes: huiles de soja, de palme, de tournesol, de coton, de navette, de colza, de\nmoutarde, de lin, etc.\n- la production de farines de graines, de noix ou d’amandes oléagineuses, non déshuilées\nCette classe comprend également:\n- la production d’huiles et de graisses animales non comestibles\n- l’extraction d’huiles de poissons ou de mammifères marins\n- la production de linters de coton, de tourteaux et d’autres résidus de la production d’huile"
+        "description": "- la production d’huiles d'olives de toutes natures (brutes, vierges et raffinées) - la fabrication d'huiles de grignons brutes ou raffinées "
     },
     {
+        "cls_na9": "10.42",
         "lib_na9": "Fabrication d'huiles et graisses brutes",
-        "cls_na9": 10.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الزيوت والدهون الخام"
+        "description": "- la production d’huiles végétales brutes: huiles de soja, de palme, de tournesol, de coton, de navette, de colza, de moutarde, de lin, etc. - la production de farines de graines, de noix ou d’amandes oléagineuses, non déshuilées - la production d’huiles et de graisses animales non comestibles - l’extraction d’huiles de poissons ou de mammifères marins - la production de linters de coton, de tourteaux et d’autres résidus de la production d’huile "
     },
     {
+        "cls_na9": "10.43",
         "lib_na9": "Fabrication d'huiles et graisses raffinées",
-        "cls_na9": 10.43,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الزيوت والدهون المكررة",
-        "description": "- la production d’huiles végétales raffinées: huiles de soja, de palme, de tournesol, de coton, de navette, de colza, de\nmoutarde, de lin, etc.\n- le traitement des huiles végétales: soufflage, cuisson, déshydratation, hydrogénation, etc."
+        "description": "- la production d’huiles végétales raffinées: huiles de soja, de palme, de tournesol, de coton, de navette, de colza, de moutarde, de lin, etc. - le traitement des huiles végétales: soufflage, cuisson, déshydratation, hydrogénation, etc. "
     },
     {
+        "cls_na9": "10.44",
         "lib_na9": "Fabrication de margarine et graisses comestibles similaires",
-        "cls_na9": 10.44,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المرغرين والدهون المشابهة الصالحة للأكل",
-        "description": "- la fabrication de margarines\n- la fabrication de mélanges et d’autres pâtes à tartiner similaires\n- la fabrication de graisses composées pour la cuisson des aliments"
+        "description": "- la fabrication de margarines - la fabrication de mélanges et d’autres pâtes à tartiner similaires - la fabrication de graisses composées pour la cuisson des aliments    10.5 Fabrication de produits laitiers  84  "
     },
     {
+        "cls_na9": "10.51",
         "lib_na9": "Exploitation de laiteries et fabrication de fromage",
-        "cls_na9": 10.51,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات الألبان بما في ذلك الجبن",
-        "description": "- la production de laits liquides frais, pasteurisés, stérilisés, homogénéisés et/ou ayant subi un chauffage ultracourt\n- la production de boissons à base de lait\n- la production de crèmes de laits liquides frais, pasteurisées, stérilisées, homogénéisées\n- la fabrication de laits en poudre ou de laits concentrés, édulcorés ou non\nI n st i t u t N a t i o nal d e la S ta tis tiq u e"
+        "description": "- la production de laits liquides frais, pasteurisés, stérilisés, homogénéisés et/ou ayant subi un chauffage ultracourt - la production de boissons à base de lait - la production de crèmes de laits liquides frais, pasteurisées, stérilisées, homogénéisées - la fabrication de laits en poudre ou de laits concentrés, édulcorés ou non I n st i t u t N a t i o nal d e la S ta tis tiq u e    - la production de lait ou de crème sous forme solide - la production de beurre - la production de yoghourt - la production de fromages ou de caillebotte - la production de lactosérum - la production de caséine ou de lactose "
     },
     {
+        "cls_na9": "10.52",
         "lib_na9": "Fabrication de glaces et sorbets",
-        "cls_na9": 10.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المثلجات والصوربي",
-        "description": "- la production de crème glacée et d’autres glaces de consommation telles que les sorbets"
+        "description": "- la production de crème glacée et d’autres glaces de consommation telles que les sorbets "
     },
     {
+        "cls_na9": "10.61",
         "lib_na9": "Meunerie",
-        "cls_na9": 10.61,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الطّحانة (رحي الحبوب)",
-        "description": "- la fabrication de farine de froment (blé) ou de méteil\n- la fabrication de farine d'autres céréales, de légumes secs ou de tubercules\n- la fabrication de farines préparées pour la boulangeries, la patisserie, etc.\nCette classe comprend également:\n- le service de cuisson et de mouture"
+        "description": "- la fabrication de farine de froment (blé) ou de méteil - la fabrication de farine d'autres céréales, de légumes secs ou de tubercules - la fabrication de farines préparées pour la boulangeries, la patisserie, etc. - le service de cuisson et de mouture "
     },
     {
+        "cls_na9": "10.62",
         "lib_na9": "Fabrication de produits amylacés",
-        "cls_na9": 10.62,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات نشوية",
-        "description": "- la fabrication de produits amylacés à partir de riz, de pommes de terre, de maïs, etc.\n- la mouture du maïs par voie humide\n- la fabrication de glucose, de sirop de glucose, de maltose, d’inuline, etc.\n- la fabrication de gluten\n- la fabrication de tapioca et de succédanés du tapioca à partir d’amidon\n- la fabrication d’huile de maïs"
+        "description": "- la fabrication de produits amylacés à partir de riz, de pommes de terre, de maïs, etc. - la mouture du maïs par voie humide - la fabrication de glucose, de sirop de glucose, de maltose, d’inuline, etc. - la fabrication de gluten - la fabrication de tapioca et de succédanés du tapioca à partir d’amidon - la fabrication d’huile de maïs "
     },
     {
+        "cls_na9": "10.69",
         "lib_na9": "Autres activités de travail des grains",
-        "cls_na9": 10.69,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة أخرى لتحويل الحبوب",
-        "description": "- la production de gruaux, de semoules ou pellets, de blé, de seigle, d’avoine, de maïs ou d’autres grains de céréales\n- la production de riz décortiqué, blanchi ou transformé\n- la fabrication de céréales soufflées, grillées ou autrement transformées (pour le petit déjeuner notamment)"
+        "description": "- la production de gruaux, de semoules ou pellets, de blé, de seigle, d’avoine, de maïs ou d’autres grains de céréales - la production de riz décortiqué, blanchi ou transformé - la fabrication de céréales soufflées, grillées ou autrement transformées (pour le petit déjeuner notamment) "
     },
     {
+        "cls_na9": "10.71",
         "lib_na9": "Boulangerie et boulangerie-pâtisserie",
-        "cls_na9": 10.71,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "مخابز ومخابز مقترنة بصنع المرطبات",
-        "description": "- la fabrication à caractère artisanal associée à la vente au détail de pain, de viennoiserie (croissants par exemple) et de\npâtisserie fraîche\n- la fabrication à caractère industriel de pains, de viennoiserie (croissants par exemple) et de patisserie fraîche (y compris\nsurgelés)\n- la fabrication de pâtes et pâtons surgelés destinés à la cuisson\nCette classe comprend egalement:\n- la cuisson associée à la vente au détail de produits de boulangerie et de viennoiseries, sans possibilité de consommer sur\nplace"
+        "description": "- la fabrication à caractère artisanal associée à la vente au détail de pain, de viennoiserie (croissants par exemple) et de pâtisserie fraîche - la fabrication à caractère industriel de pains, de viennoiserie (croissants par exemple) et de patisserie fraîche (y compris surgelés) - la fabrication de pâtes et pâtons surgelés destinés à la cuisson - la cuisson associée à la vente au détail de produits de boulangerie et de viennoiseries, sans possibilité de consommer sur place "
     },
     {
+        "cls_na9": "10.72",
         "lib_na9": "Pâtisserie (exclusive)",
-        "cls_na9": 10.72,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "صنع المرطبات (فقط)",
-        "description": "- la fabrication à caractére artisanal associé à la vente au détail de pâtisseries fraîches y compris beignets, etc., sans vente de\npains"
+        "description": "- la fabrication à caractére artisanal associé à la vente au détail de pâtisseries fraîches y compris beignets, etc., sans vente de pains "
     },
     {
+        "cls_na9": "10.73",
         "lib_na9": "Fabrication de biscuits, biscottes et pâtisseries de conservation",
-        "cls_na9": 10.73,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع البسكوت والبسكويت والمرطبات المصبرة",
-        "description": "- la fabrication de biscottes, de biscuits et autres produits de boulangerie secs\n- la fabrication de pâtisseries et de gâteaux de conservation\n- la fabrication de produits apéritifs et d’autres produits similaires (petits biscuits, bretzels, etc.), sucrés ou salés"
+        "description": "- la fabrication de biscottes, de biscuits et autres produits de boulangerie secs - la fabrication de pâtisseries et de gâteaux de conservation - la fabrication de produits apéritifs et d’autres produits similaires (petits biscuits, bretzels, etc.), sucrés ou salés "
     },
     {
+        "cls_na9": "10.74",
         "lib_na9": "Fabrication de pâtes alimentaires et couscous",
-        "cls_na9": 10.74,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع العجين الغذائي والكسكس"
+        "description": "- la fabrication de pâtes alimentaires, même cuites ou farcies, telles que les macaronis et les nouilles - la fabrication de couscous - la fabrication de produits en conserve ou surgelés à base de pâtes "
     },
     {
+        "cls_na9": "10.81",
         "lib_na9": "Fabrication de sucre",
-        "cls_na9": 10.81,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع السكر",
-        "description": "- la fabrication ou le raffinage du sucre (saccharose) et des succédanés du sucre obtenus à partir de jus de canne, de\nbetterave, d’érable et de palme\n- la fabrication de sirops de sucre\n- la fabrication de mélasse\n- la production de sirop et de sucre d’érable"
+        "description": "- la fabrication ou le raffinage du sucre (saccharose) et des succédanés du sucre obtenus à partir de jus de canne, de betterave, d’érable et de palme - la fabrication de sirops de sucre - la fabrication de mélasse - la production de sirop et de sucre d’érable "
     },
     {
+        "cls_na9": "10.82",
         "lib_na9": "Fabrication de cacao, chocolat et de produits de confiserie",
-        "cls_na9": 10.82,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الكاكاو والشكلاطة والحلويات السكرية",
-        "description": "- la fabrication de cacao, de beurre de cacao, de graisse de cacao et d’huile de cacao\n- la fabrication du chocolat et de confiseries au chocolat\n- la fabrication de confiseries: caramels, cachous, nougats, fondants, chocolat blanc\n- la fabrication de gommes à mâcher (chewing-gums)\n- la conservation dans le sucre de fruits (y compris à coque), d’écorces de fruits et d’autres parties de plantes\n- la fabrication de dragées et pastilles"
+        "description": "- la fabrication de cacao, de beurre de cacao, de graisse de cacao et d’huile de cacao - la fabrication du chocolat et de confiseries au chocolat - la fabrication de confiseries: caramels, cachous, nougats, fondants, chocolat blanc - la fabrication de gommes à mâcher (chewing-gums) - la conservation dans le sucre de fruits (y compris à coque), d’écorces de fruits et d’autres parties de plantes - la fabrication de dragées et pastilles "
     },
     {
+        "cls_na9": "10.83",
         "lib_na9": "Transformation du thé et du café",
-        "cls_na9": 10.83,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحويل البن والشاي",
-        "description": "- la décaféination et la torréfaction du café\n- la fabrication de produits à base de café:\n• café moulu\n• café soluble\n• extraits et concentrés de café\n- la fabrication de succédanés du café\n- le mélange du thé et du maté\n- la fabrication d’extraits et de préparations à base de thé ou de maté\n- le conditionnement du thé, y compris en sachets\nCette classe comprend également:\n- la fabrication de tisanes à base de plantes (menthe, verveine, camomille, etc.)"
+        "description": "- la décaféination et la torréfaction du café - la fabrication de produits à base de café: • café moulu • café soluble • extraits et concentrés de café - la fabrication de succédanés du café - le mélange du thé et du maté - la fabrication d’extraits et de préparations à base de thé ou de maté - le conditionnement du thé, y compris en sachets - la fabrication de tisanes à base de plantes (menthe, verveine, camomille, etc.) "
     },
     {
+        "cls_na9": "10.84",
         "lib_na9": "Fabrication de condiments et assaisonnements",
-        "cls_na9": 10.84,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "صنع التوابل والبهارات"
+        "description": "- la fabrication d’épices, de sauces et de condiments: • mayonnaise • farine de moutarde • moutarde préparée, etc. - la fabrication du vinaigre  87     - la transformation du sel pour le rendre propre à la consommation humaine, par exemple: en sel iodé "
     },
     {
+        "cls_na9": "10.85",
         "lib_na9": "Fabrication de plats préparés",
-        "cls_na9": 10.85,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأطعمة والأطباق الجاهزة"
+        "description": "sont élaborés dans un but de conservation, par congélation ou mise en conserve, et sont habituellement emballés et étiquetés pour la revente. Cette classe ne comprend donc pas la préparation de plats pour consommation immédiate, comme dans les restaurants. Ces plats sont élaborés à partir d’au moins deux produits distincts (à l’exception de l’assaisonnement, etc.). - la fabrication de plats préparés à base de viande ou de volaille - la fabrication de plats à base de poisson, y compris les plats de poissons et frites - la production de plats à base de légumes - la fabrication de pizzas surgelées ou conservées d’une autre manière - la fabrication de plats locaux et nationaux "
     },
     {
+        "cls_na9": "10.86",
         "lib_na9": "Fabrication d'aliments homogénéisés et diététiques",
-        "cls_na9": 10.86,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أغذية ملائمة للأطفال وأغذية للحمية",
-        "description": "- la fabrication de denrées alimentaires destinées à une alimentation particulière:\n• préparations pour nourrissons\n• laits de suite et autres aliments du deuxième âge\n• aliments pour bébés\n• denrées alimentaires à valeur énergétique faible ou réduite destinées à un contrôle du poids\n• aliments diététiques destinés à des fins médicales spéciales\n• aliments pauvres en sodium, y compris les sels diététiques hyposodiques ou asodiques\n• aliments sans gluten\n• aliments adaptés à une dépense musculaire intense, surtout pour les sportifs\n• aliments destinés à des personnes affectées d’un métabolisme glucidique perturbé (diabétiques)"
+        "description": "- la fabrication de denrées alimentaires destinées à une alimentation particulière: • préparations pour nourrissons • laits de suite et autres aliments du deuxième âge • aliments pour bébés • denrées alimentaires à valeur énergétique faible ou réduite destinées à un contrôle du poids • aliments diététiques destinés à des fins médicales spéciales • aliments pauvres en sodium, y compris les sels diététiques hyposodiques ou asodiques • aliments sans gluten • aliments adaptés à une dépense musculaire intense, surtout pour les sportifs • aliments destinés à des personnes affectées d’un métabolisme glucidique perturbé (diabétiques)    "
     },
     {
+        "cls_na9": "10.89",
         "lib_na9": "Fabrication d'autres produits alimentaires n.c.a.",
-        "cls_na9": 10.89,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات غذائية أخرى غ.م.س"
+        "description": "- la fabrication de potages ou de bouillons - la fabrication de succédanés du miel et de sucres et mélasses caramélisés - la préparation d’aliments préparés périssables, tels que: • sandwiches • pizzas fraîches (non cuites) - la fabrication de compléments alimentaires et d’autres produits alimentaires n.c.a. - la fabrication de levures - la fabrication d’extraits et de jus de viandes, de poissons, de crustacés et de mollusques - la fabrication de succédanés du lait ou du fromage I n st i t u t N a t i o nal d e la S ta tis tiq u e    - la production d’ovoproduits et d’ovalbumine - la production de concentrés artificiels - la fabrication des arômes et des colorants alimentaires "
     },
     {
+        "cls_na9": "10.91",
         "lib_na9": "Fabrication d'aliments pour animaux de ferme",
-        "cls_na9": 10.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أغذية حيوانات المزرعة",
-        "description": "- la fabrication de produits pour l’alimentation des animaux de ferme, y compris les aliments concentrés pour animaux\net les aliments de complément\n- la préparation de produits non mélangés pour l’alimentation des animaux de ferme\nCette classe comprend également:\n- le traitement de déchets d’abattoir pour produire des aliments pour animaux"
+        "description": "- la fabrication de produits pour l’alimentation des animaux de ferme, y compris les aliments concentrés pour animaux et les aliments de complément - la préparation de produits non mélangés pour l’alimentation des animaux de ferme - le traitement de déchets d’abattoir pour produire des aliments pour animaux "
     },
     {
+        "cls_na9": "10.92",
         "lib_na9": "Fabrication d'aliments pour animaux de compagnie",
-        "cls_na9": 10.92,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أغذية الحيوانات المنزلية",
-        "description": "- la fabrication d’aliments préparés pour animaux de compagnie, y compris les chiens, les chats, les oiseaux, les poissons, etc.\nCette classe comprend également:\n- le traitement de déchets d’abattoir pour produire des aliments pour animaux"
+        "description": "- la fabrication d’aliments préparés pour animaux de compagnie, y compris les chiens, les chats, les oiseaux, les poissons, etc. - le traitement de déchets d’abattoir pour produire des aliments pour animaux "
     },
     {
+        "cls_na9": "11.01",
         "lib_na9": "Production de boissons alcooliques distillées",
-        "cls_na9": 11.01,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج المشروبات الكحولية المقطرة"
+        "description": "- la fabrication de boissons alcoolisées distillées propres à la consommation: whisky, cognac, gin, liqueurs etc. - la fabrication de boissons mélangées avec des boissons alcoolisées distillées - le mélange de spiritueux distillés - la fabrication dalcools neutres  89     - la fabrication d’alcool éthylique de synthèse, voir 20.14 - la fabrication d’alcool éthylique de fermentation, voir 20.14 - l’embouteillage et l’étiquetage simples, voir 46.34 (dans le cadre du commerce de gros) et 82.92 (pour le compte de tiers) "
     },
     {
+        "cls_na9": "11.02",
         "lib_na9": "Production de vin (de raisin)",
-        "cls_na9": 11.02,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج الخمر",
-        "description": "- la production de vins\n- la production de vins mousseux\n- la production de vins à partir de moût de raisin concentré\nCette classe comprend également:\n- le mélange, la purification et l’embouteillage du vin\n- la fabrication de vin sans alcool ou faiblement alcoolisé"
+        "description": "- la production de vins - la production de vins mousseux - la production de vins à partir de moût de raisin concentré - le mélange, la purification et l’embouteillage du vin - la fabrication de vin sans alcool ou faiblement alcoolisé "
     },
     {
+        "cls_na9": "11.03",
         "lib_na9": "Fabrication de cidre et de vins de fruits",
-        "cls_na9": 11.03,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأنبذة (من نوع السيدر) وخمور الفواكه",
-        "description": "- la fabrication de boissons alcoolisées fermentées, mais non distillées: saké, cidre, poiré et autres vins de fruits\nCette classe comprend également:\n- la fabrication d’hydromel et de boissons mélangées contenant des vins de fruits"
+        "description": "- la fabrication de boissons alcoolisées fermentées, mais non distillées: saké, cidre, poiré et autres vins de fruits - la fabrication d’hydromel et de boissons mélangées contenant des vins de fruits "
     },
     {
+        "cls_na9": "11.04",
         "lib_na9": "Production d'autres boissons fermentées non distillées",
-        "cls_na9": 11.04,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج مشروبات أخرى مخمّرة غير مقطرة",
-        "description": "- la fabrication de vermouths et de boissons similaires"
+        "description": "- la fabrication de vermouths et de boissons similaires "
     },
     {
+        "cls_na9": "11.05",
         "lib_na9": "Fabrication de bière",
-        "cls_na9": 11.05,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الجعة (البيرة)",
-        "description": "- la fabrication de liqueurs de malt, telles que la bière, l’ale, le porter et le stout\nCette classe comprend également:\n- la fabrication de bières sans alcool ou faiblement alcoolisées\n11.06 Fabrication de malt\n11.07 Industrie des eaux minérales et gazeuses\nCette classe comprend:\n- la production et la mise en bouteille des eaux de sources ou des eaux minérales"
+        "description": "- la fabrication de liqueurs de malt, telles que la bière, l’ale, le porter et le stout - la fabrication de bières sans alcool ou faiblement alcoolisées "
     },
     {
+        "cls_na9": "11.06",
         "lib_na9": "Fabrication de malt",
-        "cls_na9": 11.06,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة المنتشة (المالت)"
+        "description": ""
     },
     {
+        "cls_na9": "11.07",
         "lib_na9": "Industrie des eaux minérales et gazeuses",
-        "cls_na9": 11.07,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة مياه المائدة (للشراب)"
+        "description": "- la production et la mise en bouteille des eaux de sources ou des eaux minérales    "
     },
     {
+        "cls_na9": "11.08",
         "lib_na9": "Production de boissons rafraîchissantes",
-        "cls_na9": 11.08,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج المشروبات المنعشة (غير الكحولية)",
-        "description": "la fabrication de boissons non alcoolisées (à l’exception de la bière et du vin sans alcool):\n- la production de boissons rafraîchissantes:\n• boissons non alcoolisées édulcorées et/ou aromatisées: citronnade, orangeade, cola, boissons à base de fruits, sirops\nde fruits tonics, etc.\n- la production d'appéritifs sans alcool"
+        "description": "la fabrication de boissons non alcoolisées (à l’exception de la bière et du vin sans alcool): - la production de boissons rafraîchissantes: • boissons non alcoolisées édulcorées et/ou aromatisées: citronnade, orangeade, cola, boissons à base de fruits, sirops de fruits tonics, etc. - la production d'appéritifs sans alcool "
     },
     {
+        "cls_na9": "12.00",
         "lib_na9": "Fabrication de produits à base de tabac",
-        "cls_na9": 12.0,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة منتجات التبغ"
+        "description": "- la fabrication de produits à base de tabac et de succédanés du tabac: cigarettes, tabac à fine coupe, cigares, tabacs à pipe, tabacs à mâcher, tabacs à priser - la fabrication de tabacs \"homogénéisés\" ou \"reconstitués\" - l’écôtage et le resséchage du tabac "
     },
     {
+        "cls_na9": "13.10",
         "lib_na9": "Préparation de fibres textiles et filature",
-        "cls_na9": 13.1,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحضير الألياف النسيجية والغزل"
+        "description": "soie, laine, fibres d’origine animale ou végétale ou fibres artificielles ou synthétiques, papier ou verre, etc. - les activités de préparation des fibres textiles: • tirage et lavage de la soie • dégraissage et carbonisage de la laine et teinture de la laine de tonte • cardage et peignage de tout type de fibres d’origine animale, végétale ou de fibres artificielles ou synthétiques - la filature et la fabrication de filés et de fils pour le tissage ou la couture, pour la vente ou pour traitement ultérieur • le teillage du lin • la texturation, le retordage, l’assemblage à torsion zéro, le câblage et le foulardage de fils de filaments synthétiques ou artificiels - la fabrication de fils de papier    "
     },
     {
+        "cls_na9": "13.21",
         "lib_na9": "Tissage industriel",
-        "cls_na9": 13.21,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "النسيج الصناعي"
+        "description": "animale ou végétale, fibres artificielles ou synthétiques, papier ou verre, etc. - la fabrication de tissus de type cotonnier, de type lainier, de type peigné ou de type soie, y compris en mélanges ou en fibres artificielles ou en fibres synthétiques (polypropylène etc.) - la fabrication d’autres tissus de lin, de ramie, de chanvre, de jute, de fibres libériennes et de fibres spéciales - la fabrication de velours et de peluches tissés ou de tissus de chenille, de tissus bouclés du genre éponge, de tissus à point de gaze, etc. - la fabrication de tissus de fibres de verre - la fabrication de fils de carbone tissés ou d’aramide - la fabrication d’imitations de fourrure par tissage "
     },
     {
+        "cls_na9": "13.29",
         "lib_na9": "Tissage traditionnel",
-        "cls_na9": 13.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "النسيج التقليدي"
+        "description": "(destinés à l’ameublement, à la décoration intérieure ou à l’habillement). Les matières premières peuvent varier: fibres d’origine animale (laine, soie, poils de chèvre, poils de chameaux, etc.) ou végétale - la fabrication de tissus traditionnels de type cotonnier, lainier, peigné ou de soie - la fabrication traditionnelle d’autres tissus de lin, de ramie, de chanvre et de jute "
     },
     {
+        "cls_na9": "13.30",
         "lib_na9": "Ennoblissement textile",
-        "cls_na9": 13.3,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إتمام تجهيز المنسوجات"
+        "description": "l’ennoblissement de textiles et d’articles vestimentaires, c’est-à-dire le délavage, le blanchiment, la teinture, l’apprêtage et les activités similaires.    - le blanchiment et la teinture de fibres textiles, de fils, de tissus et d’articles en textile, y compris les vêtements. - l’apprêtage, le séchage, le vaporisage, le décatissage, le stoppage, le sanforisage, le mercerisage de textiles et d’articles textiles, y compris les vêtements  92  - la décoloration de jeans - le plissage et les opérations similaires effectuées sur des textiles - l’imperméabilisation, l’enduction, le caoutchoutage ou l’imprégnation de vêtements achetés - l’impression sérigraphique sur textiles et vêtements "
     },
     {
+        "cls_na9": "13.41",
         "lib_na9": "Fabrication industrielle de tapis et moquettes",
-        "cls_na9": 13.41,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإنتاج الصناعي للزرابي والسجاد",
-        "description": "- la fabrication de revêtements de sols en matières textiles:\n• tapis, carpettes, paillassons, carreaux, etc.\nCette classe comprend également:\n- la fabrication de revêtements de sols en feutres aiguilletés"
+        "description": "- la fabrication de revêtements de sols en matières textiles: • tapis, carpettes, paillassons, carreaux, etc. - la fabrication de revêtements de sols en feutres aiguilletés "
     },
     {
+        "cls_na9": "13.42",
         "lib_na9": "Fabrication artisanale de tapis",
-        "cls_na9": 13.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صنع تقليدي للزرابي",
-        "description": "- la fabrication artisanale de tapis à point noué, sur métier vertical\n- la fabrication artisanale de tissage ras, sur métier vertical: klim, mergoum, ktif, etc."
+        "description": "- la fabrication artisanale de tapis à point noué, sur métier vertical - la fabrication artisanale de tissage ras, sur métier vertical: klim, mergoum, ktif, etc. "
     },
     {
+        "cls_na9": "13.91",
         "lib_na9": "Fabrication d'étoffes à mailles",
-        "cls_na9": 13.91,
-        "sec_pri": -1,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "صنع الأقمشة المزردّة",
-        "description": "- la fabrication et la transformation, au sein de la même unité, d’étoffes à mailles:\n• velours, peluches et étoffes bouclées\n• tissus des types utilisés pour filets, rideaux et vitrages, tricotés sur métier Rachel ou sur des métiers similaires\n• autres étoffes à mailles\nCette classe comprend également:\n- la fabrication d’imitations de fourrure par tricotage"
+        "description": "- la fabrication et la transformation, au sein de la même unité, d’étoffes à mailles: • velours, peluches et étoffes bouclées • tissus des types utilisés pour filets, rideaux et vitrages, tricotés sur métier Rachel ou sur des métiers similaires • autres étoffes à mailles - la fabrication d’imitations de fourrure par tricotage "
     },
     {
+        "cls_na9": "13.92",
         "lib_na9": "Fabrication indusrielle de linge domestique, d'articles d'ameublement et de literie",
-        "cls_na9": 13.92,
-        "sec_pri": -1,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إنتاج صناعي لأقمشة منزلية متنوعة"
+        "description": "- la fabrication indusrielle de linge domestique, d'articles d'ameublement et de literie en toutes matières textiles, y compris en étoffes à mailles: • couvertures • linge de lit, de table, de toilette ou de cuisine • couvre-pieds, édredons, coussins, poufs, oreillers, sacs de couchage, etc. - la fabrication d’articles confectionnés pour l’ameublement: • rideaux, tours de lit, stores, couvre-lits, housses pour machines ou mobilier, etc.  93     - la fabrication de la partie textile des couvertures chauffantes électriques "
     },
     {
-        "lib_na9": "fabrication industrielle d'autres articles textiles, sauf habillement",
-        "cls_na9": 13.93,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج صناعي لمنتجات نسيج أخرى ما عدى الملابس",
-        "description": "- la fabrication industrielle d’articles confectionnés autres que linge domestique, articles d'ameublement et de literie en\ntoutes matières textiles, y compris en étoffes à mailles:\n• bâches, tentes, articles de campement, voiles pour embarcations, stores d’extérieur, housses amovibles pour voitures,\nmachines ou mobilier etc.\n• drapeaux, banderoles, bannières, etc.\n• chiffons à épousseter, lavettes et articles similaires, gilets de sauvetage, parachutes, etc."
+        "cls_na9": "13.93",
+        "lib_na9": "Fabrication industrielle d'autres articles textiles, sauf habillement",
+        "description": "- la fabrication industrielle d’articles confectionnés autres que linge domestique, articles d'ameublement et de literie en toutes matières textiles, y compris en étoffes à mailles: • bâches, tentes, articles de campement, voiles pour embarcations, stores d’extérieur, housses amovibles pour voitures, machines ou mobilier etc. • drapeaux, banderoles, bannières, etc. • chiffons à épousseter, lavettes et articles similaires, gilets de sauvetage, parachutes, etc. "
     },
     {
+        "cls_na9": "13.94",
         "lib_na9": "Fabrication de ficelles, cordes et filets",
-        "cls_na9": 13.94,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الخيوط والحبال والشباك",
-        "description": "- la fabrication de ficelles, de cordes et de cordages en fibres textiles, lames ou formes similaires, même imprégnés,\nenduits, recouverts ou gainés de caoutchouc ou de matière plastique\n- la fabrication de filets à mailles nouées obtenus à partir de ficelles, de cordes ou de cordages\n- la fabrication d’articles de corderie et de filets: filets de pêche, défenses de bateaux, coussins de déchargement, élingues\nde chargement, cordes ou cordages munis d’anneaux métalliques, etc."
+        "description": "- la fabrication de ficelles, de cordes et de cordages en fibres textiles, lames ou formes similaires, même imprégnés, enduits, recouverts ou gainés de caoutchouc ou de matière plastique - la fabrication de filets à mailles nouées obtenus à partir de ficelles, de cordes ou de cordages - la fabrication d’articles de corderie et de filets: filets de pêche, défenses de bateaux, coussins de déchargement, élingues de chargement, cordes ou cordages munis d’anneaux métalliques, etc. "
     },
     {
+        "cls_na9": "13.95",
         "lib_na9": "Fabrication de non-tissés, sauf habillement",
-        "cls_na9": 13.95,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات غير منسوجة ما عدى الملابس"
+        "description": "les divisions 13 ou 14, ainsi qu’un grand nombre de processus et une grande variété de produits confectionnés.    "
     },
     {
+        "cls_na9": "13.96",
         "lib_na9": "Fabrication d'autres textiles techniques et industriels",
-        "cls_na9": 13.96,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة منسوجات تقنية وصناعية أخرى"
+        "description": "- la fabrication d’articles de rubanerie, y compris les rubans sans trame, en fils ou fibres parallélisés et encollés - la fabrication d’étiquettes, d’écussons, etc. - la fabrication d’ouvrages de passementerie et d’articles ornementaux analogues: tresses, glands, pompons, etc. - la fabrication de tissus imprégnés, enduits ou recouverts de matière plastique ou stratifiés avec de la matière plastique - la fabrication de filés métalliques et de fils métallisés, même guipés, de fils et de cordes de caoutchouc recouverts de textiles, de fils textiles ou de lames recouverts, imprégnés, enduits ou gainés de caoutchouc ou de matière plastique - la fabrication de nappes tramées pour pneumatiques obtenues à partir de fils synthétiques ou artificiels à haute ténacité - la fabrication d’autres tissus traités ou enduits: bougrans et tissus raidis similaires, tissus enduits de colle ou de matières amylacées - la fabrication d’articles divers en matières textiles: mèches, manchons à incandescence et étoffes tubulaires servant à leur fabrication - la fabrication d’étoffes tubulaires, tuyaux pour pompes, courroies transporteuses ou de transmission (renforcées ou non de métal ou d’autres matériaux), gazes et toiles à bluter, étamines - la fabrication de garnitures pour automobiles - la fabrication de toiles préparées pour la peinture, de toiles à calquer ou transparentes pour le dessin "
     },
     {
+        "cls_na9": "13.97",
         "lib_na9": "Fabrication artisanale d'articles textiles traditionnels",
-        "cls_na9": 13.97,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صنع حرفي لمنتجات النسيج التقليدية",
-        "description": "- la fabrication artisanale de tapisseries murales à usage décoratif sur métiers à tisser verticaux\n- la fabrication artisanale de couvertures (farachia, battania, ouazra, etc.) (unies, tissées avec motifs ou brodées), destinées\nà la literie, en coton, laine ou soie.\n- la fabrication artisanale de rideaux pour murs et fenêtres\n- la fabrication artisanale d'autres articles textiles traditionnels:\n• linge de maison tel que linge de lit, de table, de toilette ou de cuisine\n• édredons, couettes, coussins, poufs, oreillers, sacs de couchage etc.\n• draperies, stores, couvre-lits, housses pour machines et mobilier, etc.\n• drapeaux, bannières, banderoles et fanions"
+        "description": "- la fabrication artisanale de tapisseries murales à usage décoratif sur métiers à tisser verticaux - la fabrication artisanale de couvertures (farachia, battania, ouazra, etc.) (unies, tissées avec motifs ou brodées), destinées à la literie, en coton, laine ou soie. - la fabrication artisanale de rideaux pour murs et fenêtres - la fabrication artisanale d'autres articles textiles traditionnels: • linge de maison tel que linge de lit, de table, de toilette ou de cuisine • édredons, couettes, coussins, poufs, oreillers, sacs de couchage etc. • draperies, stores, couvre-lits, housses pour machines et mobilier, etc. • drapeaux, bannières, banderoles et fanions "
     },
     {
+        "cls_na9": "13.99",
         "lib_na9": "Fabrication d'autres textiles n.c.a.",
-        "cls_na9": 13.99,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة منسوجات أخرى غ.م.س",
-        "description": "- la fabrication de feutre\n- la fabrication de tulles, de tulles-bobinots et d’autres tissus à mailles nouées, de dentelles en pièces, en bandes ou en\nmotifs, de broderies\n- la fabrication de ruban adhésif pour vêtements\n- la fabrication de lacets de chaussures en matières textiles\n- la fabrication de houppes à poudrer et de gants"
+        "description": "- la fabrication de feutre - la fabrication de tulles, de tulles-bobinots et d’autres tissus à mailles nouées, de dentelles en pièces, en bandes ou en motifs, de broderies - la fabrication de ruban adhésif pour vêtements - la fabrication de lacets de chaussures en matières textiles - la fabrication de houppes à poudrer et de gants "
     },
     {
+        "cls_na9": "14.11",
         "lib_na9": "Fabrication de vêtements en cuir",
-        "cls_na9": 14.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع ملابس من الجلد",
-        "description": "- la fabrication de vêtements en cuir naturel ou en simili-cuir, y compris d’équipements du travail en cuir, tels que les\ntabliers de soudeur en cuir"
+        "description": "- la fabrication de vêtements en cuir naturel ou en simili-cuir, y compris d’équipements du travail en cuir, tels que les tabliers de soudeur en cuir "
     },
     {
+        "cls_na9": "14.12",
         "lib_na9": "Fabrication de vêtements de travail",
-        "cls_na9": 14.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع ملابس العمل"
+        "description": ""
     },
     {
+        "cls_na9": "14.13",
         "lib_na9": "Fabrication de vêtements sur mesure",
-        "cls_na9": 14.13,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع ملابس بالقياس",
-        "description": "- la fabrication de vêtements modernes,exécutés sur mesure (par exemple trois essayages) par des tailleurs, couturiers et\ncouturières\nCette classe comprend également:\n- la fabrication d’éléments entrant dans la confection des produits cités"
+        "description": "- la fabrication de vêtements modernes,exécutés sur mesure (par exemple trois essayages) par des tailleurs, couturiers et couturières - la fabrication d’éléments entrant dans la confection des produits cités "
     },
     {
+        "cls_na9": "14.14",
         "lib_na9": "Fabrication industrielle de vêtements de dessus",
-        "cls_na9": 14.14,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج صناعي للملابس الخارجية",
-        "description": "- la fabrication industrielle d’autres vêtements de dessus pour hommes, femmes et enfants à partir de tissus, d’étoffes à\nmailles, de non-tissés, etc.:\n• manteaux, costumes, complets, tailleurs, ensembles, vestes, vestons, pantalons, jupes, etc.\nCette classe comprend également:\n- la fabrication industrielle d’éléments entrant dans la confection des produits cités"
+        "description": "- la fabrication industrielle d’autres vêtements de dessus pour hommes, femmes et enfants à partir de tissus, d’étoffes à mailles, de non-tissés, etc.: • manteaux, costumes, complets, tailleurs, ensembles, vestes, vestons, pantalons, jupes, etc. - la fabrication industrielle d’éléments entrant dans la confection des produits cités "
     },
     {
+        "cls_na9": "14.15",
         "lib_na9": "Fabrication artisanale de vêtements traditionnels",
-        "cls_na9": 14.15,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "إنتاج حرفي للباس التقليدي",
-        "description": "- la fabrication de jebba (vêtement ample qui constitue l’élément essentiel de l’habit traditionnel masculin) ainsi que ses\naccessoires tels que: Farmla, Bedya, Menten, Serouel, Qamis et Burnous, etc.\n- la confection d’habits traditionnels ou de cérémonie pour femmes :\n• habits de mariée: kesswa, tarawoun, etc.\n• habits de soirée: futa et blouza, etc.\n• serouels, farmlas, tejs, chamla, hassara, taguia, etc.\nCette classe ne comprend pas :\n- la fabrication de passementerie, voir 13.96\n- la haute couture, voir 14.13\n14.16 Fabrication de vêtements de dessous"
+        "description": "- la fabrication de jebba (vêtement ample qui constitue l’élément essentiel de l’habit traditionnel masculin) ainsi que ses accessoires tels que: Farmla, Bedya, Menten, Serouel, Qamis et Burnous, etc. - la confection d’habits traditionnels ou de cérémonie pour femmes : • habits de mariée: kesswa, tarawoun, etc. • habits de soirée: futa et blouza, etc. • serouels, farmlas, tejs, chamla, hassara, taguia, etc. Cette classe ne comprend pas : - la fabrication de passementerie, voir 13.96 - la haute couture, voir 14.13 "
     },
     {
+        "cls_na9": "14.16",
         "lib_na9": "Fabrication de vêtements de dessous",
-        "cls_na9": 14.16,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع ملابس داخلية"
+        "description": "- la fabrication de vêtements de dessous et de nuit pour hommes, femmes et enfants à partir de tissus, d’étoffes à mailles, de dentelles, etc.: • chemises, chemisiers, chemisettes, slips, caleçons, pyjamas, chemises de nuit, robes de chambre, soutiens-gorge, corsets, etc. "
     },
     {
+        "cls_na9": "14.19",
         "lib_na9": "Fabrication d'autres vêtements et accessoires",
-        "cls_na9": 14.19,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع ملابس أخرى وصنع مكمّلات اللّباس",
-        "description": "- la fabrication de vêtements pour bébés, de survêtements de sport, de combinaisons et d’ensembles de ski, de maillots,\nde culottes et de slips de bain, etc."
+        "description": "- la fabrication de vêtements pour bébés, de survêtements de sport, de combinaisons et d’ensembles de ski, de maillots, de culottes et de slips de bain, etc.  96 I n st i t u t N a t i o nal d e la S ta tis tiq u e   - la fabrication de chapeaux et de bonnets - la fabrication d’autres accessoires du vêtement: gants, ceintures, châles, cravates, foulards, résilles et filets à cheveux, etc. - la fabrication de chapeaux en fourrure - la fabrication de chaussures en matières textiles, sans semelle rapportée - la fabrication d’éléments entrant dans la confection des produits cités "
     },
     {
+        "cls_na9": "14.20",
         "lib_na9": "Fabrication d'articles en fourrure",
-        "cls_na9": 14.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات من الفراء"
+        "description": "- la fabrication d’articles en fourrure: • vêtements et accessoires du vêtement en pelleteries • assemblages de pelleteries tels que peaux dites \"allongées\", nappes, nappettes, carrés et bandes, etc. • divers articles en fourrure: tapis, poufs non garnis, peaux à polir pour l’industrie "
     },
     {
+        "cls_na9": "14.31",
         "lib_na9": "Fabrication d'articles chaussants à mailles",
-        "cls_na9": 14.31,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الجوارب من الأقمشة المزردّة",
-        "description": "- la fabrication d’articles chaussants, y compris les chaussettes, les bas et les collants\n14.39 Fabrication d'autres articles à mailles\nCette classe comprend:\n- la fabrication d’articles vestimentaires confectionnés en toutes matières textiles, y compris d’articles mis directement\nen forme au tricot ou au crochet: pull-overs, cardigans, chandails, gilets et articles similaires à mailles"
+        "description": "- la fabrication d’articles chaussants, y compris les chaussettes, les bas et les collants "
     },
     {
+        "cls_na9": "14.39",
         "lib_na9": "Fabrication d'autres articles à mailles",
-        "cls_na9": 14.39,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات أخرى من الأقمشة المزردّة"
+        "description": "- la fabrication d’articles vestimentaires confectionnés en toutes matières textiles, y compris d’articles mis directement en forme au tricot ou au crochet: pull-overs, cardigans, chandails, gilets et articles similaires à mailles "
     },
     {
+        "cls_na9": "15.11",
         "lib_na9": "Apprêt et tannage des cuirs; préparation et teinture des fourrures",
-        "cls_na9": 15.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تهيئة الجلود ودباغتها، تحضير وصباغة الفراء",
-        "description": "- le tannage, la teinture et la préparation des peaux\n- la fabrication de cuirs et de peaux chamoisés, parcheminés, vernis ou métallisés\n- la fabrication de cuirs reconstitués\n- le drayage, le corroyage, le tannage, le blanchiment, le tondage, l’épluchage et la teinture des pelleteries et des peaux non épilées"
+        "description": "- le tannage, la teinture et la préparation des peaux - la fabrication de cuirs et de peaux chamoisés, parcheminés, vernis ou métallisés - la fabrication de cuirs reconstitués - le drayage, le corroyage, le tannage, le blanchiment, le tondage, l’épluchage et la teinture des pelleteries et des peaux non épilées "
     },
     {
+        "cls_na9": "15.12",
         "lib_na9": "Fabrication d'articles de voyage, de maroquinerie et de sellerie",
-        "cls_na9": 15.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع معدات السفر ومنتجات أخرى من الجلد (الماروكنري)",
-        "description": "- la fabrication d’articles de voyage, d’articles de maroquinerie et d’articles similaires en cuir naturel, en cuir reconstitué\nou en tout autre matériau, par exemple: les matières plastiques, les matières textiles, les fibres vulcanisées ou le carton,\npour autant que la technologie utilisée soit identique à celle employée pour le cuir\n- la fabrication d’articles de sellerie et de bourrellerie\n- la fabrication de bracelets de montres autres qu’en métal (par exemple: tissu, cuir, matières plastiques)\n- la fabrication d’articles divers en cuir naturel ou reconstitué: courroies, joints, etc.\n- la fabrication de lacets de chaussures en cuir\n- la fabrication de fouets et de cravaches"
+        "description": "- la fabrication d’articles de voyage, d’articles de maroquinerie et d’articles similaires en cuir naturel, en cuir reconstitué ou en tout autre matériau, par exemple: les matières plastiques, les matières textiles, les fibres vulcanisées ou le carton, pour autant que la technologie utilisée soit identique à celle employée pour le cuir - la fabrication d’articles de sellerie et de bourrellerie - la fabrication de bracelets de montres autres qu’en métal (par exemple: tissu, cuir, matières plastiques) - la fabrication d’articles divers en cuir naturel ou reconstitué: courroies, joints, etc. - la fabrication de lacets de chaussures en cuir - la fabrication de fouets et de cravaches "
     },
     {
+        "cls_na9": "15.21",
         "lib_na9": "Fabrication indusrielle de chaussures",
-        "cls_na9": 15.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج صناعي للأحذية"
+        "description": "- la fabrication industrielle de chaussures pour tous usages, en toutes matières, par tous procédés, y compris le moulage (voir ci-après pour les exceptions) - la fabrication de parties en cuir de chaussures: dessus et parties de dessus, semelles extérieures et intérieures, talons, etc. - la fabrication de guêtres, de jambières et d’articles similaires  98  "
     },
     {
+        "cls_na9": "15.22",
         "lib_na9": "Fabrication artisanale de chaussures traditionnelles",
-        "cls_na9": 15.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صنع حرفي للأحذية التقليدية",
-        "description": "- la fabrication artisanale de chaussures traditionnelles en cuir destinées à différents usages: quotidien, cérémonie et\nd’intérieur tels que balgha, kontra, sabbat, sandales, t’mak, kabkab, affess (en poils de chèvre ou de chameau), rihya, etc.\nI n st i t u t N a t i o nal d e la S ta tis tiq u e"
+        "description": "- la fabrication artisanale de chaussures traditionnelles en cuir destinées à différents usages: quotidien, cérémonie et d’intérieur tels que balgha, kontra, sabbat, sandales, t’mak, kabkab, affess (en poils de chèvre ou de chameau), rihya, etc. I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "16.10",
         "lib_na9": "Sciage et rabotage du bois",
-        "cls_na9": 16.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر الخشب ونجره"
+        "description": "- le sciage, le rabotage et le façonnage du bois - la fabrication de bois tranchés, déroulés ou dédossés - la fabrication de traverses en bois pour voies ferrées - la fabrication de lames pour parquets non assemblées - la fabrication de laine (paille) de bois, de farine de bois, de bois en plaquettes ou en particules - le séchage du bois - l’imprégnation ou le traitement chimique du bois au moyen d’agents de conservation ou d’autres produits "
     },
     {
+        "cls_na9": "16.21",
         "lib_na9": "Fabrication de placage et de panneaux de bois",
-        "cls_na9": 16.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع رقائق من قشرة الخشب والألواح المصنوعة من الخشب",
-        "description": "- la fabrication de feuilles de placage suffisamment minces pour la production de contreplaqués ou d’autres utilisations\n• polies, teintes, enduites, imprégnées, renforcées (avec dos en papier ou en tissu)\n• fabriquées sous la forme de motifs\n- la fabrication de contreplaqués, de bois plaqués et de panneaux\n- la fabrication de panneaux à particules orientées et d’autres panneaux de particules\n- la fabrication de panneaux de fibres de densité moyenne (MDF) et autres panneaux de fibres\n- la fabrication de bois densifié\n- la fabrication de lamellé collé\n16.22 Fabrication de parquets assemblés"
+        "description": "- la fabrication de feuilles de placage suffisamment minces pour la production de contreplaqués ou d’autres utilisations • polies, teintes, enduites, imprégnées, renforcées (avec dos en papier ou en tissu) • fabriquées sous la forme de motifs - la fabrication de contreplaqués, de bois plaqués et de panneaux - la fabrication de panneaux à particules orientées et d’autres panneaux de particules - la fabrication de panneaux de fibres de densité moyenne (MDF) et autres panneaux de fibres - la fabrication de bois densifié - la fabrication de lamellé collé "
     },
     {
+        "cls_na9": "16.22",
         "lib_na9": "Fabrication de parquets assemblés",
-        "cls_na9": 16.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الرقائق الخشبية المجمعة"
+        "description": "- la fabrication de blocs, lames, etc., pour parquets, assemblés en panneaux "
     },
     {
+        "cls_na9": "16.23",
         "lib_na9": "Fabrication de charpentes et d'autres menuiseries",
-        "cls_na9": 16.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع هياكل البناء الخشبية والنجارة الخشبية الأخرى",
-        "description": "- la fabrication d’articles en bois destinés principalement à l’industrie du bâtiment:\n• poutres, poutrelles, chevrons, solives\n• lamellé collé et armatures en bois et bâtiments en bois préfabriqués\n• portes, fenêtres, rideaux et leurs encadrements, avec ou sans accessoires métalliques, tels que serrures et ferrures\n• escaliers, rampes d’escaliers\n• bardeaux, baguettes et moulures\n- la fabrication de bâtiments préfabriqués ou d’éléments de ces bâtiments, en bois, par exemple: saunas\n- la fabrication de caravanes\n- la fabrication de cloisons en bois (à l’exception des cloisons mobiles)"
+        "description": "- la fabrication d’articles en bois destinés principalement à l’industrie du bâtiment: • poutres, poutrelles, chevrons, solives • lamellé collé et armatures en bois et bâtiments en bois préfabriqués • portes, fenêtres, rideaux et leurs encadrements, avec ou sans accessoires métalliques, tels que serrures et ferrures • escaliers, rampes d’escaliers • bardeaux, baguettes et moulures - la fabrication de bâtiments préfabriqués ou d’éléments de ces bâtiments, en bois, par exemple: saunas - la fabrication de caravanes - la fabrication de cloisons en bois (à l’exception des cloisons mobiles) "
     },
     {
+        "cls_na9": "16.24",
         "lib_na9": "Fabrication d'emballages en bois",
-        "cls_na9": 16.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أوعية اللف من الخشب",
-        "description": "- la fabrication de caisses, caissettes, cageots, cylindres et emballages similaires, en bois\n- la fabrication de palettes simples, caisses-palettes et autres plateaux de chargement, en bois\n- la fabrication de tonneaux, cuves, baquets et autres ouvrages de tonnellerie, en bois\n- la fabrication de tambours pour câbles, en bois"
+        "description": "- la fabrication de caisses, caissettes, cageots, cylindres et emballages similaires, en bois - la fabrication de palettes simples, caisses-palettes et autres plateaux de chargement, en bois - la fabrication de tonneaux, cuves, baquets et autres ouvrages de tonnellerie, en bois - la fabrication de tambours pour câbles, en bois "
     },
     {
+        "cls_na9": "16.25",
         "lib_na9": "Fabrication industrielle d'objets divers en bois",
-        "cls_na9": 16.25,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج صناعي لمنتجات متنوعة من الخشب",
-        "description": "- la fabrication d’objets divers en bois:\n• manches et montures pour outils, brosses, balais\n• formes, embauchoirs et tendeurs pour chaussures, cintres pour vêtements\n• articles de ménage et ustensiles de cuisine\n• statuettes et objets d’ornement, bois marquetés et bois incrustés\n• coffrets, écrins et étuis pour bijouterie ou orfèvrerie et ouvrages similaires\n• canettes, busettes, bobines pour filatures et tissage et pour fil à coudre et articles similaires, en bois tourné\n• autres articles en bois\n- la fabrication de bûches et de pellets pour la production d’énergie, fabriqués à partir de bois pressés ou de produits de\nsubstitution (marc de café, etc.)\n- la fabrication de parties de chaussures en bois (par exemple: talons et formes)\n- la fabrication de manches de parapluies, de cannes et d’articles similaires\n- la fabrication de blocs destinés à la fabrication de pipes"
+        "description": "- la fabrication d’objets divers en bois: • manches et montures pour outils, brosses, balais • formes, embauchoirs et tendeurs pour chaussures, cintres pour vêtements • articles de ménage et ustensiles de cuisine • statuettes et objets d’ornement, bois marquetés et bois incrustés • coffrets, écrins et étuis pour bijouterie ou orfèvrerie et ouvrages similaires • canettes, busettes, bobines pour filatures et tissage et pour fil à coudre et articles similaires, en bois tourné • autres articles en bois - la fabrication de bûches et de pellets pour la production d’énergie, fabriqués à partir de bois pressés ou de produits de substitution (marc de café, etc.) - la fabrication de parties de chaussures en bois (par exemple: talons et formes) - la fabrication de manches de parapluies, de cannes et d’articles similaires - la fabrication de blocs destinés à la fabrication de pipes    "
     },
     {
+        "cls_na9": "16.29",
         "lib_na9": "Fabrication artisanale d'objets divers en bois, d'objets en liège, vannerie et sparterie",
-        "cls_na9": 16.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صنع حرفي لمنتجات تقليدية متنوعة من الخشب والفلين والقصب ومواد الضفر",
-        "description": "- la fabrication artisanale d'objets divers en bois sculptés, ajourés et tournés:\n• articles de ménage et ustensiles de cuisine, artisanaux\n• statuettes et objets d’ornement, bois marquetés et bois incrustés, artisanaux\n• coffrets, écrins et étuis pour bijouterie ou orfèvrerie et ouvrages similaires, artisanaux\n• miroirs en bois, encadrements pour photos et tableaux, encadrements pour des toiles d’artistes\n• autres articles en bois, artisanaux\n- la fabrication artisanale d'objets divers et d'articles décoratifs en liège naturel ou aggloméré: articles de bureau, bibelots,\ncoffrets, pots pour plantes, etc.\n- le tressage et le tissage des objets et d’articles d’utilité ou de décoration en alfa, feuille de palmier, rotin, l'osier et les\nfibres fines (chanvre, barbita, dis, rcheg, telgua, etc.), jonc et luffa\nCette classe comprend également:\nla sculpture, le tournage, la marqueterie, l'ajourage sur bois"
+        "description": "- la fabrication artisanale d'objets divers en bois sculptés, ajourés et tournés: • articles de ménage et ustensiles de cuisine, artisanaux • statuettes et objets d’ornement, bois marquetés et bois incrustés, artisanaux • coffrets, écrins et étuis pour bijouterie ou orfèvrerie et ouvrages similaires, artisanaux • miroirs en bois, encadrements pour photos et tableaux, encadrements pour des toiles d’artistes • autres articles en bois, artisanaux - la fabrication artisanale d'objets divers et d'articles décoratifs en liège naturel ou aggloméré: articles de bureau, bibelots, coffrets, pots pour plantes, etc. - le tressage et le tissage des objets et d’articles d’utilité ou de décoration en alfa, feuille de palmier, rotin, l'osier et les fibres fines (chanvre, barbita, dis, rcheg, telgua, etc.), jonc et luffa la sculpture, le tournage, la marqueterie, l'ajourage sur bois "
     },
     {
+        "cls_na9": "17.11",
         "lib_na9": "Fabrication de pâte à papier",
-        "cls_na9": 17.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عجين الورق",
-        "description": "- la fabrication de pâtes à papier blanchies, mi-blanchies ou écrues par des procédés mécaniques, chimiques (pâtes à\ndissoudre ou autres) ou mi-chimiques\n- la production de pulpe de linters de coton\n- le désencrage de vieux papiers et la fabrication de pâtes à papier à partir de déchets de papier\n17.12 Fabrication de papier et de carton\nCette classe comprend:\n- la fabrication de papiers et de cartons destinés à faire l’objet d’une transformation ultérieure par l’industrie"
+        "description": "- la fabrication de pâtes à papier blanchies, mi-blanchies ou écrues par des procédés mécaniques, chimiques (pâtes à dissoudre ou autres) ou mi-chimiques - la production de pulpe de linters de coton - le désencrage de vieux papiers et la fabrication de pâtes à papier à partir de déchets de papier "
     },
     {
+        "cls_na9": "17.12",
         "lib_na9": "Fabrication de papier et de carton",
-        "cls_na9": 17.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الورق والورق المقوى"
+        "description": "- la fabrication de papiers et de cartons destinés à faire l’objet d’une transformation ultérieure par l’industrie    - la transformation ultérieure des papiers et des cartons • le couchage, l’enduction et l’imprégnation des papiers et des cartons • la fabrication de papiers crêpés ou plissés • la fabrication de produits stratifiés et de bandes, si ces produits sont stratifiés avec du papier ou du carton - la fabrication de papier à la main - la fabrication de papier journal et de papier pour l’impression ou l’écriture - la fabrication d’ouate de cellulose et de nappes en fibres de cellulose - la fabrication de papiers carbone et de papiers stencil en rouleaux ou en larges feuilles  101     "
     },
     {
+        "cls_na9": "17.21",
         "lib_na9": "Fabrication de papier et carton ondulés et d'emballages en papier ou en carton",
-        "cls_na9": 17.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الورق المقوى المموّج ومواد اللّف من الورق والورق المقوى",
-        "description": "- la fabrication de papiers et de cartons ondulés\n- la fabrication d’emballages en papier ou en carton ondulé\n- la fabrication de cartonnages pliants\n- la fabrication d’emballages en carton homogène\n- la fabrication d’autres emballages en papier et en carton\n- la fabrication de sacs et de sachets en papier\n- la fabrication de cartonnages de bureau et d’articles similaires"
+        "description": "- la fabrication de papiers et de cartons ondulés - la fabrication d’emballages en papier ou en carton ondulé - la fabrication de cartonnages pliants - la fabrication d’emballages en carton homogène - la fabrication d’autres emballages en papier et en carton - la fabrication de sacs et de sachets en papier - la fabrication de cartonnages de bureau et d’articles similaires "
     },
     {
+        "cls_na9": "17.22",
         "lib_na9": "Fabrication d'articles en papier à usage sanitaire ou domestique",
-        "cls_na9": 17.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات من الورق للإستعمال الصحّي أو المنزلي",
-        "description": "- la fabrication d’articles en papier ou en ouate de cellulose, à usage sanitaire et domestique:\n• serviettes à démaquiller\n• mouchoirs, essuie-mains, serviettes de table\n• papier hygiénique\n• serviettes et tampons hygiéniques, couches pour bébés\n• plateaux, plats, tasses et gobelets\n- la fabrication d’ouates de matières textiles et d’articles en ces ouates: serviettes et tampons hygiéniques"
+        "description": "- la fabrication d’articles en papier ou en ouate de cellulose, à usage sanitaire et domestique: • serviettes à démaquiller • mouchoirs, essuie-mains, serviettes de table • papier hygiénique • serviettes et tampons hygiéniques, couches pour bébés • plateaux, plats, tasses et gobelets - la fabrication d’ouates de matières textiles et d’articles en ces ouates: serviettes et tampons hygiéniques "
     },
     {
+        "cls_na9": "17.23",
         "lib_na9": "Fabrication d'articles de papeterie",
-        "cls_na9": 17.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات الوراقة"
+        "description": "- la fabrication de papiers prêts à l’emploi pour l’écriture et l’imprimerie - la fabrication de papiers pour imprimantes prêts à l’emploi - la fabrication de papiers dits \"autocopiants\" prêts à l’emploi - la fabrication de stencils complets et de papiers carbone prêts à l’emploi - la fabrication de papiers gommés ou adhésifs - la fabrication d’enveloppes et de cartes-lettres - la fabrication d’articles de papeterie à usage scolaire et commercial (cahiers, classeurs, registres, livres comptables, formulaires commerciaux, etc.), dès lors que l’information imprimée n’est pas la finalité principale - la fabrication de boîtes, de pochettes et de présentations similaires renfermant un assortiment d’articles de correspondance "
     },
     {
+        "cls_na9": "17.24",
         "lib_na9": "Fabrication de papiers peints",
-        "cls_na9": 17.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الورق الملوّن والمرسوم",
-        "description": "- la fabrication de papiers peints et de revêtements muraux similaires, y compris les papiers peints enduits de vinyle et textiles"
+        "description": "- la fabrication de papiers peints et de revêtements muraux similaires, y compris les papiers peints enduits de vinyle et textiles  102 I n st i t u t N a t i o nal d e la S ta tis tiq u e   "
     },
     {
+        "cls_na9": "17.29",
         "lib_na9": "Fabrication d'autres articles en papier ou en carton",
-        "cls_na9": 17.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات أخرى من الورق والورق المقوى",
-        "description": "- la fabrication d’étiquettes\n- la fabrication de papier-filtre et de carton-filtre\n- la fabrication de tambours, de bobines, de busettes, de canettes, etc., en papier et en carton\n- la fabrication d’emballages pour œufs et d’autres articles moulés en pâte à papier, pour l’emballage\n- la fabrication de gadgets en papier\n- la fabrication de cartes en papier ou en carton pour mécaniques Jacquard"
+        "description": "- la fabrication d’étiquettes - la fabrication de papier-filtre et de carton-filtre - la fabrication de tambours, de bobines, de busettes, de canettes, etc., en papier et en carton - la fabrication d’emballages pour œufs et d’autres articles moulés en pâte à papier, pour l’emballage - la fabrication de gadgets en papier - la fabrication de cartes en papier ou en carton pour mécaniques Jacquard "
     },
     {
+        "cls_na9": "18.11",
         "lib_na9": "Imprimerie de journaux",
-        "cls_na9": 18.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "طباعة الجرائد"
+        "description": "- l’impression d’autres périodiques, paraissant au moins quatre fois par semaine "
     },
     {
+        "cls_na9": "18.12",
         "lib_na9": "Autre imprimerie (labeur)",
-        "cls_na9": 18.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة طباعة أخرى"
+        "description": "- l’impression de magazines et d’autres périodiques, paraissant moins de quatre fois par semaine - l’impression de livres et de brochures, de partitions musicales, de cartes géographiques, d’atlas, d’affiches, de catalogues, de prospectus et d’autres imprimés publicitaires, de timbres, de timbres fiscaux, de moyens de paiement et d’autres papiers-valeurs, de cartes à puce, d’albums, d’agendas, de calendriers et d’autres imprimés commerciaux, de papier à lettres à en-tête personnel et d’autres imprimés sur des presses typographiques, offset, d’héliogravure, flexigraphiques, sérigraphiques et d’autres presses graphiques, appareils de reproduction, imprimantes électroniques, appareils de gaufrage, y compris les travaux d’impression rapide - l’impression directe sur textiles, matières plastiques, verre, métal, bois et céramique Les motifs imprimés sont généralement protégés par les droits d’auteur.  103     - l’impression d’étiquettes (lithographie, photogravure, flexographie, etc.) "
     },
     {
+        "cls_na9": "18.13",
         "lib_na9": "Activités de pré-presse",
-        "cls_na9": 18.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة ما قبل النشر",
-        "description": "- la composition, la photocomposition, la saisie de données, y compris par numérisation et reconnaissance optique des\ncaractères, la mise en forme électronique\n- la préparation de fichiers de données pour des applications multimédia (impression sur papier, CD-ROM, Internet)\n- les services de photogravure, y compris la photocomposition et la réalisation de plaques (pour les procédés\ndimpression typographique et offset)\n- la préparation des cylindres: la gravure de cylindres pour la reproduction de gravures\n- le transfert CTP (\"computer to plate\", de lordinateur à la plaque, également plaques en photopolymères)\n- la préparation de plaques et matrices pour estampage ou impression en relief\n- la préparation de:\n• travaux artistiques de nature technique, tels que la préparation des pierres lithographiques et des blocs de bois\n• la production de supports de présentation, par exemple transparents pour rétroprojecteur et autres formes de présentation\n• croquis, modèles, maquettes, etc.\n• la production dépreuves"
+        "description": "- la composition, la photocomposition, la saisie de données, y compris par numérisation et reconnaissance optique des caractères, la mise en forme électronique - la préparation de fichiers de données pour des applications multimédia (impression sur papier, CD-ROM, Internet) - les services de photogravure, y compris la photocomposition et la réalisation de plaques (pour les procédés dimpression typographique et offset) - la préparation des cylindres: la gravure de cylindres pour la reproduction de gravures - le transfert CTP (\"computer to plate\", de lordinateur à la plaque, également plaques en photopolymères) - la préparation de plaques et matrices pour estampage ou impression en relief - la préparation de: • travaux artistiques de nature technique, tels que la préparation des pierres lithographiques et des blocs de bois • la production de supports de présentation, par exemple transparents pour rétroprojecteur et autres formes de présentation • croquis, modèles, maquettes, etc. • la production dépreuves "
     },
     {
+        "cls_na9": "18.14",
         "lib_na9": "Reliure et activités connexes",
-        "cls_na9": 18.14,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تجليد الكتب وأشغال مكملة",
-        "description": "- les services de reliure industrielle, de montage d’échantillons et les services de soutien d’après-presse aux imprimeurs,\npar exemple: la reliure et la finition de livres, de brochures, de périodiques, de catalogues, etc., par pliage, coupage et\nmassicotage, assemblage, agrafage, reliure avec et sans couture, coupage et pose de couverture, collage, assemblage,\ndorage, reliure à spirale et avec fil en plastique\n- la reliure et la finition de papiers ou de cartons imprimés, par pliage, estampage, poinçonnage, perforage, gaufrage,\ncollage, pelliculage\n- les services de finition pour CD-ROM\n- les services de finition pour publipostage, tels que personnalisation ou préparation des enveloppes\n- d’autres activités de finition, telles que la gravure ou l’estampage de matrices, la copie en braille\n18.2 Reproduction d'enregistrements"
+        "description": "- les services de reliure industrielle, de montage d’échantillons et les services de soutien d’après-presse aux imprimeurs, par exemple: la reliure et la finition de livres, de brochures, de périodiques, de catalogues, etc., par pliage, coupage et massicotage, assemblage, agrafage, reliure avec et sans couture, coupage et pose de couverture, collage, assemblage, dorage, reliure à spirale et avec fil en plastique - la reliure et la finition de papiers ou de cartons imprimés, par pliage, estampage, poinçonnage, perforage, gaufrage, collage, pelliculage - les services de finition pour CD-ROM - les services de finition pour publipostage, tels que personnalisation ou préparation des enveloppes - d’autres activités de finition, telles que la gravure ou l’estampage de matrices, la copie en braille 18.2 Reproduction d'enregistrements    "
     },
     {
+        "cls_na9": "18.20",
         "lib_na9": "Reproduction d'enregistrements",
-        "cls_na9": 18.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نسخ التسجيلات"
+        "description": "- la reproduction, à partir d’une matrice, de disques, de CD et de bandes contenant de la musique ou d’autres enregistrements sonores - la reproduction, à partir d’une matrice, de disques, de CD et de bandes contenant des films ou d’autres enregistrements vidéo - la reproduction, à partir d’une matrice, de logiciels et de données informatiques sur disques et sur bandes "
     },
     {
+        "cls_na9": "19.10",
         "lib_na9": "Cokéfaction",
-        "cls_na9": 19.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع فحم الكوك"
+        "description": "- l’exploitation de fours à coke - la production de coke ou de semi-coke - la production de brai et de coke de brai - la production de gaz de cokerie - la production de goudrons bruts de houille et de lignite - l’agglomération du coke "
     },
     {
+        "cls_na9": "19.20",
         "lib_na9": "Raffinage du pétrole",
-        "cls_na9": 19.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تكرير النفط"
+        "description": "pétrole brut, de minéraux bitumineux ou résultant de leur distillation fractionnée. Les techniques de raffinage du pétrole impliquent la mise en œuvre d’une ou plusieurs activités: la distillation fractionnée, la distillation directe du pétrole brut et le craquage. - la production de carburants pour moteurs: essence, kérosène, etc. - la production de combustibles: fiouls légers, demi-lourds et lourds, gaz de raffinerie tels qu’éthane, propane, butane, etc. - la fabrication d’huiles de graissage et de graisses lubrifiantes à partir de pétrole, y compris les résidus de raffinage - la fabrication de produits pour la pétrochimie et pour les revêtements routiers - la fabrication de produits divers: white-spirit, vaseline, paraffine, etc. - la fabrication de briquettes de pétrole - le mélange de biocarburants, c’est-à-dire l’ajout d’alcool dans le pétrole (essence-alcool, par exemple) - la fabrication de briquettes de tourbe - la fabrication de briquettes de houille et de lignite  20 Industrie chimique    Cette division comprend la transformation de matières premières organiques et inorganiques par un procédé chimique et la formation de produits. Elle distingue la production de produits chimiques de base, qui constituent le premier groupe de la fabrication de produits intermédiaires et finals produits par transformation de produits chimiques de base, qui constituent les autres classes. 20.1 Fabrication de produits chimiques de base, de produits azotés et d'engrais, de matières plastiques de base et de caoutchouc synthétique Ce groupe comprend la fabrication de produits chimiques de base, de produits azotés et d’engrais, ainsi que de matières plastiques de base et de caoutchouc synthétique.  105     "
     },
     {
+        "cls_na9": "20.11",
         "lib_na9": "Fabrication de gaz industriels",
-        "cls_na9": 20.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الغازات الصناعية",
-        "description": "- la fabrication de gaz industriels ou médicaux inorganiques liquéfiés ou comprimés:\n• gaz élémentaires\n• air liquide ou comprimé\n• gaz réfrigérants\n• gaz industriels mélangés\n• gaz inertes tel l’anhydride carbonique\n• gaz isolants"
+        "description": "- la fabrication de gaz industriels ou médicaux inorganiques liquéfiés ou comprimés: • gaz élémentaires • air liquide ou comprimé • gaz réfrigérants • gaz industriels mélangés • gaz inertes tel l’anhydride carbonique • gaz isolants "
     },
     {
+        "cls_na9": "20.12",
         "lib_na9": "Fabrication de colorants et de pigments",
-        "cls_na9": 20.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الملونات والصباغ",
-        "description": "- la fabrication de colorants et de pigments, quelle qu’en soit l’origine, sous forme fondamentale ou concentrée\nCette classe comprend également:\n- la fabrication de produits utilisés comme agents d’avivage ou comme luminophores"
+        "description": "- la fabrication de colorants et de pigments, quelle qu’en soit l’origine, sous forme fondamentale ou concentrée - la fabrication de produits utilisés comme agents d’avivage ou comme luminophores "
     },
     {
+        "cls_na9": "20.13",
         "lib_na9": "Fabrication d'autres produits chimiques inorganiques de base",
-        "cls_na9": 20.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد كيميائية أساسية غير عضوية أخرى"
+        "description": "généralement d’obtenir des éléments chimiques distincts ou des composés chimiquement définis. - la fabrication d’éléments chimiques (à l’exclusion des gaz d’origine industrielle et de la métallurgie) - la fabrication des acides inorganiques, à l’exclusion de l’acide nitrique - la fabrication d’alcalis, de lessives et d’autres bases inorganiques, à l’exclusion de l’ammoniac - la fabrication d’autres composés inorganiques - le grillage de la pyrite de fer - la fabrication d’eau distillée - l’enrichissement de minerais d’uranium et de thorium "
     },
     {
+        "cls_na9": "20.14",
         "lib_na9": "Fabrication d'autres produits chimiques organiques de base",
-        "cls_na9": 20.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد كيميائية عضوية أساسية أخرى"
+        "description": "et la distillation. Ces processus permettent généralement d’obtenir des éléments chimiques distincts ou des composés chimiquement définis. - la fabrication des produits chimiques de base: • hydrocarbures acycliques, saturés ou non saturés • hydrocarbures cycliques, saturés ou non saturés • alcools acycliques et cycliques • acides monocarboxyliques et polycarboxyliques, y compris l’acide acétique • autres composés à fonctions oxygénées, y compris les aldéhydes, les cétones, les quinones et les composés contenant deux fonctions oxygénées ou plus I n st i t u t N a t i o nal d e la S ta tis tiq u e    • glycérine synthétique • composés organiques à fonctions azotées, y compris les amines • fermentation de la canne à sucre, du maïs ou d’autres produits similaires pour produire de l’alcool et des esters • autres composés organiques, y compris les produits de la distillation du bois (charbon de bois, par exemple), etc. - la fabrication de produits aromatiques synthétiques - la distillation des goudrons de houille "
     },
     {
+        "cls_na9": "20.15",
         "lib_na9": "Fabrication de produits azotés et d'engrais",
-        "cls_na9": 20.15,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد أزوتية وصنع الأسمدة",
-        "description": "- la fabrication d’engrais:\n• engrais azotés, phosphatés ou potassiques, simples ou complexes\n• urée, phosphates naturels bruts et sels de potassium naturels bruts\n- la fabrication de produits azotés associés:\n• acides nitrique et sulfonitrique, ammoniac, chlorure d’ammonium, carbonates d’ammonium, nitrites et nitrates de potassium\nCette classe comprend également:\n- la fabrication de mélanges pour plantes en pots à base essentiellement de tourbe\n- la fabrication de mélanges pour plantes en pots à base de terre naturelle, de sable, d’argile et de minéraux"
+        "description": "- la fabrication d’engrais: • engrais azotés, phosphatés ou potassiques, simples ou complexes • urée, phosphates naturels bruts et sels de potassium naturels bruts - la fabrication de produits azotés associés: • acides nitrique et sulfonitrique, ammoniac, chlorure d’ammonium, carbonates d’ammonium, nitrites et nitrates de potassium - la fabrication de mélanges pour plantes en pots à base essentiellement de tourbe - la fabrication de mélanges pour plantes en pots à base de terre naturelle, de sable, d’argile et de minéraux "
     },
     {
+        "cls_na9": "20.16",
         "lib_na9": "Fabrication de matières plastiques de base",
-        "cls_na9": 20.16,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد اللدائن (البلاستيك) الأساسية"
+        "description": "non vulcanisables, ainsi que le mélange de résines sur commande et la fabrication de résines synthétiques standards. - la fabrication de matières plastiques sous formes primaires: • polymères, y compris les polymères d’éthylène, de propylène, de styrène, de chlorure de vinyle, d’acétate de vinyle et les polymères acryliques • polyamides • résines phénoliques, résines époxydes et polyuréthannes • résines alkydes, résines polyesters et polyéthers • silicones • échangeurs d’ions à base de polymères - la fabrication de cellulose et de ses dérivés chimiques "
     },
     {
+        "cls_na9": "20.17",
         "lib_na9": "Fabrication de caoutchouc synthétique",
-        "cls_na9": 20.17,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المطاط التركيبي"
+        "description": "- la fabrication de caoutchouc synthétique sous formes primaires: • caoutchouc synthétique • caoutchouc factice - la fabrication de mélanges de caoutchouc synthétique et de caoutchouc naturel ou de gommes caoutchouteuses (par exemple, le balata)  107     20.2 Fabrication de pesticides et d'autres produits agrochimiques "
     },
     {
+        "cls_na9": "20.20",
         "lib_na9": "Fabrication de pesticides et d'autres produits agrochimiques",
-        "cls_na9": 20.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المبيدات والمواد الكيميازراعية"
+        "description": "- la fabrication d’insecticides, de rodonticides, de fongicides, d’herbicides, d’acaricides, de molluscicides, de biocides - la fabrication d’inhibiteurs de germination, de régulateurs de croissance pour plantes - la fabrication de désinfectants (à usage agricole ou autre) - la fabrication d’autres produits agrochimiques n.c.a. "
     },
     {
+        "cls_na9": "20.30",
         "lib_na9": "Fabrication de peintures, vernis, encres et mastics",
-        "cls_na9": 20.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الدهن والبرنيق (الفرنيس) وأحبار الطباعة"
+        "description": "- la fabrication de peintures, de vernis et d’émaux - la fabrication de pigments, d’opacifiants et de couleurs préparés - la fabrication de compositions vitrifiables, d’engobes et de préparations similaires - la fabrication de mastics - la fabrication d’enduits utilisés en peinture et d’autres enduits non réfractaires des types utilisés en maçonnerie - la fabrication de solvants et de diluants organiques composites - la fabrication de décapants pour peintures et vernis - la fabrication d’encres d’imprimerie "
     },
     {
+        "cls_na9": "20.41",
         "lib_na9": "Fabrication de savons, détergents et produits d'entretien",
-        "cls_na9": 20.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الصابون ومواد التنظيف ومواد الصيانة"
+        "description": "- la fabrication d’agents de surface organiques - la fabrication de papier, d’ouate, de feutre, etc., enduit ou recouvert de savon ou de détergent - la fabrication de glycérine - la fabrication de savon, à l’exception du savon cosmétique - la fabrication de préparations tensioactives: • poudres pour lessives, sous formes solides ou liquides, et détergents • préparations pour la vaisselle • adoucissants pour textiles - la fabrication de produits d’entretien: • préparations pour parfumer ou désodoriser les locaux • cires artificielles et cires préparées • cirages et crèmes pour le cuir • cires et encaustiques pour l’entretien du bois • brillants pour les carrosseries, le verre et les métaux • pâtes et poudres à récurer, y compris les articles en papier, ouate, feutre, etc., enduits ou recouverts de celles-ci "
     },
     {
+        "cls_na9": "20.42",
         "lib_na9": "Fabrication de parfums et de produits pour la toilette",
-        "cls_na9": 20.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع العطور ومواد التجميل",
-        "description": "- la fabrication de parfums et de produits pour la toilette:\n• parfums et eaux de toilette\n• produits de beauté ou de maquillage\n• préparations de protection solaire et pour le bronzage\n• préparations pour manucures et pédicures\n• shampooings, laques pour cheveux, préparations pour l’ondulation ou le défrisage des cheveux\n• dentifrices et produits pour l’hygiène buccale, y compris les préparations destinées à faciliter l’adhérence des dentiers\n• préparations pour le rasage, y compris les préparations pour le prérasage et l’après-rasage\n• désodorisants et sels pour le bain\n• dépilatoires\n- la fabrication de savon cosmétique"
+        "description": "- la fabrication de parfums et de produits pour la toilette: • parfums et eaux de toilette • produits de beauté ou de maquillage • préparations de protection solaire et pour le bronzage • préparations pour manucures et pédicures • shampooings, laques pour cheveux, préparations pour l’ondulation ou le défrisage des cheveux • dentifrices et produits pour l’hygiène buccale, y compris les préparations destinées à faciliter l’adhérence des dentiers • préparations pour le rasage, y compris les préparations pour le prérasage et l’après-rasage • désodorisants et sels pour le bain • dépilatoires - la fabrication de savon cosmétique "
     },
     {
+        "cls_na9": "20.51",
         "lib_na9": "Fabrication de produits explosifs",
-        "cls_na9": 20.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المواد المتفجرة",
-        "description": "- la fabrication de poudres propulsives\n- la fabrication d’explosifs et d’articles de pyrotechnie, y compris les capsules, les détonateurs, les fusées de signalisation, etc.\nCette classe comprend également:\n- la fabrication d’allumettes\n20.52 Fabrication de colles\nCette classe comprend:\n- la fabrication de colles et d’adhésifs préparés, y compris les colles et les adhésifs à base de caoutchouc"
+        "description": "- la fabrication de poudres propulsives - la fabrication d’explosifs et d’articles de pyrotechnie, y compris les capsules, les détonateurs, les fusées de signalisation, etc. - la fabrication d’allumettes "
     },
     {
+        "cls_na9": "20.52",
         "lib_na9": "Fabrication de colles",
-        "cls_na9": 20.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأصماغ (الكولّة)"
+        "description": "- la fabrication de colles et d’adhésifs préparés, y compris les colles et les adhésifs à base de caoutchouc "
     },
     {
+        "cls_na9": "20.53",
         "lib_na9": "Fabrication d'huiles essentielles",
-        "cls_na9": 20.53,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الزيوت الأساسية",
-        "description": "- la fabrication d’essences de produits aromatiques naturels\n- la fabrication de résinoïdes\n- la fabrication de compositions à base de produits odoriférants pour la parfumerie ou l’alimentation"
+        "description": "- la fabrication d’essences de produits aromatiques naturels - la fabrication de résinoïdes - la fabrication de compositions à base de produits odoriférants pour la parfumerie ou l’alimentation "
     },
     {
+        "cls_na9": "20.59",
         "lib_na9": "Fabrication d'autres produits chimiques n.c.a.",
-        "cls_na9": 20.59,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد كيميائية أخرى غ.م.س",
-        "description": "- la fabrication de plaques et de films photographiques, de papiers sensibilisés et d’autres matières sensibilisées, non\nimpressionnées\n- la fabrication de préparations chimiques à usage photographique\n- la fabrication de gélatine et de leurs dérivés\n- la fabrication de produits chimiques divers:\n• peptones et leurs dérivés, autres matières protéiques et leurs dérivés, n.c.a.\n• huiles et graisses modifiées par des procédés chimiques\n• produits utilisés pour l’apprêt ou le finissage des textiles et du cuir\n• pâtes et poudres à souder ou à braser\n• préparations pour le décapage des métaux\n• additifs préparés pour ciments\n• charbons activés, additifs pour huiles lubrifiantes, préparations dites \"accélérateurs de vulcanisation\", catalyseurs et\nautres produits chimiques à usage industriel\n• préparations antidétonantes, préparations antigel\n• liquides pour transmissions hydrauliques\n• réactifs composés de diagnostic ou de laboratoire\nCette classe comprend également:\n- la fabrication d’encres à écrire et à dessiner"
+        "description": "- la fabrication de plaques et de films photographiques, de papiers sensibilisés et d’autres matières sensibilisées, non impressionnées - la fabrication de préparations chimiques à usage photographique - la fabrication de gélatine et de leurs dérivés - la fabrication de produits chimiques divers: • peptones et leurs dérivés, autres matières protéiques et leurs dérivés, n.c.a. • huiles et graisses modifiées par des procédés chimiques • produits utilisés pour l’apprêt ou le finissage des textiles et du cuir • pâtes et poudres à souder ou à braser • préparations pour le décapage des métaux • additifs préparés pour ciments • charbons activés, additifs pour huiles lubrifiantes, préparations dites \"accélérateurs de vulcanisation\", catalyseurs et autres produits chimiques à usage industriel • préparations antidétonantes, préparations antigel • liquides pour transmissions hydrauliques • réactifs composés de diagnostic ou de laboratoire - la fabrication d’encres à écrire et à dessiner "
     },
     {
+        "cls_na9": "20.60",
         "lib_na9": "Fabrication de fibres artificielles ou synthétiques",
-        "cls_na9": 20.6,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع ألياف إصطناعية أو تركيبية"
+        "description": "- la fabrication de câbles de filaments synthétiques ou artificiels - la fabrication de fibres synthétiques ou artificielles discontinues, non cardées, ni peignées, ni autrement transformées pour la filature - la fabrication de fils de filaments synthétiques ou artificiels, y compris les fils à haute ténacité - la fabrication de monofilaments synthétiques ou artificiels et de lames en matières textiles synthétiques ou artificielles "
     },
     {
+        "cls_na9": "21.10",
         "lib_na9": "Fabrication de produits pharmaceutiques de base",
-        "cls_na9": 21.1,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد صيدلية أساسية"
+        "description": "- la production des principes actifs destinés à la fabrication de médicaments: antibiotiques, vitamines de base, acides salicylique et O-acétylsalicylique, etc. - la transformation du sang - la fabrication de sucres chimiquement purs - la transformation de glandes et la production d’extraits de glandes, etc.  110 I n st i t u t N a t i o nal d e la S ta tis tiq u e    21.2 Fabrication de préparations pharmaceutiques "
     },
     {
+        "cls_na9": "21.20",
         "lib_na9": "Fabrication de préparations pharmaceutiques",
-        "cls_na9": 21.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مستحضرات صيدلية"
+        "description": "- la fabrication de médicaments: • sérums thérapeutiques et autres constituants du sang • vaccins • médicaments divers, y compris les préparations homéopathiques - la fabrication de préparations chimiques contraceptives à usage externe et de médicaments contraceptifs à base d’hormones - la fabrication de préparations de diagnostic, y compris les tests de grossesse - la fabrication de substances radioactives de diagnostic in vivo - la fabrication de produits pharmaceutiques issus des biotechnologies - la fabrication d’ouates, de gazes et de bandes imprégnées à usage médical, de pansements, de catguts, etc. - la préparation de produits d’herboristerie (broyage, triage, mouture) à usage pharmaceutique "
     },
     {
+        "cls_na9": "22.11",
         "lib_na9": "Fabrication et rechapage de pneumatiques",
-        "cls_na9": 22.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع العجلات المطاطية ومواد تجديد الأسطح الخارجية للعجلات المطاطية",
-        "description": "- la fabrication de pneumatiques en caoutchouc pour véhicules, équipements, machines mobiles, industrie aéronautique,\njouets, meubles et autres utilisations:\n• pneumatiques\n• bandages pleins ou creux\n- la fabrication de chambres à air pour pneumatiques\n- la fabrication de bandes de roulement amovibles pour pneumatiques, de flaps, de profilés pour le rechapage des\npneumatiques, etc.\n- le rechapage et le resculptage de pneumatiques"
+        "description": "- la fabrication de pneumatiques en caoutchouc pour véhicules, équipements, machines mobiles, industrie aéronautique, jouets, meubles et autres utilisations: • pneumatiques • bandages pleins ou creux - la fabrication de chambres à air pour pneumatiques - la fabrication de bandes de roulement amovibles pour pneumatiques, de flaps, de profilés pour le rechapage des pneumatiques, etc. - le rechapage et le resculptage de pneumatiques "
     },
     {
+        "cls_na9": "22.19",
         "lib_na9": "Fabrication d'autres articles en caoutchouc",
-        "cls_na9": 22.19,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات أخرى من المطاط"
+        "description": "- la fabrication d’autres articles en caoutchouc naturel ou synthétique, non vulcanisé, vulcanisé ou durci, tels que: • plaques, feuilles, bandes, baguettes et profilés • tubes et tuyaux • courroies transporteuses ou de transmission • articles d’hygiène: préservatifs, tétines, bouillottes, etc. • articles de vêtements en caoutchouc (simplement collés, non assemblés par couture)  111    • semelles de chaussures en caoutchouc et autres parties de chaussures en caoutchouc • fils et cordes en caoutchouc • fils et tissus caoutchoutés • bagues, anneaux, joints, rondelles et accessoires • revêtements de cylindres • matelas pneumatiques • ballons gonflables - la fabrication de brosses en caoutchouc - la fabrication de tuyaux de pipe en caoutchouc dur - la fabrication de peignes, de barrettes, de bigoudis et d’articles similaires en caoutchouc dur - la fabrication de matériaux de réparation en caoutchouc - la fabrication de tissus imprégnés, enduits ou recouverts de caoutchouc ou stratifiés avec cette même matière, si le caoutchouc est l’élément principalement utilisé - la fabrication de matelas à eau en caoutchouc - la fabrication de bonnets de bain et de tabliers en caoutchouc - la fabrication de combinaisons humides et de combinaisons de plongée en caoutchouc - la fabrication d’objets sexuels en caoutchouc "
     },
     {
+        "cls_na9": "22.21",
         "lib_na9": "Fabrication de plaques, feuilles, tubes et profilés en matières plastiques",
-        "cls_na9": 22.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الألواح والأوراق والأنابيب والقضبان من اللدائن",
-        "description": "- la fabrication de produits semi-finis en matières plastiques:\n• plaques, feuilles, blocs, pellicules, bandes, lames (que ces articles soient adhésifs ou non), etc.\n- la fabrication de produits finis en matières plastiques:\n• tubes, tuyaux et accessoires de tuyauterie en plastique\n• films ou feuilles de cellophane"
+        "description": "- la fabrication de produits semi-finis en matières plastiques: • plaques, feuilles, blocs, pellicules, bandes, lames (que ces articles soient adhésifs ou non), etc. - la fabrication de produits finis en matières plastiques: • tubes, tuyaux et accessoires de tuyauterie en plastique • films ou feuilles de cellophane "
     },
     {
+        "cls_na9": "22.22",
         "lib_na9": "Fabrication d'emballages en matières plastiques",
-        "cls_na9": 22.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أوعية اللّف من اللدائن"
+        "description": "- la fabrication d’articles d’emballage en matières plastiques: • sacs, sachets, conteneurs, boîtes, caisses, bonbonnes, bouteilles, etc. "
     },
     {
+        "cls_na9": "22.23",
         "lib_na9": "Fabrication d'éléments en matières plastiques pour la construction",
-        "cls_na9": 22.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عناصر البناء من اللدائن",
-        "description": "- la fabrication d’articles en matières plastiques pour la construction tels que:\nI n st i t u t N a t i o nal d e la S ta tis tiq u e"
+        "description": "- la fabrication d’articles en matières plastiques pour la construction tels que: I n st i t u t N a t i o nal d e la S ta tis tiq u e    • portes, fenêtres et leurs cadres et chambranles, volets, stores, plinthes • cuves, foudres, réservoirs • revêtements de sols, de murs et de plafonds sous forme de rouleaux, de dalles, de carreaux, etc., en matières plastiques • articles en matières plastiques pour usages sanitaires ou hygiéniques, par exemple: baignoires, douches, lavabos, bidets, cuvettes d’aisance, réservoirs de chasse, etc. - la fabrication de revêtements de sols résistants, en vinyle ou en linoléum, etc. - la fabrication de pierre artificielle (par exemple: le marbre de culture) "
     },
     {
+        "cls_na9": "22.29",
         "lib_na9": "Fabrication d'autres articles en matières plastiques",
-        "cls_na9": 22.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات أخرى من اللدائن",
-        "description": "- la fabrication de vaisselle et d’autres articles pour le service de la table ou de la cuisine et d’articles d’hygiène ou de\ntoilette en matières plastiques\n- la fabrication de produits divers en matières plastiques:\n• coiffures, pièces isolantes, parties d’appareils d’éclairage, fournitures de bureau et fournitures scolaires, articles\nd’habillement (simplement collés, non assemblés par couture), garnitures pour meubles, statuettes, courroies\ntransporteuses ou de transmission, bandes auto-adhésives en matière plastique, formes à chaussures en plastique,\nportes-cigares et porte-cigarettes en plastique, peignes, bigoudis, gadgets en plastique, etc."
+        "description": "- la fabrication de vaisselle et d’autres articles pour le service de la table ou de la cuisine et d’articles d’hygiène ou de toilette en matières plastiques - la fabrication de produits divers en matières plastiques: • coiffures, pièces isolantes, parties d’appareils d’éclairage, fournitures de bureau et fournitures scolaires, articles d’habillement (simplement collés, non assemblés par couture), garnitures pour meubles, statuettes, courroies transporteuses ou de transmission, bandes auto-adhésives en matière plastique, formes à chaussures en plastique, portes-cigares et porte-cigarettes en plastique, peignes, bigoudis, gadgets en plastique, etc. "
     },
     {
+        "cls_na9": "23.11",
         "lib_na9": "Fabrication de verre plat",
-        "cls_na9": 23.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الزجاج المسطّح",
-        "description": "- la fabrication de verre plat, y compris le verre plat armé, coloré ou teinté\n23.12 Façonnage et transformation du verre plat\nCette classe comprend:\n- la fabrication de verre plat trempé ou formé de feuilles contre-collées\n- la fabrication de miroirs en verre\n- la fabrication de vitrages isolants à parois multiples\n23.13 Fabrication de verre creux"
+        "description": "- la fabrication de verre plat, y compris le verre plat armé, coloré ou teinté "
     },
     {
+        "cls_na9": "23.12",
         "lib_na9": "Façonnage et transformation du verre plat",
-        "cls_na9": 23.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صياغة وتحويل الزجاج المسطّح"
+        "description": "- la fabrication de verre plat trempé ou formé de feuilles contre-collées - la fabrication de miroirs en verre - la fabrication de vitrages isolants à parois multiples "
     },
     {
+        "cls_na9": "23.13",
         "lib_na9": "Fabrication de verre creux",
-        "cls_na9": 23.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الزجاج المجوّف"
+        "description": "- la fabrication de bouteilles et d’autres récipients en verre ou en cristal - la fabrication de verres à boire et d’autres articles en verre ou en cristal à usage domestique "
     },
     {
+        "cls_na9": "23.14",
         "lib_na9": "Fabrication de fibres de verre",
-        "cls_na9": 23.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الألياف الزجاجية",
-        "description": "- la fabrication de fibres de verre, y compris la laine de verre et les produits non tissés en ces matières"
+        "description": "- la fabrication de fibres de verre, y compris la laine de verre et les produits non tissés en ces matières "
     },
     {
+        "cls_na9": "23.19",
         "lib_na9": "Fabrication et façonnage d'autres articles en verre, y compris verre technique",
-        "cls_na9": 23.19,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات أخرى من الزجاج وصياغتها",
-        "description": "- la fabrication de verrerie de laboratoire, d’hygiène ou de pharmacie\n- la fabrication de verres d’horlogerie et de verres analogues, de verres d’optique et d’éléments d’optique non travaillés\noptiquement\n- la fabrication de verrerie utilisée en bijouterie de fantaisie\n- la fabrication d’isolateurs et de pièces isolantes en verre\n- la fabrication d’enveloppes de verre pour lampes\n- la fabrication de figurines en verre\n- la fabrication de pavés de verre\n- la fabrication de verre en barres, baguettes ou tubes"
+        "description": "- la fabrication de verrerie de laboratoire, d’hygiène ou de pharmacie - la fabrication de verres d’horlogerie et de verres analogues, de verres d’optique et d’éléments d’optique non travaillés optiquement - la fabrication de verrerie utilisée en bijouterie de fantaisie - la fabrication d’isolateurs et de pièces isolantes en verre - la fabrication d’enveloppes de verre pour lampes - la fabrication de figurines en verre - la fabrication de pavés de verre - la fabrication de verre en barres, baguettes ou tubes "
     },
     {
+        "cls_na9": "23.20",
         "lib_na9": "Fabrication de produits réfractaires",
-        "cls_na9": 23.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات منجمية غير معدنية تتحمل الحرارة"
+        "description": "mines ou de carrières, tels que le sable, le gravier, la pierre ou l’argile. - la fabrication de mortiers, de bétons, etc., réfractaires - la fabrication d’articles céramiques réfractaires: • articles céramiques calorifuges en farines siliceuses fossiles • tuiles, briques et dalles réfractaires, etc. • cornues, creusets, moufles, busettes, tubes, tuyaux, etc. - la fabrication d’articles réfractaires contenant de la magnésite, de la dolomie ou de la chromite 23.3 Fabrication de matériaux de construction en terre cuite "
     },
     {
+        "cls_na9": "23.31",
         "lib_na9": "Fabrication de carreaux en céramique",
-        "cls_na9": 23.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الزليج من الخزف",
-        "description": "- la fabrication de carreaux pour le revêtement des murs et des cheminées, d’abacules, etc., en céramique non\nréfractaire\n- la fabrication de carreaux et de dalles de pavement en céramique non réfractaire"
+        "description": "- la fabrication de carreaux pour le revêtement des murs et des cheminées, d’abacules, etc., en céramique non réfractaire - la fabrication de carreaux et de dalles de pavement en céramique non réfractaire "
     },
     {
+        "cls_na9": "23.32",
         "lib_na9": "Fabrication de briques, tuiles et produits de construction, en terre cuite",
-        "cls_na9": 23.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع القرميد والآجر من الطين المكوي (الفخار)",
-        "description": "- la fabrication de matériaux de construction en terre cuite non réfractaire:\n• briques, tuiles, éléments de cheminée, tubes, tuyaux, etc., en céramique\n- la fabrication de hourdis en terre cuite"
+        "description": "- la fabrication de matériaux de construction en terre cuite non réfractaire: • briques, tuiles, éléments de cheminée, tubes, tuyaux, etc., en céramique - la fabrication de hourdis en terre cuite "
     },
     {
+        "cls_na9": "23.41",
         "lib_na9": "Fabrication industrielle d'articles céramiques à usage domestique ou ornemental",
-        "cls_na9": 23.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج صناعي لمنتجات خزفية للإستعمال المنزلي أو للزخرفة",
-        "description": "- la fabrication industrielle de vaisselle et d’autres articles de ménage ou d’économie domestique ainsi que d’articles\nd’hygiène ou de toilette, en céramique\n- la fabrication industrielle de statuettes et d’autres objets d’ornementation en céramique"
+        "description": "- la fabrication industrielle de vaisselle et d’autres articles de ménage ou d’économie domestique ainsi que d’articles d’hygiène ou de toilette, en céramique - la fabrication industrielle de statuettes et d’autres objets d’ornementation en céramique "
     },
     {
+        "cls_na9": "23.42",
         "lib_na9": "Fabrication artisanale d'articles céramiques à usage domestique ou ornemental",
-        "cls_na9": 23.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع تقليدي لمنتجات خزفية للإستعمال المنزلي أو للزخرفة",
-        "description": "la fabrication artisanale d’articles de poterie et de céramique à usage domestique ou ornemental"
+        "description": "la fabrication artisanale d’articles de poterie et de céramique à usage domestique ou ornemental "
     },
     {
+        "cls_na9": "23.43",
         "lib_na9": "Fabrication d'appareils sanitaires en céramique",
-        "cls_na9": 23.43,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع تجهيزات صحيّة من الخزف",
-        "description": "- la fabrication d’appareils sanitaires en céramique, par exemple: éviers, baignoires, bidets, cuvettes d’aisance, etc.\n- la fabrication d’autres appareils en céramique"
+        "description": "- la fabrication d’appareils sanitaires en céramique, par exemple: éviers, baignoires, bidets, cuvettes d’aisance, etc. - la fabrication d’autres appareils en céramique "
     },
     {
+        "cls_na9": "23.44",
         "lib_na9": "Fabrication d'isolateurs et pièces isolantes en céramique",
-        "cls_na9": 23.44,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع العوازل الكهربائية والقطع العازلة من الخزف",
-        "description": "- la fabrication d’isolateurs pour l’électricité et de pièces isolantes en céramique"
+        "description": "- la fabrication d’isolateurs pour l’électricité et de pièces isolantes en céramique "
     },
     {
+        "cls_na9": "23.45",
         "lib_na9": "Fabrication d'autres produits céramiques à usage technique",
-        "cls_na9": 23.45,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات خزفية أخرى للإستعمال التقني",
-        "description": "- la fabrication d’aimants ferrites et d’aimants céramiques\n- la fabrication de produits céramiques pour usages chimiques ou industriels"
+        "description": "- la fabrication d’aimants ferrites et d’aimants céramiques - la fabrication de produits céramiques pour usages chimiques ou industriels "
     },
     {
+        "cls_na9": "23.49",
         "lib_na9": "Fabrication d'autres produits céramiques",
-        "cls_na9": 23.49,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات خزفية أخرى",
-        "description": "- la fabrication de cruchons et de récipients similaires de transport ou d’emballage, en céramique\n- la fabrication de produits céramiques non classés ailleurs"
+        "description": "- la fabrication de cruchons et de récipients similaires de transport ou d’emballage, en céramique - la fabrication de produits céramiques non classés ailleurs "
     },
     {
+        "cls_na9": "23.51",
         "lib_na9": "Fabrication de ciment",
-        "cls_na9": 23.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأسمنت",
-        "description": "- la fabrication de ciments dits \"clinkers\" et de ciments hydrauliques, y compris les ciments Portland, les ciments\nalumineux, les ciments de laitier et les ciments surphosphatés"
+        "description": "- la fabrication de ciments dits \"clinkers\" et de ciments hydrauliques, y compris les ciments Portland, les ciments alumineux, les ciments de laitier et les ciments surphosphatés "
     },
     {
+        "cls_na9": "23.52",
         "lib_na9": "Fabrication de chaux et plâtre",
-        "cls_na9": 23.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الجير والجبس",
-        "description": "- la fabrication de chaux vive, chaux éteinte et chaux hydraulique\n- la fabrication de plâtre\nCette classe comprend également:\n- la production de dolomite calcinée"
+        "description": "- la fabrication de chaux vive, chaux éteinte et chaux hydraulique - la fabrication de plâtre - la production de dolomite calcinée "
     },
     {
+        "cls_na9": "23.61",
         "lib_na9": "Fabrication d'éléments en béton pour la construction",
-        "cls_na9": 23.61,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عناصر من الخرسانة  للبناء",
-        "description": "- la fabrication d’ouvrages préfabriqués en béton, en ciment ou en pierre artificielle utilisés en construction:\n• tuiles, carreaux, dalles, briques, plaques, panneaux, tuyaux, piliers, etc.\n- la fabrication d’éléments préfabriqués en béton, en ciment ou en pierre artificielle pour le bâtiment et le génie civil\n23.62 Fabrication d'éléments en plâtre pour la construction\nCette classe comprend:\n- la fabrication d’ouvrages en plâtre utilisés en construction:\n• plaques, panneaux, etc.\n23.63 Fabrication de béton prêt à l'emploi\nCette classe comprend:\n- la fabrication de bétons et de mortiers prêts à l’emploi"
+        "description": "- la fabrication d’ouvrages préfabriqués en béton, en ciment ou en pierre artificielle utilisés en construction: • tuiles, carreaux, dalles, briques, plaques, panneaux, tuyaux, piliers, etc. - la fabrication d’éléments préfabriqués en béton, en ciment ou en pierre artificielle pour le bâtiment et le génie civil "
     },
     {
+        "cls_na9": "23.62",
         "lib_na9": "Fabrication d'éléments en plâtre pour la construction",
-        "cls_na9": 23.62,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عناصر من الجبس للبناء"
+        "description": "- la fabrication d’ouvrages en plâtre utilisés en construction: • plaques, panneaux, etc. "
     },
     {
+        "cls_na9": "23.63",
         "lib_na9": "Fabrication de béton prêt à l'emploi",
-        "cls_na9": 23.63,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الخرسانة الجاهزة للإستعمال"
+        "description": "- la fabrication de bétons et de mortiers prêts à l’emploi "
     },
     {
+        "cls_na9": "23.64",
         "lib_na9": "Fabrication de mortiers et bétons secs",
-        "cls_na9": 23.64,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الملاط والخرسانة المخلوطة خلطا جافّا",
-        "description": "- la fabrication de mortiers en poudre"
+        "description": "- la fabrication de mortiers en poudre "
     },
     {
+        "cls_na9": "23.65",
         "lib_na9": "Fabrication d'ouvrages en fibre ciment",
-        "cls_na9": 23.65,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عناصر من ألياف الإسمنت",
-        "description": "- la fabrication de matériaux de construction en substances végétales (laine de bois, paille, roseaux, joncs) agglomérés\navec du ciment, du plâtre ou d’autres liants minéraux\n- la fabrication d’ouvrages en amiante-ciment:\n• plaques ondulées ou autres, panneaux, carreaux, tuiles, tuyaux, gaines, réservoirs, auges, bassins, éviers, cruchons,\nmeubles, cadres de fenêtres, etc."
+        "description": "- la fabrication de matériaux de construction en substances végétales (laine de bois, paille, roseaux, joncs) agglomérés avec du ciment, du plâtre ou d’autres liants minéraux - la fabrication d’ouvrages en amiante-ciment: • plaques ondulées ou autres, panneaux, carreaux, tuiles, tuyaux, gaines, réservoirs, auges, bassins, éviers, cruchons, meubles, cadres de fenêtres, etc.  116 I n st i t u t N a t i o nal d e la S ta tis tiq u e   "
     },
     {
+        "cls_na9": "23.69",
         "lib_na9": "Fabrication d'autres ouvrages en béton, en ciment ou en plâtre",
-        "cls_na9": 23.69,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عناصر أخرى من الخرسانة والإسمنت أو من الجبس",
-        "description": "- la fabrication d’autres ouvrages en béton, en ciment, en plâtre ou en pierre artificielle:\n• statues, meubles, bas-reliefs, hauts-reliefs, vases, pots de fleurs, etc.\n23.7 Taille, façonnage et finissage de pierres\n23.70 Taille, façonnage et finissage de pierres\nCette classe comprend:\n- la taille, le façonnage et le finissage de la pierre destinée à la construction de bâtiments, de monuments funéraires ou\nde routes, à la couverture des toitures, etc.\n- la fabrication de mobilier en pierre"
+        "description": "- la fabrication d’autres ouvrages en béton, en ciment, en plâtre ou en pierre artificielle: • statues, meubles, bas-reliefs, hauts-reliefs, vases, pots de fleurs, etc. 23.7 Taille, façonnage et finissage de pierres "
     },
     {
+        "cls_na9": "23.70",
         "lib_na9": "Taille, façonnage et finissage de pierres",
-        "cls_na9": 23.7,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "قطع وتشكيل وصقل الأحجار"
+        "description": "- la taille, le façonnage et le finissage de la pierre destinée à la construction de bâtiments, de monuments funéraires ou de routes, à la couverture des toitures, etc. - la fabrication de mobilier en pierre "
     },
     {
+        "cls_na9": "23.91",
         "lib_na9": "Fabrication de produits abrasifs",
-        "cls_na9": 23.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات كاشطة",
-        "description": "- la production de meules, de pierres à aiguiser ou à polir et d’abrasifs naturels ou artificiels appliqués sur support, y\ncompris les produits abrasifs appliqués sur support souple (par exemple: papier de verre)\n23.99 Fabrication d'autres produits minéraux non métalliques n.c.a.\nCette classe comprend:\n- la fabrication de garnitures de friction et de pièces non montées pour ces garnitures à base de substances minérales ou de\ncellulose\n- la fabrication de matières minérales isolantes:\n• laines de laitier, de scories, de roche et laines minérales similaires; vermiculite expansée, argiles expansées et matières\nminérales similaires à usage d’isolants thermiques ou sonores ou pour l’absorption du son\n- la fabrication d’articles en substances minérales diverses:\n• mica travaillé et ouvrages en mica, tourbe, graphite (autres que les articles électriques), etc.\n- la fabrication d’articles en asphalte ou en matières similaires, par exemple: adhésifs à base d’asphalte, de houille\n- la fabrication de fibres de carbone et de graphites et de produits constitués de ces fibres (à l’exception des électrodes\net des applications électriques)\n- la production de corindon artificiel"
+        "description": "- la production de meules, de pierres à aiguiser ou à polir et d’abrasifs naturels ou artificiels appliqués sur support, y compris les produits abrasifs appliqués sur support souple (par exemple: papier de verre) "
     },
     {
+        "cls_na9": "23.99",
         "lib_na9": "Fabrication d'autres produits minéraux non métalliques n.c.a.",
-        "cls_na9": 23.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات من مواد منجمية غير معدنية  غ.م.س"
+        "description": "- la fabrication de garnitures de friction et de pièces non montées pour ces garnitures à base de substances minérales ou de cellulose - la fabrication de matières minérales isolantes: • laines de laitier, de scories, de roche et laines minérales similaires; vermiculite expansée, argiles expansées et matières minérales similaires à usage d’isolants thermiques ou sonores ou pour l’absorption du son - la fabrication d’articles en substances minérales diverses: • mica travaillé et ouvrages en mica, tourbe, graphite (autres que les articles électriques), etc. - la fabrication d’articles en asphalte ou en matières similaires, par exemple: adhésifs à base d’asphalte, de houille - la fabrication de fibres de carbone et de graphites et de produits constitués de ces fibres (à l’exception des électrodes et des applications électriques) - la production de corindon artificiel "
     },
     {
+        "cls_na9": "24.10",
         "lib_na9": "Sidérurgie",
-        "cls_na9": 24.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الحديد"
+        "description": "- l’exploitation de hauts fourneaux, de convertisseurs de la fonte en acier, d’ateliers de laminage et de finissage - la production de fontes brutes et de fontes spiegel en gueuses, saumons ou autres - la production de ferroalliages - la production de produits ferreux obtenus par réduction directe des minerais de fer et autres produits ferreux spongieux - la production de fer d’une exceptionnelle pureté par électrolyse et autres procédés chimiques - la production de déchets lingotés en fer ou en acier - la production de grenailles et de poudres de fer - la production d’acier en lingots ou autres formes primaires - la production de demi-produits en acier - la fabrication de produits laminés plats en acier obtenus par laminage à chaud et à froid - la fabrication de barres en acier obtenues par laminage à chaud - la fabrication de profilés ouverts en acier obtenus par laminage à chaud - la production de palplanches en acier et de profilés ouverts obtenus par soudage - la fabrication d’éléments de construction de voies ferrées (rails non assemblés) en acier "
     },
     {
+        "cls_na9": "24.20",
         "lib_na9": "Fabrication de tubes, tuyaux, profilés creux et accessoires correspondants en acier",
-        "cls_na9": 24.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأنابيب من الفولاذ وملحقاتها من الفولاذ"
+        "description": "- la fabrication de tubes et tuyaux sans soudure de section circulaire ou autre et d’ébauches de section circulaire, destinées à un traitement ultérieur, par laminage à chaud, extrusion à chaud ou toute autre transformation à chaud d’un produit intermédiaire, qui peut être une barre ou une billette, obtenu par laminage à chaud ou par la coulée continue - la fabrication de tubes et tuyaux sans soudure, de précision ou autres, à partir d’ébauches laminées à chaud ou extrudées à chaud par une transformation ultérieure, par étirage à froid ou laminage à froid de tubes et tuyaux de section circulaire et par étirage à froid uniquement de tubes et tuyaux de section non circulaire et de profilés creux - la fabrication de tubes et tuyaux d’un diamètre extérieur supérieur à 406,4 mm, soudés par formage à froid à partir de produits plats laminés à chaud et soudés longitudinalement ou en spirale - la fabrication de tubes et tuyaux d’un diamètre extérieur inférieur ou égal à 406,4 mm de section circulaire soudés par formage continu à chaud ou à froid de produits plats laminés à froid ou à chaud et soudés longitudinalement ou en spirale et de section autre que circulaire par formage à froid ou à chaud mis en forme à partir de bandes laminées à froid ou à chaud soudés longitudinalement - la fabrication de tubes et tuyaux de précision soudés d’un diamètre extérieur inférieur ou égal à 406,4 mm par formage à froid ou à chaud de bandes laminées à froid ou à chaud et soudés longitudinalement livrés après avoir été soudés ou destinés à une transformation ultérieure, par étirage à froid ou laminage à froid ou mis en forme à froid pour des tubes et tuyaux de section autre que circulaire - la fabrication de brides plates ou à collerette forgée par transformation de produits plats laminés à chaud en acier - la fabrication d’accessoires à souder bout à bout en acier, tels que coudes et manchons, par forgeage de tubes sans soudure en acier obtenus par laminage à chaud - la fabrication d’accessoires filetés et d’autres accessoires de tuyauterie en acier "
     },
     {
-        "lib_na9": "Etirage à froid de barres",
-        "cls_na9": 24.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "مدّ الفولاذ على البارد"
+        "cls_na9": "24.31",
+        "lib_na9": "Étirage à froid de barres",
+        "description": "- la fabrication de barres ou de profilés de section pleine en acier par étirage à froid, rectification ou tournage "
     },
     {
+        "cls_na9": "24.32",
         "lib_na9": "Laminage à froid de feuillards",
-        "cls_na9": 24.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تصفيح (لاميناج) الفولاذ على البارد",
-        "description": "- la fabrication de produits laminés plats en acier, nus ou revêtus, enroulés ou non, d’une largeur n’excédant pas 600 mm,\nobtenus par relaminage à froid de produits plats laminés à chaud ou de fil d’acier\nI n st i t u t N a t i o nal d e la S ta tis tiq u e"
+        "description": "- la fabrication de produits laminés plats en acier, nus ou revêtus, enroulés ou non, d’une largeur n’excédant pas 600 mm, obtenus par relaminage à froid de produits plats laminés à chaud ou de fil d’acier I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "24.33",
         "lib_na9": "Profilage à froid par formage ou pliage",
-        "cls_na9": 24.33,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تجنيب الفولاذ على البارد بالتشكيل أو بالطيّ",
-        "description": "- la fabrication de profilés ouverts par déformation progressive à froid sur machines à galets ou pliage sur presse plieuse\nde produits laminés plats en acier\n- la fabrication de produits formés ou pliés à froid, de tôles nervurées et de panneaux-sandwichs\n24.34 Tréfilage à froid\nCette classe comprend:\n- la fabrication de fils d’acier par étirage à froid du fil machine"
+        "description": "- la fabrication de profilés ouverts par déformation progressive à froid sur machines à galets ou pliage sur presse plieuse de produits laminés plats en acier - la fabrication de produits formés ou pliés à froid, de tôles nervurées et de panneaux-sandwichs "
     },
     {
+        "cls_na9": "24.34",
         "lib_na9": "Tréfilage à froid",
-        "cls_na9": 24.34,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "فلد الفولاذ على البارد"
+        "description": "- la fabrication de fils d’acier par étirage à froid du fil machine "
     },
     {
+        "cls_na9": "24.41",
         "lib_na9": "Production de métaux précieux",
-        "cls_na9": 24.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج المعادن النفيسة",
-        "description": "- la production de métaux précieux:\n• la production et l’affinage des métaux précieux bruts ou ouvrés tels que or, argent, platine, etc., à partir de minerais ou de déchets\n- la production d’alliages de métaux précieux\n- la production de demi-produits en métaux précieux\n- la production de plaqués et doublés d’argent sur métaux communs\n- la production de plaqués et doublés d’or sur métaux communs ou sur argent\n- la production de plaqués et doublés de platine et de métaux du groupe du platine sur or, argent ou métaux communs\nCette classe comprend également:\n- la fabrication de fils à partir de ces métaux par étirage\n- la fabrication de stratifiés métalliques à base de métaux précieux"
+        "description": "- la production de métaux précieux: • la production et l’affinage des métaux précieux bruts ou ouvrés tels que or, argent, platine, etc., à partir de minerais ou de déchets - la production d’alliages de métaux précieux - la production de demi-produits en métaux précieux - la production de plaqués et doublés d’argent sur métaux communs - la production de plaqués et doublés d’or sur métaux communs ou sur argent - la production de plaqués et doublés de platine et de métaux du groupe du platine sur or, argent ou métaux communs - la fabrication de fils à partir de ces métaux par étirage - la fabrication de stratifiés métalliques à base de métaux précieux "
     },
     {
+        "cls_na9": "24.42",
         "lib_na9": "Métallurgie de l'aluminium",
-        "cls_na9": 24.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الألومنيوم"
+        "description": "- la fabrication de fils à partir de ces métaux par étirage - la production d’oxyde d’aluminium (alumine) - la production de feuilles d’emballage en aluminium - la fabrication de stratifiés métalliques à base d’aluminium si la feuille d’aluminium est le composant principal "
     },
     {
+        "cls_na9": "24.43",
         "lib_na9": "Métallurgie du plomb, du zinc ou de l'étain",
-        "cls_na9": 24.43,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الرصاص والقصدير (الزنك) والتوتياء (إيتان)",
-        "description": "- la production de plomb, de zinc ou d’étain à partir de minerais\n- la production de plomb, de zinc ou d’étain par affinage électrolytique de déchets et de débris de plomb, de zinc ou d’étain\n- la production d’alliages de plomb, de zinc ou d’étain\n- la fabrication de demi-produits en plomb, en zinc ou en étain\nCette classe comprend également:\n- la fabrication de fils à partir de ces métaux par étirage\n- la production de feuilles d’étain"
+        "description": "- la production de plomb, de zinc ou d’étain à partir de minerais - la production de plomb, de zinc ou d’étain par affinage électrolytique de déchets et de débris de plomb, de zinc ou d’étain - la production d’alliages de plomb, de zinc ou d’étain - la fabrication de demi-produits en plomb, en zinc ou en étain - la fabrication de fils à partir de ces métaux par étirage - la production de feuilles d’étain - la production de cuivre à partir de minerai - la production de cuivre par affinage électrolytique de déchets et de débris de cuivre - la production d’alliages de cuivre    "
     },
     {
+        "cls_na9": "24.44",
         "lib_na9": "Métallurgie du cuivre",
-        "cls_na9": 24.44,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة النحاس"
+        "description": "- la fabrication de fils à partir de ces métaux par étirage "
     },
     {
+        "cls_na9": "24.45",
         "lib_na9": "Métallurgie des autres métaux non ferreux",
-        "cls_na9": 24.45,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة معادن غير حديدية أخرى",
-        "description": "- la production de chrome, de manganèse, de nickel, etc., à partir de minerais ou d’oxydes\n- la production de chrome, de manganèse, de nickel, etc., par affinage électrolytique et aluminothermique de déchets et\nde débris de chrome, de manganèse, de nickel, etc.\n- la production d’alliages de chrome, de manganèse, de nickel, etc.\n- la fabrication de demi-produits en chrome, en manganèse, en nickel, etc.\n- la production de mattes de nickel\nCette classe comprend également:\n- la fabrication de fils à partir de ces métaux par étirage"
+        "description": "- la production de chrome, de manganèse, de nickel, etc., à partir de minerais ou d’oxydes - la production de chrome, de manganèse, de nickel, etc., par affinage électrolytique et aluminothermique de déchets et de débris de chrome, de manganèse, de nickel, etc. - la production d’alliages de chrome, de manganèse, de nickel, etc. - la fabrication de demi-produits en chrome, en manganèse, en nickel, etc. - la production de mattes de nickel - la fabrication de fils à partir de ces métaux par étirage "
     },
     {
-        "lib_na9": "Elaboration et transformation de matières nucléaires",
-        "cls_na9": 24.46,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تحضير وتحويل المواد النووية",
-        "description": "- la production d’uranium métal à partir de la pechblende ou d’autres minerais\n- la fonte et le raffinage de l’uranium\n24.5 Fonderie\nCe groupe comprend la fabrication de pièces ou de demi-produits divers par un procédé de coulée.\nCe groupe ne comprend pas:\n- la fonderie de produits finis, tels que:\n• radiateurs et chaudières, voir 25.21\n• articles ménagers en fonte, voir 25.99\n24.51 Fonderie de fonte\nCette classe comprend les activités des fonderies de fonte.\nCette classe comprend:\n- la fonderie de demi-produits en fonte\n- la fonderie de pièces en fonte grise\n- la fonderie de pièces en fonte à graphite sphéroïdal\n- la fonderie de produits en fonte malléable\n- la fabrication de tubes, tuyaux, profilés creux et accessoires correspondants en fonte\n24.52 Fonderie d'acier\nCette classe comprend les activités des fonderies d’acier.\nCette classe comprend:\n- la fonderie de demi-produits en acier\n- la fonderie de pièces en acier\n- la fabrication de tubes et tuyaux en acier sans soudure coulés par centrifugation\n- la fabrication d’accessoires de tuyauterie en fonte d’acier"
+        "cls_na9": "24.46",
+        "lib_na9": "Élaboration et transformation de matières nucléaires",
+        "description": "- la production d’uranium métal à partir de la pechblende ou d’autres minerais - la fonte et le raffinage de l’uranium 24.5 Fonderie Ce groupe comprend la fabrication de pièces ou de demi-produits divers par un procédé de coulée. Ce groupe ne comprend pas: - la fonderie de produits finis, tels que: • radiateurs et chaudières, voir 25.21 • articles ménagers en fonte, voir 25.99 "
     },
     {
+        "cls_na9": "24.51",
         "lib_na9": "Fonderie de fonte",
-        "cls_na9": 24.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "سباكة الصلب (الفونت)"
+        "description": "- la fonderie de demi-produits en fonte - la fonderie de pièces en fonte grise - la fonderie de pièces en fonte à graphite sphéroïdal - la fonderie de produits en fonte malléable - la fabrication de tubes, tuyaux, profilés creux et accessoires correspondants en fonte "
     },
     {
+        "cls_na9": "24.52",
         "lib_na9": "Fonderie d'acier",
-        "cls_na9": 24.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "سباكة الفولاذ"
+        "description": "- la fonderie de demi-produits en acier - la fonderie de pièces en acier - la fabrication de tubes et tuyaux en acier sans soudure coulés par centrifugation - la fabrication d’accessoires de tuyauterie en fonte d’acier    "
     },
     {
+        "cls_na9": "24.53",
         "lib_na9": "Fonderie de métaux légers",
-        "cls_na9": 24.53,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "سباكة المعادن الخفيفة",
-        "description": "- la fonderie de demi-produits en aluminium, magnésium, titane, zinc, etc.\n- la fonderie de pièces en métaux légers\n24.54 Fonderie d'autres métaux non ferreux\nCette classe comprend:\n- la fonderie de pièces en métaux lourds\n- la fonderie de pièces en métaux précieux\n- le moulage sous pression d’autres métaux non ferreux"
+        "description": "- la fonderie de demi-produits en aluminium, magnésium, titane, zinc, etc. - la fonderie de pièces en métaux légers "
     },
     {
+        "cls_na9": "24.54",
         "lib_na9": "Fonderie d'autres métaux non ferreux",
-        "cls_na9": 24.54,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "سباكة معادن غير حديدية أخرى"
+        "description": "- la fonderie de pièces en métaux lourds - la fonderie de pièces en métaux précieux - le moulage sous pression d’autres métaux non ferreux  120 I n st i t u t N a t i o nal d e la S ta tis tiq u e    25 Fabrication de produits métalliques, à l’exception des machines et des équipements Cette division traite de la fabrication de produits en \"pur\" métal (tels que pièces, conteneurs et structures), habituellement avec une fonction statique, inamovible, par opposition aux divisions 26-30, qui concernent des combinaisons ou assemblages de tels produits en métal (parfois avec d’autres matériaux) en unités plus complexes qui, à moins qu’elles ne soient purement électriques, électroniques ou optiques, fonctionnent avec des pièces mobiles. La fabrication d’armes et de munitions relève également de cette division. Cette division ne comprend pas: - les activités d’entretien et de réparation spécialisée, voir groupe 33.1 - l’installation spécialisée de machines et d’autres produits manufacturés dans des bâtiments (p.ex. chaudières pour le chauffage central), voir 43.22 25.1 Fabrication d'éléments en métal pour la construction Ce groupe comprend la fabrication d’éléments en métal pour la construction (tels que des cadres métalliques et des éléments de construction). "
     },
     {
+        "cls_na9": "25.11",
         "lib_na9": "Fabrication de structures métalliques et de parties de structures",
-        "cls_na9": 25.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع هياكل معدنية وأجزاؤها",
-        "description": "- la fabrication de cadres métalliques ou d’ossatures pour la construction et leurs éléments (tours, mâts, armatures, ponts, etc.)\n- la fabrication de cadres métalliques pour équipements industriels (cadres pour hauts fourneaux, matériels de manutention, etc.)\n- la fabrication de constructions préfabriquées principalement en métaux:\n• baraques de chantier, éléments modulaires pour expositions, etc."
+        "description": "- la fabrication de cadres métalliques ou d’ossatures pour la construction et leurs éléments (tours, mâts, armatures, ponts, etc.) - la fabrication de cadres métalliques pour équipements industriels (cadres pour hauts fourneaux, matériels de manutention, etc.) - la fabrication de constructions préfabriquées principalement en métaux: • baraques de chantier, éléments modulaires pour expositions, etc. "
     },
     {
+        "cls_na9": "25.12",
         "lib_na9": "Fabrication de portes et fenêtres en métal",
-        "cls_na9": 25.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأبواب والنوافذ المعدنية",
-        "description": "- la fabrication de portes et de fenêtres métalliques, d’huisseries métalliques, de rideaux métalliques de fermeture et de\nportails métalliques\n- la fabrication de séparations métalliques de pièces destinées à être rivées au sol\n25.2 Fabrication de réservoirs, citernes et conteneurs métalliques\nCe groupe comprend la fabrication de réservoirs, de radiateurs et de chaudières pour le chauffage central.\n25.21 Fabrication de radiateurs et de chaudières pour le chauffage central"
+        "description": "- la fabrication de portes et de fenêtres métalliques, d’huisseries métalliques, de rideaux métalliques de fermeture et de portails métalliques - la fabrication de séparations métalliques de pièces destinées à être rivées au sol 25.2 Fabrication de réservoirs, citernes et conteneurs métalliques Ce groupe comprend la fabrication de réservoirs, de radiateurs et de chaudières pour le chauffage central. "
     },
     {
+        "cls_na9": "25.21",
         "lib_na9": "Fabrication de radiateurs et de chaudières pour le chauffage central",
-        "cls_na9": 25.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المشعاعات (رادياتور) ومراجل التدفئة المركزية"
+        "description": ""
     },
     {
+        "cls_na9": "25.22",
         "lib_na9": "Fabrication de récipients métalliques pour gaz comprimés ou liquéfiés",
-        "cls_na9": 25.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع خزّانات معدنية للغاز المضغوط أو السائل",
-        "description": "- la fabrication de bouteilles, de citernes, de réservoirs, et de récipients similaires, en métal, pour gaz comprimés ou\nliquéfiés\n25.29 Fabrication d'autres réservoirs, citernes et conteneurs métalliques"
+        "description": "- la fabrication de bouteilles, de citernes, de réservoirs, et de récipients similaires, en métal, pour gaz comprimés ou liquéfiés "
     },
     {
+        "cls_na9": "25.29",
         "lib_na9": "Fabrication d'autres réservoirs, citernes et conteneurs métalliques",
-        "cls_na9": 25.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع خزّانات وصهاريج معدنية أخرى"
+        "description": "- la fabrication de réservoirs, de citernes et de récipients similaires, en métal, qui font généralement partie du matériel fixe de stockage ou de fabrication "
     },
     {
+        "cls_na9": "25.30",
         "lib_na9": "Fabrication de générateurs de vapeur, à l'exception des chaudières pour le chauffage central",
-        "cls_na9": 25.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مولّدات بخار الماء باستثناء مراجل التدفئة المركزية"
+        "description": "- la fabrication de générateurs produisant de la vapeur d’eau ou d’autres types de vapeur - la fabrication d’appareils auxiliaires pour générateurs de vapeur: • condensateurs, économiseurs, surchauffeurs, collecteurs et accumulateurs de vapeur - la fabrication de réacteurs nucléaires, à l’exception des séparateurs d’isotopes - la fabrication de pièces destinées aux chaudières de navires ou de centrales électriques - les travaux de chaudronnerie comprenant un traitement complémentaire des tubes de manière à réaliser principalement des conduites ou des réseaux sous pression, ainsi que les travaux annexes de conception et d’installation "
     },
     {
+        "cls_na9": "25.40",
         "lib_na9": "Fabrication d'armes et de munitions",
-        "cls_na9": 25.4,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأسلحة والذخيرة"
+        "description": "- la fabrication d’armes lourdes (pièces d’artillerie, lance-missiles, lance-torpilles, fusils mitrailleurs, etc.) - la fabrication d’armes légères (revolvers, carabines, pistolets mitrailleurs, etc.) - la fabrication de carabines et pistolets à air comprimé ou à gaz - la fabrication de munitions de guerre - la fabrication d’armes de chasse, de tir sportif et de défense ainsi que de leurs munitions - la fabrication d’engins explosifs tels que bombes, mines et torpilles "
     },
     {
+        "cls_na9": "25.50",
         "lib_na9": "Forge, emboutissage, estampage; métallurgie des poudres",
-        "cls_na9": 25.5,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "سبك المعادن وطرقها ورشمها وميتالورجيا المساحيق"
+        "description": "- le forgeage, l’emboutissage, l’estampage et le profilage des métaux - la métallurgie des poudres: production d’objets métalliques directement à partir de poudres de métaux par traitement thermique (frittage) ou compression "
     },
     {
+        "cls_na9": "25.61",
         "lib_na9": "Traitement et revêtement des métaux",
-        "cls_na9": 25.61,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "معالجة وطلي المعادن، المعالجة بالآلات (أوزيناج)",
-        "description": "- le placage, le traitement anodique, etc., des métaux\n- le traitement thermique des métaux\n- l’ébarbage, le décapage au jet de sable, le dessablage au tonneau, le nettoyage des métaux\n- la teinture et la gravure des métaux\n- le revêtement non métallique des métaux:\n• plastifiage, émaillage, laquage, etc.\n- le durcissement, le bufflage des métaux"
+        "description": "- le placage, le traitement anodique, etc., des métaux - le traitement thermique des métaux - l’ébarbage, le décapage au jet de sable, le dessablage au tonneau, le nettoyage des métaux - la teinture et la gravure des métaux - le revêtement non métallique des métaux: • plastifiage, émaillage, laquage, etc. - le durcissement, le bufflage des métaux  122 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "25.62",
         "lib_na9": "Usinage",
-        "cls_na9": 25.62,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أشغال الميكانيك العام (خراطة، تفريز، تعديل...)",
-        "description": "- le perçage, le tournage, le fraisage, l’arasage, le rabotage, le rodage, le brochage, le dressage, le sciage, le meulage,\nl’affûtage, le polissage, le soudage, le mortaisage, etc., de pièces métalliques\n- le découpage et l’écriture sur des métaux au moyen de faisceaux laser"
+        "description": "- le perçage, le tournage, le fraisage, l’arasage, le rabotage, le rodage, le brochage, le dressage, le sciage, le meulage, l’affûtage, le polissage, le soudage, le mortaisage, etc., de pièces métalliques - le découpage et l’écriture sur des métaux au moyen de faisceaux laser "
     },
     {
+        "cls_na9": "25.71",
         "lib_na9": "Fabrication de coutellerie",
-        "cls_na9": 25.71,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أدوات القطع",
-        "description": "- la fabrication de coutellerie domestique: couteaux, fourchettes, cuillères, etc.\n- la fabrication d’autres articles de coutellerie:\n• fendoirs et couperets\n• rasoirs et lames pour rasoirs\n• ciseaux et tondeuses à cheveux\n- la fabrication de sabres, d’épées, de baïonnettes, etc."
+        "description": "- la fabrication de coutellerie domestique: couteaux, fourchettes, cuillères, etc. - la fabrication d’autres articles de coutellerie: • fendoirs et couperets • rasoirs et lames pour rasoirs • ciseaux et tondeuses à cheveux - la fabrication de sabres, d’épées, de baïonnettes, etc. "
     },
     {
+        "cls_na9": "25.72",
         "lib_na9": "Fabrication de serrures et de ferrures",
-        "cls_na9": 25.72,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأقفال ومنتجات حديدية متنوعة أخرى",
-        "description": "- la fabrication de serrures, de cadenas, de verrous, de clés, de charnières et d’articles similaires de serrurerie pour le\nbâtiment, l’ameublement, les véhicules, etc.\n25.73 Fabrication d'outillage à main\nCette classe comprend:\n- la fabrication d'outils à main:\n• outillage agricole et horticole, sécateurs\n• outils tranchants divers\n• martellerie, pinces, tournevis, clés, limes, etc.\n• truelles, couteaux à enduire, etc.\n- la fabrication d'étaux, serre-joints, enclumes, etc."
+        "description": "- la fabrication de serrures, de cadenas, de verrous, de clés, de charnières et d’articles similaires de serrurerie pour le bâtiment, l’ameublement, les véhicules, etc. "
     },
     {
+        "cls_na9": "25.73",
         "lib_na9": "Fabrication d'outillage à main",
-        "cls_na9": 25.73,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الآلات الأدواتية"
+        "description": "- la fabrication d'outils à main: • outillage agricole et horticole, sécateurs • outils tranchants divers • martellerie, pinces, tournevis, clés, limes, etc. • truelles, couteaux à enduire, etc. - la fabrication d'étaux, serre-joints, enclumes, etc. "
     },
     {
+        "cls_na9": "25.74",
         "lib_na9": "Fabrication d'outillage mécanique",
-        "cls_na9": 25.74,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأدوات الميكانيكية"
+        "description": "- la fabrication de couteaux et de lames tranchantes pour machines ou pour appareils mécaniques - la fabrication d’outillage portatif agricole mécanique - la fabrication de scies et de lames de scies, y compris les lames de scies circulaires et de scies à chaîne - la fabrication d’outils interchangeables pour outillage à main, mécaniques ou non, ou pour machines-outils: forets, poinçons, matrices, fraises, etc. - la fabrication d’outils de presse - la fabrication de châssis de fonderie et de moules (à l’exclusion des lingotières) - la fabrication de lampes à souder "
     },
     {
+        "cls_na9": "25.91",
         "lib_na9": "Fabrication de fûts et emballages métalliques similaires",
-        "cls_na9": 25.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع البراميل والأوعية المماثلة من المعادن",
-        "description": "- la fabrication de seaux, de bidons, de tonneaux, de boîtes"
+        "description": "- la fabrication de seaux, de bidons, de tonneaux, de boîtes "
     },
     {
+        "cls_na9": "25.92",
         "lib_na9": "Fabrication d'emballages métalliques légers",
-        "cls_na9": 25.92,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مواد اللّف المعدنية الخفيفة",
-        "description": "- la fabrication de boîtes pour conserves alimentaires ainsi que de tubes et d’étuis souples\n- la fabrication d’articles métalliques de bouchage et de surbouchage\n25.93 Fabrication d'articles en fils métalliques, de chaînes et de ressorts\nCette classe comprend:\n- la fabrication de câbles métalliques, de tresses métalliques et d’articles similaires\n- la fabrication de câbles métalliques non isolés ou de câbles isolés qui ne peuvent pas être utilisés comme conducteurs\npour l’électricité\n- la fabrication de fil enrobé ou fourré\n- la fabrication d’articles en fils métalliques: ronces artificielles, clôtures, grillages, treillis, toiles métalliques, etc.\n- la fabrication d’électrodes enrobées pour le soudage à l’arc électrique\n- la fabrication de clous et de punaises\n- la fabrication de ressorts (à l’exception des ressorts d’horlogerie):\n• ressorts à lames, ressorts hélicoïdaux, barres de torsion\n• lames de ressorts\n- la fabrication de chaînes, à l’exception des chaînes pour la transmission de l’énergie"
+        "description": "- la fabrication de boîtes pour conserves alimentaires ainsi que de tubes et d’étuis souples - la fabrication d’articles métalliques de bouchage et de surbouchage "
     },
     {
+        "cls_na9": "25.93",
         "lib_na9": "Fabrication d'articles en fils métalliques, de chaînes et de ressorts",
-        "cls_na9": 25.93,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات من الخيوط المعدنية وصنع السلاسل والزنابرك (روسور)"
+        "description": "- la fabrication de câbles métalliques, de tresses métalliques et d’articles similaires - la fabrication de câbles métalliques non isolés ou de câbles isolés qui ne peuvent pas être utilisés comme conducteurs pour l’électricité - la fabrication de fil enrobé ou fourré - la fabrication d’articles en fils métalliques: ronces artificielles, clôtures, grillages, treillis, toiles métalliques, etc. - la fabrication d’électrodes enrobées pour le soudage à l’arc électrique - la fabrication de clous et de punaises - la fabrication de ressorts (à l’exception des ressorts d’horlogerie): • ressorts à lames, ressorts hélicoïdaux, barres de torsion • lames de ressorts - la fabrication de chaînes, à l’exception des chaînes pour la transmission de l’énergie "
     },
     {
+        "cls_na9": "25.94",
         "lib_na9": "Fabrication de vis et de boulons",
-        "cls_na9": 25.94,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع البراغي والمحازق (صنع الفيس والبولون)",
-        "description": "- la fabrication de rivets, de rondelles et d’autres produits non filetés similaires\n- la fabrication d’articles de visserie\n- la fabrication de boulons, vis, écrous et d’autres produits filetés similaires\n25.95 Fabrication artisanale d'ouvrages traditionnels en métaux\nCette classe comprend:\n- la fabrication artisanale d'articles métalliques à usage domestique ou décoratif, en particulier en cuivre tournés, ciselés,\nmartelés, ajourés, émaillés, etc.\n- la fabrication artisanale d'articles en fer forgé à usage architectural ou décoratif\n- la fabrication artisanale des armes, serviront pour la chasse ou pour la décoration\nCette classe comprend également:\n- l'entretien et la restauration des fusils pour la chasse, le tir sportif ou le spectacle\n- l'étamage ou le nickelage traditionnel d'articles en cuivre essentiellement les ustensiles de cuisines"
+        "description": "- la fabrication de rivets, de rondelles et d’autres produits non filetés similaires - la fabrication d’articles de visserie - la fabrication de boulons, vis, écrous et d’autres produits filetés similaires "
     },
     {
+        "cls_na9": "25.95",
         "lib_na9": "Fabrication artisanale d'ouvrages traditionnels en métaux",
-        "cls_na9": 25.95,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع حرفي لمنتجات تقليدية من المعادن غ.م.س"
+        "description": "- la fabrication artisanale d'articles métalliques à usage domestique ou décoratif, en particulier en cuivre tournés, ciselés, martelés, ajourés, émaillés, etc. - la fabrication artisanale d'articles en fer forgé à usage architectural ou décoratif - la fabrication artisanale des armes, serviront pour la chasse ou pour la décoration - l'entretien et la restauration des fusils pour la chasse, le tir sportif ou le spectacle - l'étamage ou le nickelage traditionnel d'articles en cuivre essentiellement les ustensiles de cuisines "
     },
     {
+        "cls_na9": "25.99",
         "lib_na9": "Fabrication d'autres ouvrages métalliques n.c.a.",
-        "cls_na9": 25.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات متنوعة أخرى من المعادن غ.م.س",
-        "description": "- la fabrication d’articles métalliques à usage domestique:\n• vaisselle plate: plateaux, soucoupes, etc.\n• bols: pots, bouilloires, etc.\n• vaisselle de table: saladiers, plats, etc.\n• casseroles, poêles à frire et autres ustensiles non électriques pour la table et la cuisine\n• petits appareils et accessoires de cuisine pour utilisation à la main\n• pailles de fer\n- la fabrication d’éléments pour la construction (gouttières, faîtage) et de baignoires, d’éviers, de bassines et d’articles\nsimilaires, en zinc\n- la fabrication d’articles métalliques pour le bureau, à l’exception du mobilier\n- la fabrication de coffres-forts, de portes blindées, etc.\n- la fabrication de divers articles en métal:\n• hélices de bateau et leurs pales\n• ancres\n• cloches\n• équipements de voies ferrées assemblés\n• fermoirs, boucles, crochets\n• échelles métalliques\n• signaux métalliques, y compris panneaux de signalisation routière\n- la fabrication de sachets en feuilles d’aluminium\n- la fabrication d’aimants métalliques installés en permanence\n- la fabrication de bouteilles isolantes en métal\n- la fabrication d’insignes et de médailles militaires en métal\n- la fabrication de bigoudis en métal, de manches et de montures de parapluies, de peignes"
+        "description": "- la fabrication d’articles métalliques à usage domestique: • vaisselle plate: plateaux, soucoupes, etc. • bols: pots, bouilloires, etc. • vaisselle de table: saladiers, plats, etc. • casseroles, poêles à frire et autres ustensiles non électriques pour la table et la cuisine • petits appareils et accessoires de cuisine pour utilisation à la main • pailles de fer - la fabrication d’éléments pour la construction (gouttières, faîtage) et de baignoires, d’éviers, de bassines et d’articles similaires, en zinc - la fabrication d’articles métalliques pour le bureau, à l’exception du mobilier - la fabrication de coffres-forts, de portes blindées, etc. - la fabrication de divers articles en métal: • hélices de bateau et leurs pales • ancres • cloches • équipements de voies ferrées assemblés • fermoirs, boucles, crochets • échelles métalliques • signaux métalliques, y compris panneaux de signalisation routière - la fabrication de sachets en feuilles d’aluminium - la fabrication d’aimants métalliques installés en permanence - la fabrication de bouteilles isolantes en métal - la fabrication d’insignes et de médailles militaires en métal - la fabrication de bigoudis en métal, de manches et de montures de parapluies, de peignes "
     },
     {
+        "cls_na9": "26.11",
         "lib_na9": "Fabrication de composants électroniques",
-        "cls_na9": 26.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مكوّنات إلكترونية"
+        "description": "- la fabrication de condensateurs électroniques - la fabrication de résistances électroniques - la fabrication de microprocesseurs - la fabrication de tubes électroniques - la fabrication de pièces de connexion électroniques - la fabrication de circuits imprimés nus - la fabrication de circuits intégrés (analogiques, numériques ou hybrides) - la fabrication de diodes, de transistors et de dispositifs discrets similaires - la fabrication d’inducteurs, de type composant électronique (par exemple: bobines d’étranglement, serpentins, transformateurs) - la fabrication de cristaux électroniques et d’assemblages de cristaux - la fabrication de solénoïdes, d’interrupteurs et de transducteurs pour applications électroniques - la fabrication de dés ou de tranches, semi-conducteurs, finis ou semi-finis - la fabrication de composants pour dispositifs d’affichage (plasma, polymère, LCD) - la fabrication de diodes émettrices de lumière (light emitting diodes – LED) - la fabrication de câbles pour imprimantes, de moniteurs, de câbles USB, de pièces de connexion, etc. "
     },
     {
+        "cls_na9": "26.12",
         "lib_na9": "Fabrication de cartes électroniques assemblées",
-        "cls_na9": 26.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع لوحات إلكترونية مجمّعة"
+        "description": "- la fabrication de circuits imprimés - le montage de composants sur des circuits imprimés - la fabrication de cartes d’interface (par exemple: son, vidéo, contrôleurs, réseau, modem) "
     },
     {
+        "cls_na9": "26.20",
         "lib_na9": "Fabrication d'ordinateurs et d'équipements périphériques",
-        "cls_na9": 26.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الحواسيب والمعدات الملحقة"
+        "description": "de bureau, des ordinateurs portables et des serveurs, ainsi que des équipements informatiques périphériques, tels que systèmes de stockage et unités d’entrée et de sortie (imprimantes, écrans, claviers). Les ordinateurs peuvent être analogiques, numériques ou hybrides. Les ordinateurs numériques, les plus courants, sont des appareils capables de réaliser l’ensemble des opérations suivantes: 1) enregistrer le ou les programmes de traitement et les données immédiatement nécessaires pour l’exécution de ce ou de ces programmes; 2) être librement programmés conformément aux besoins de l’utilisateur; 3) résoudre les opérations arithmétiques conformément aux instructions de l’utilisateur et; 4) exécuter, sans aucune intervention humaine, un programme de traitement imposant à l’ordinateur de modifier son exécution par une décision logique durant le processus. Les ordinateurs analogiques sont capables de simuler des modèles mathématiques et comprennent au moins des éléments de contrôle analogique et de programmation. - la fabrication d’ordinateurs de bureau - la fabrication d’ordinateurs portables - la fabrication de gros systèmes - la fabrication d’ordinateurs de poche (par exemple: les assistants personnels) - la fabrication de lecteurs de disques magnétiques, de lecteurs flash et d’autres systèmes de stockage - la fabrication de lecteurs de disques optiques (par exemple: CD-RW, CD-ROM, DVD-ROM, DVD-RW) - la fabrication d’imprimantes - la fabrication d’écrans - la fabrication de claviers - la fabrication de tous types de souris, de manettes et de boules roulantes et leurs accessoires - la fabrication de terminaux informatiques spécialisés - la fabrication de serveurs - la fabrication de scanneurs, y compris les lecteurs de codes à barres - la fabrication de lecteurs de cartes à puce - la fabrication de casques de réalité virtuelle - la fabrication de vidéoprojecteurs - la fabrication de terminaux informatiques, tels que des guichets automatiques de banque, des terminaux point de vente, sans mécanisme - la fabrication d’équipements de bureau multi-fonctions, permettant d’effectuer au moins deux des opérations suivantes: impression, numérisation, copie, télécopie "
     },
     {
+        "cls_na9": "26.30",
         "lib_na9": "Fabrication d'équipements de communication",
-        "cls_na9": 26.3,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أجهزة الإتصال"
+        "description": "transmettre électroniquement des signaux par les fils ou par les airs tels que les émissions de radio ou de télévision et les équipements de communication sans fil. - la fabrication d’équipements de commutation de central - la fabrication de téléphones sans fil - la fabrication d’équipements d’autocommutateur privé - la fabrication d’équipements téléphoniques ou de télécopieurs, y compris les répondeurs téléphoniques - la fabrication d’équipements de communication de données tels que routeurs, ponts et passerelles - la fabrication d’antennes de transmission et de réception - la fabrication d’équipements pour la télévision par câble - la fabrication de téléavertisseurs - la fabrication de téléphones portables - la fabrication d’équipements de communication mobile - la fabrication d’équipements d’enregistrement en studio et de diffusion d’émissions de radio et de télévision, y compris les caméras de télévision - la fabrication de modems, équipement porteur - la fabrication de systèmes de détection d’effraction et d’incendie, transmettant des signaux à une station de contrôle - la fabrication de transmetteurs de radio et de télévision - la fabrication d’appareils de communication utilisant les signaux infrarouges (par exemple: les commandes à distance) "
     },
     {
+        "cls_na9": "26.40",
         "lib_na9": "Fabrication de produits électroniques grand public",
-        "cls_na9": 26.4,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع منتجات إلكترونية واسعة الإستهلاك"
+        "description": "véhicules automobiles, aux systèmes d’information du public et à l’amplification des instruments de musique. - la fabrication de magnétoscopes et d’équipements de reproduction - la fabrication de téléviseurs - la fabrication de moniteurs et d’écrans de télévision - la fabrication de systèmes d’enregistrement et de reproduction audio - la fabrication d’équipements stéréo - la fabrication de récepteurs radio - la fabrication de systèmes d’amplification du son - la fabrication de caméscopes destinés à un usage domestique - la fabrication de juke-boxes - la fabrication de matériel d’amplification des instruments de musique et de systèmes d’information du public - la fabrication de microphones - la fabrication de lecteurs CD et DVD - la fabrication de machines à karaoké - la fabrication d’écouteurs (par exemple: radio, stéréo, ordinateur) - la fabrication de consoles de jeux vidéo  128 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "26.51",
         "lib_na9": "Fabrication d'instruments et d'appareils de mesure, d'essai et de navigation",
-        "cls_na9": 26.51,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أدوات القياس والإختبار والملاحة"
+        "description": "guidage, de systèmes et instruments pour la marine ou l’aviation, de thermostats pour des applications telles que chauffage, climatiseur, réfrigération, appareils, d’instruments et d’appareils pour la mesure, l’affichage, l’indication, l’enregistrement, la transmission et le contrôle de température, d’humidité, de pression, de vide, de combustion, de débit, de viscosité, de densité, d’acidité, de concentration et de rotation, d’instruments de mesure des fluides (c’est-àdire d’enregistrement) et de comptage, d’instruments de mesure et d’essai des caractéristiques de l’électricité et des signaux électriques, d’instruments et de systèmes d’instrumentation pour l’analyse en laboratoire de la composition ou de la concentration chimique ou physique d’échantillons de matériaux solides, liquides, gazeux ou composites, d’autres instruments de mesure et d’essais et de leurs éléments. La fabrication d’équipements de mesure, d’essai et de navigation (à l’exception d’outils mécaniques simples) est comprise dans cette classe. - la fabrication d’instruments de moteur d’aéronef - la fabrication d’instruments de contrôle des émissions des véhicules à moteur - la fabrication d’instruments météorologiques - la fabrication d’instruments d’essai et de contrôle des propriétés physiques - la fabrication de polygraphes - la fabrication de détecteurs et de moniteurs de radiation - la fabrication d’instruments de géodésie - la fabrication de thermomètres, genre liquide-dans-verre et bilame (sauf médical) - la fabrication d’humidistats - la fabrication d’instruments de contrôle de limite hydronique - la fabrication d’instruments de contrôle de flamme et de brûleur - la fabrication de spectromètres - la fabrication de jauges pneumatiques - la fabrication de compteurs de consommation (eau, gaz, électricité, etc.) - la fabrication de débitmètres et de compteurs - la fabrication de compteurs - la fabrication de détecteurs de mines, de générateurs de signaux, de détecteurs de métaux - la fabrication de systèmes et d’instruments de recherche, de détection, de navigation, de systèmes et d’instruments pour la marine ou l’aviation, y compris les balises sonores - la fabrication d’instruments radar - la fabrication d’instruments GPS - la fabrication de contrôleurs et de régulateurs environnementaux automatiques - la fabrication d’instruments de mesure et d’enregistrement (par exemple: enregistreurs de vol) - la fabrication de détecteurs de mouvements - la fabrication de radars - la fabrication d’instruments d’analyse en laboratoire (par exemple: instruments d’analyse du sang) - la fabrication d’échelles, de balances, d’incubateurs de laboratoires et de divers appareils de laboratoire de mesure, d’essai, etc. "
     },
     {
+        "cls_na9": "26.52",
         "lib_na9": "Horlogerie",
-        "cls_na9": 26.52,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الساعات بإختلاف أنواعها (وآليات تحديد التوقيت)"
+        "description": "- la fabrication de montres et horloges de tout type, y compris les horloges de tableau de bord - la fabrication de boîtiers de montres, de cages et de cabinets d’horlogerie, y compris en métaux précieux - la fabrication d’appareils de contrôle du temps ou d’appareils compteurs de temps, enregistrant ou affichant des intervalles de temps avec un mouvement de montre ou d’horloge ou à moteur synchrone, tels que: • parcmètres • horloges-pointeuses • tampons horaires et tampons dateurs • chronomicromètres - la fabrication d’interrupteurs horaires et d’autres appareils de déclenchement avec un mouvement de montre ou d’horloge ou à moteur synchrone, tels que: • fermetures commandées par une minuterie - la fabrication de pièces pour horloges et montres: • mouvements d’horlogerie de tous types • ressorts, pierres, cadrans, aiguilles, platines, ponts et autres pièces • boîtiers de montres, de cages et de cabinets d’horlogerie, en tous types de matériaux "
     },
     {
+        "cls_na9": "26.60",
         "lib_na9": "Fabrication d'équipements d'irradiation médicale, d'équipements électromédicaux et électrothérapeutiques",
-        "cls_na9": 26.6,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة أجهزة الأشعة الطبية والأجهزة الطبية والعلاجية"
+        "description": "- la fabrication d’appareils et de tubes pour irradiations (à usage industriel, de diagnostic médical, de soins, de recherche, scientifique, etc.): • appareils à rayons X et appareils utilisant les radiations alpha, bêta ou gamma - la fabrication de tomographes par ordinateur - la fabrication de tomographes à émission de positons (PET) - la fabrication d’appareils d’imagerie par résonnance magnétique (IRM) - la fabrication d’appareils médicaux à ultrasons - la fabrication d’électrocardiographes - la fabrication d’appareils électromédicaux pour techniques endoscopiques - la fabrication d’appareils médicaux à laser - la fabrication de stimulateurs cardiaques - la fabrication d’appareils pour faciliter l’audition - la fabrication d’appareils d’irradiation des aliments et du lait "
     },
     {
+        "cls_na9": "26.70",
         "lib_na9": "Fabrication de matériels optique et photographique",
-        "cls_na9": 26.7,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأدوات البصرية وآلات التصوير الفوتوغرافي"
+        "description": "des microscopes électroniques, protoniques), télescopes, prismes et lentilles (sauf ophtalmiques), l’enduisage ou le polissage de lentilles (sauf ophtalmiques), le montage de lentilles (sauf ophtalmiques) et la fabrication de matériel photographique tel que appareils photographiques et luxmètres. - la fabrication de miroirs optiques - la fabrication de matériel de visée optique équipant les fusils - la fabrication d’appareils de positionnement optique - la fabrication de loupes - la fabrication d’instruments optiques pour les travaux de mécanique de précision - la fabrication de comparateurs optiques - la fabrication d’appareils photos analogiques et numériques - la fabrication de matériel de projection de films ou de diapositives - la fabrication de matériel de rétroprojection - la fabrication d’appareils et d’instruments optiques de mesure et de contrôle (par exemple: matériel de lutte contre l’incendie, luxmètres à usage photographique, télémètres) - la fabrication de lentilles, de microscopes optiques, de jumelles et de télescopes - la fabrication d’assemblages laser "
     },
     {
+        "cls_na9": "26.80",
         "lib_na9": "Fabrication de supports magnétiques et optiques",
-        "cls_na9": 26.8,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الوسائط المغناطسية والبصرية"
+        "description": "- la fabrication de bandes magnétiques vierges pour le son et l’image - la fabrication de cassettes vierges pour le son et l’image - la fabrication de disquettes vierges - la fabrication de disques optiques vierges - la fabrication de disques durs "
     },
     {
+        "cls_na9": "27.11",
         "lib_na9": "Fabrication de moteurs, génératrices et transformateurs électriques",
-        "cls_na9": 27.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المحركات والمولّدات والمحوّلات الكهربائية"
+        "description": "continu ou alternatif-continu. - la fabrication de moteurs électriques (à l’exception des moteurs de démarrage pour moteurs à combustion interne) - la fabrication de transformateurs électriques de distribution - la fabrication de transformateurs pour soudure à l’arc - la fabrication de ballasts fluorescents (transformateurs) - la fabrication de transformateurs de sous-station pour la distribution de l’électricité - la fabrication de régulateurs de voltage, transmission et distribution - la fabrication de groupes électrogènes (à l’exception des alternateurs charge batterie pour moteurs à combustion interne) - la fabrication de groupes électrogènes à moteur (à l’exception des turbines génératrices) - le rebobinage d’armatures en usine "
     },
     {
+        "cls_na9": "27.12",
         "lib_na9": "Fabrication de matériel de distribution et de commande électrique",
-        "cls_na9": 27.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أجهزة التوزيع والتحكم في التيار الكهربائي",
-        "description": "- la fabrication de disjoncteurs de puissance\n- la fabrication de limiteurs de tension (pour la tension au niveau de la distribution)\n- la fabrication de pupitres de commande pour la distribution de l’électricité\n- la fabrication de relais électriques\n- la fabrication de compartiments pour appareillage de tableaux de distribution électrique\n- la fabrication de fusibles électriques\n- la fabrication d’équipements électriques de commutation\n- la fabrication d’interrupteurs électriques (sauf à poussoir, à bouton poussoir, à bascule ou à solénoïde)\n- la fabrication de groupes électrogènes à moteur"
+        "description": "- la fabrication de disjoncteurs de puissance - la fabrication de limiteurs de tension (pour la tension au niveau de la distribution) - la fabrication de pupitres de commande pour la distribution de l’électricité - la fabrication de relais électriques - la fabrication de compartiments pour appareillage de tableaux de distribution électrique - la fabrication de fusibles électriques - la fabrication d’équipements électriques de commutation - la fabrication d’interrupteurs électriques (sauf à poussoir, à bouton poussoir, à bascule ou à solénoïde) - la fabrication de groupes électrogènes à moteur "
     },
     {
+        "cls_na9": "27.20",
         "lib_na9": "Fabrication de piles et d'accumulateurs électriques",
-        "cls_na9": 27.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع البطاريات والمركمات الكهربائية"
+        "description": "- la fabrication de piles et de batteries électriques • piles au bioxyde de manganèse, à l’oxyde de mercure, à l’oxyde d’argent ou contenant d’autres matières - la fabrication d’accumulateurs électriques et de parties de ces appareils • séparateurs, bacs, couvercles - la fabrication d’accumulateurs au plomb - la fabrication d’accumulateurs au nickel-cadmium (Ni/Cd) - la fabrication d’accumulateurs au nickel-hydrure métallique (NiMH) - la fabrication d’accumulateurs au lithium - la fabrication d’accumulateurs à pile sèche - la fabrication d’accumulateurs à pile humide    27.3 Fabrication de fils et câbles et de matériel d'installation électrique Ce groupe comprend la fabrication de dispositifs de câblage porteurs et non porteurs de courant pour le câblage d’installations électriques, quel que soit le matériau utilisé. Ce groupe comprend également la fabrication de fils et câbles électriques isolés et de câbles en fibres optiques.  132 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "27.31",
         "lib_na9": "Fabrication de câbles de fibres optiques",
-        "cls_na9": 27.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع كابلات الألياف البصرية",
-        "description": "- la fabrication de câbles de fibres optiques pour la transmission des données ou la transmission en direct d’images"
+        "description": "- la fabrication de câbles de fibres optiques pour la transmission des données ou la transmission en direct d’images "
     },
     {
+        "cls_na9": "27.32",
         "lib_na9": "Fabrication d'autres fils et câbles électroniques ou électriques",
-        "cls_na9": 27.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أسلاك وكابلات إلكترونية وكهربائية أخرى",
-        "description": "- la fabrication de fils et câbles isolés, en acier, cuivre, aluminium"
+        "description": "- la fabrication de fils et câbles isolés, en acier, cuivre, aluminium "
     },
     {
+        "cls_na9": "27.33",
         "lib_na9": "Fabrication de matériel d'installation électrique",
-        "cls_na9": 27.33,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أجهزة التركيب الكهربائية"
+        "description": "d’installations électriques, quel que soit le matériau utilisé. - la fabrication de barres bus, de conducteurs électriques (sauf de type commutateurs) - la fabrication de disjoncteurs différentiels - la fabrication de douilles pour lampes - la fabrication de coupe-circuits et de bobines - la fabrication d’interrupteurs pour câblages électriques (tels que interrupteurs à poussoir, à bouton poussoir, à bascule, etc.) - la fabrication de prises de courant - la fabrication de boîtiers pour les câblages électriques (par exemple: jonctions, prises de courant, interrupteurs) - la fabrication de canalisations et accessoires électriques - la fabrication de quincaillerie de ligne électrique suspendue - la fabrication de dispositifs de câblage non porteurs de courant fait de plastique, boîtes de connexion, plaques, raccords de lignes de poteaux "
     },
     {
+        "cls_na9": "27.40",
         "lib_na9": "Fabrication d'appareils d'éclairage électrique",
-        "cls_na9": 27.4,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أجهزة الإنارة الكهربائية"
+        "description": "ébauches de verre pour ampoules électriques), la fabrication d’appareils d’éclairage ainsi que de lampes de table et de lampadaires (à l’exception des dispositifs de câblage porteurs et non porteurs de courant). - la fabrication de lampes à décharge, à incandescence, à fluorescence, à ultraviolet, à infrarouge, etc., leurs ampoules et accessoires - la fabrication de plafonniers - la fabrication de chandeliers - la fabrication de lampes de table (dispositifs d’éclairage) - la fabrication d’ornements électriques pour arbres de Noël - la fabrication de dispositifs lumineux décoratifs pour foyers - la fabrication d’appareils et de dispositifs pour la production de la lumière-éclair - la fabrication de lampes anti-insectes - la fabrication de lanternes (au carbure, électriques, au gaz, à l’essence, au kérosène, etc.) - la fabrication de projecteurs - la fabrication d’appareils d’éclairage de rue (à l’exception des feux de signalisation) - la fabrication d’appareils d’éclairage pour le matériel de transport (véhicules à moteur, avions, navires, etc.)  133     - la fabrication de matériel d’éclairage non électrique "
     },
     {
+        "cls_na9": "27.51",
         "lib_na9": "Fabrication d'appareils électroménagers",
-        "cls_na9": 27.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات كهربائية منزلية",
-        "description": "- la fabrication d’appareils électroménagers:\n• réfrigérateurs\n• congélateurs\n• machines à laver la vaisselle\n• machines à laver et à sécher le linge\n• aspirateurs\n• polisseurs de sols\n• broyeurs de déchets\n• presse-fruits et presse-légumes\n• ouvre-boîtes\n• rasoirs électriques, brosses à dents électriques et autres appareils domestiques électriques\n• appareils à aiguiser les couteaux\n• hottes aspirantes à extraction ou à recyclage\n- la fabrication d’appareils électrothermiques à usage domestique:\n• chauffe-eau électriques\n• couvertures chauffantes\n• sèche-cheveux, peignes, brosses, appareils à friser électriques\n• fers à repasser électriques\n• appareils pour le chauffage des locaux et ventilateurs de type ménager, portatifs\n• fours électriques\n• fours à micro-ondes\n• cuisinières, chauffe-plats\n• grille-pain\n• appareils pour la préparation du café ou du thé\n• poêles à frire, rôtissoires, grils, hottes\n• résistances chauffantes, etc."
+        "description": "- la fabrication d’appareils électroménagers: • réfrigérateurs • congélateurs • machines à laver la vaisselle • machines à laver et à sécher le linge • aspirateurs • polisseurs de sols • broyeurs de déchets • presse-fruits et presse-légumes • ouvre-boîtes • rasoirs électriques, brosses à dents électriques et autres appareils domestiques électriques • appareils à aiguiser les couteaux • hottes aspirantes à extraction ou à recyclage - la fabrication d’appareils électrothermiques à usage domestique: • chauffe-eau électriques • couvertures chauffantes • sèche-cheveux, peignes, brosses, appareils à friser électriques • fers à repasser électriques • appareils pour le chauffage des locaux et ventilateurs de type ménager, portatifs • fours électriques • fours à micro-ondes • cuisinières, chauffe-plats • grille-pain • appareils pour la préparation du café ou du thé • poêles à frire, rôtissoires, grils, hottes • résistances chauffantes, etc. "
     },
     {
+        "cls_na9": "27.52",
         "lib_na9": "Fabrication d'appareils ménagers non électriques",
-        "cls_na9": 27.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات منزلية غير كهربائية",
-        "description": "- la fabrication d’appareils non électriques pour le chauffage des locaux et la cuisine domestique:\n• appareils pour le chauffage des locaux, cuisinières, grils, poêles, chauffe-eau, ustensiles de cuisine, chauffe-plats, non\nélectriques"
+        "description": "- la fabrication d’appareils non électriques pour le chauffage des locaux et la cuisine domestique: • appareils pour le chauffage des locaux, cuisinières, grils, poêles, chauffe-eau, ustensiles de cuisine, chauffe-plats, non électriques  134 I n st i t u t N a t i o nal d e la S ta tis tiq u e    27.9 Fabrication d'autres matériels électriques "
     },
     {
+        "cls_na9": "27.90",
         "lib_na9": "Fabrication d'autres matériels électriques",
-        "cls_na9": 27.9,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع معدّات كهربائية أخرى"
+        "description": "piles et accumulateurs, câbles et câblages d’installations électriques, appareils d’éclairage ou appareils ménagers. - la fabrication de chargeurs de batterie à semi-conducteurs - la fabrication de dispositifs électriques d’ouverture et de fermeture des portes - la fabrication de carillons électriques - la fabrication de prolongateurs électriques à partir de fils isolés achetés - la fabrication d’appareils de nettoyage par ultrasons (autres que ceux destinés à un usage en laboratoire ou dentaire) - la fabrication d’onduleurs à semi-conducteurs, de redresseurs, de piles à combustible, de générateurs électriques - la fabrication de sources d’alimentation électrique ininterruptibles - la fabrication de limiteurs de tension (sauf pour la tension au niveau de la distribution) - la fabrication de câbles d’appareils, de prolongateurs électriques et d’autres jeux de fils électriques avec des fils isolés et des connecteurs - la fabrication d’électrodes et de contacts en carbone et en graphite et d’autres produits électriques constitués de carbone et de graphite - la fabrication d’accélérateurs de particules - la fabrication de condensateurs électriques et de composants similaires - la fabrication d’électro-aimants - la fabrication de sirènes - la fabrication de tableaux d’affichage électroniques - la fabrication de signaux électriques - la fabrication d’appareils électriques de signalisation, tels que les feux de signalisation et les équipements de signalisation pour piétons - la fabrication d’isolateurs pour l’électricité (sauf en verre ou en céramique) - la fabrication de matériel électrique à souder et à braser, y compris les fers à souder portatifs "
     },
     {
+        "cls_na9": "28.11",
         "lib_na9": "Fabrication de moteurs et turbines, à l'exception des moteurs d'avions et de véhicules",
-        "cls_na9": 28.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المحركات والتوربينات باستثناء محركات الطائرات والعربات",
-        "description": "- la fabrication de moteurs à piston à combustion interne, à l’exclusion des moteurs pour véhicules automobiles,\naéronefs et motocycles:\n• moteurs pour navires et bateaux\n• moteurs pour véhicules ferroviaires\n- la fabrication de moteurs de pistons, segments de piston, carburateurs pour tous types de moteurs à combustion\ninterne, moteurs diesel\n- la fabrication de soupapes d’admission et d’échappement pour moteurs à combustion interne\n- la fabrication de turbines et de leurs parties:\n• turbines produisant de la vapeur d’eau ou d’autres types de vapeur\n• turbines hydrauliques, roues hydrauliques et leurs régulateurs\n• turbines éoliennes\n• turbines à gaz, à l’exception des turboréacteurs et des turbopropulseurs pour la propulsion d’aéronefs\n- la fabrication d’ensembles turbine-chaudière\n- la fabrication de turbines génératrices\n- la fabrication de moteurs pour des applications industrielles"
+        "description": "- la fabrication de moteurs à piston à combustion interne, à l’exclusion des moteurs pour véhicules automobiles, aéronefs et motocycles: • moteurs pour navires et bateaux • moteurs pour véhicules ferroviaires - la fabrication de moteurs de pistons, segments de piston, carburateurs pour tous types de moteurs à combustion interne, moteurs diesel - la fabrication de soupapes d’admission et d’échappement pour moteurs à combustion interne - la fabrication de turbines et de leurs parties: • turbines produisant de la vapeur d’eau ou d’autres types de vapeur • turbines hydrauliques, roues hydrauliques et leurs régulateurs • turbines éoliennes • turbines à gaz, à l’exception des turboréacteurs et des turbopropulseurs pour la propulsion d’aéronefs - la fabrication d’ensembles turbine-chaudière - la fabrication de turbines génératrices - la fabrication de moteurs pour des applications industrielles "
     },
     {
+        "cls_na9": "28.12",
         "lib_na9": "Fabrication d'équipements hydrauliques et pneumatiques",
-        "cls_na9": 28.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأجهزة الهيدروليكية والهوائية",
-        "description": "- la fabrication d’appareils hydrauliques et pneumatiques (y compris pompes hydrauliques, moteurs hydrauliques,\ncylindres hydrauliques et pneumatiques, valves hydrauliques et pneumatiques et accessoires)\n- la fabrication de systèmes de préparation de l’air pour une utilisation dans des systèmes pneumatiques\n- la fabrication de systèmes hydrauliques et pneumatiques\n- la fabrication d’organes hydrauliques de transmission\n- la fabrication de transmissions hydrostatiques"
+        "description": "- la fabrication d’appareils hydrauliques et pneumatiques (y compris pompes hydrauliques, moteurs hydrauliques, cylindres hydrauliques et pneumatiques, valves hydrauliques et pneumatiques et accessoires) - la fabrication de systèmes de préparation de l’air pour une utilisation dans des systèmes pneumatiques - la fabrication de systèmes hydrauliques et pneumatiques - la fabrication d’organes hydrauliques de transmission - la fabrication de transmissions hydrostatiques "
     },
     {
+        "cls_na9": "28.13",
         "lib_na9": "Fabrication d'autres pompes et compresseurs",
-        "cls_na9": 28.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المضخات والمضاغط الأخرى",
-        "description": "- la fabrication de pompes à air ou à vide et de compresseurs d’air ou d’autres gaz\n- la fabrication de pompes pour liquides, même comportant un dispositif mesureur\n- la fabrication de pompes pour moteurs à combustion interne: pompes à huile, à eau, à carburant pour véhicules\nautomobiles, etc.\nCette classe comprend également:\n- la fabrication de pompes actionnées à la main"
+        "description": "- la fabrication de pompes à air ou à vide et de compresseurs d’air ou d’autres gaz - la fabrication de pompes pour liquides, même comportant un dispositif mesureur - la fabrication de pompes pour moteurs à combustion interne: pompes à huile, à eau, à carburant pour véhicules automobiles, etc. - la fabrication de pompes actionnées à la main "
     },
     {
+        "cls_na9": "28.14",
         "lib_na9": "Fabrication d'autres articles de robinetterie",
-        "cls_na9": 28.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الحنفيات ومعداتها الأخرى",
-        "description": "- la fabrication de robinetterie et de vannes industrielles, y compris les vannes de régulation et la robinetterie d’adduction\n- la fabrication de robinetterie sanitaire\n- la fabrication de robinetterie pour le chauffage"
+        "description": "- la fabrication de robinetterie et de vannes industrielles, y compris les vannes de régulation et la robinetterie d’adduction - la fabrication de robinetterie sanitaire - la fabrication de robinetterie pour le chauffage "
     },
     {
+        "cls_na9": "28.15",
         "lib_na9": "Fabrication d'engrenages et d'organes mécaniques de transmission",
-        "cls_na9": 28.15,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المسننّات والأعضاء الميكانيكية الناقلة للحركة",
-        "description": "- la fabrication de roulements à billes, à galets, à rouleaux ou à aiguilles et de leurs éléments\n- la fabrication d’organes mécaniques de transmission de l’énergie:\n• arbres de transmission et manivelles: arbres à cames, vilebrequins, manivelles, etc.\n• paliers et coussinets\n- la fabrication d’engrenages et de roues de friction ainsi que de réducteurs, de multiplicateurs et de variateurs de vitesse\n- la fabrication d’embrayages et d’organes d’accouplement\n- la fabrication de volants et de poulies\n- la fabrication de chaînes à maillons articulés\n- la fabrication de chaînes pour la transmission de l’énergie"
+        "description": "- la fabrication de roulements à billes, à galets, à rouleaux ou à aiguilles et de leurs éléments - la fabrication d’organes mécaniques de transmission de l’énergie: • arbres de transmission et manivelles: arbres à cames, vilebrequins, manivelles, etc. • paliers et coussinets - la fabrication d’engrenages et de roues de friction ainsi que de réducteurs, de multiplicateurs et de variateurs de vitesse - la fabrication d’embrayages et d’organes d’accouplement - la fabrication de volants et de poulies - la fabrication de chaînes à maillons articulés - la fabrication de chaînes pour la transmission de l’énergie "
     },
     {
+        "cls_na9": "28.21",
         "lib_na9": "Fabrication de fours et brûleurs",
-        "cls_na9": 28.21,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأفران والمحاريق (مواقد أفران الصهر)",
-        "description": "- la fabrication de fours électriques et d’autres fours industriels ou de laboratoires, y compris les incinérateurs\n- la fabrication de brûleurs\n- la fabrication de chauffages électriques de locaux à montage permanent, de chauffages électriques de piscines\n- la fabrication de chauffages autres que électriques et à usage domestique à montage permanent, comme le chauffage\nsolaire, chauffage à la vapeur, chauffage à l’huile et systèmes similaires de chauffage\n- la fabrication de fourneaux électriques à usage domestique (installations électriques à air pulsé, pompes à chaleur, etc.),\ninstallations non électriques à air pulsé\nCette classe comprend également:\n- la fabrication de foyers automatiques, d’avant-foyers, de grilles mécaniques, de dispositifs pour l’évacuation des cendres, etc."
+        "description": "- la fabrication de fours électriques et d’autres fours industriels ou de laboratoires, y compris les incinérateurs - la fabrication de brûleurs - la fabrication de chauffages électriques de locaux à montage permanent, de chauffages électriques de piscines - la fabrication de chauffages autres que électriques et à usage domestique à montage permanent, comme le chauffage solaire, chauffage à la vapeur, chauffage à l’huile et systèmes similaires de chauffage - la fabrication de fourneaux électriques à usage domestique (installations électriques à air pulsé, pompes à chaleur, etc.), installations non électriques à air pulsé - la fabrication de foyers automatiques, d’avant-foyers, de grilles mécaniques, de dispositifs pour l’évacuation des cendres, etc. "
     },
     {
+        "cls_na9": "28.22",
         "lib_na9": "Fabrication de matériel de levage et de manutention",
-        "cls_na9": 28.22,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات الرفع والمناولة",
-        "description": "- la fabrication de machines et d’appareils de levage, de chargement, de déchargement ou de manutention actionnés par\nmoteur ou à la main:\n• palans, treuils et cabestans, crics et vérins\n• bigues, grues, portiques mobiles, chariots-cavaliers, etc.\n• chariots, même automobiles, munis ou non d’un dispositif de levage ou de manutention, des types utilisés dans les\nusines (y compris diables et brouettes)\n• manipulateurs mécaniques et robots industriels spécialement conçus pour des opérations de levage, de manutention,\nde chargement ou de déchargement\n- la fabrication d’appareils transporteurs ou convoyeurs, de téléphériques, etc.\n- la fabrication d’ascenseurs, d’escaliers mécaniques et de trottoirs roulants\n- la fabrication d’éléments spécialisés de matériels de levage et de manutention"
+        "description": "- la fabrication de machines et d’appareils de levage, de chargement, de déchargement ou de manutention actionnés par moteur ou à la main: • palans, treuils et cabestans, crics et vérins • bigues, grues, portiques mobiles, chariots-cavaliers, etc. • chariots, même automobiles, munis ou non d’un dispositif de levage ou de manutention, des types utilisés dans les usines (y compris diables et brouettes) • manipulateurs mécaniques et robots industriels spécialement conçus pour des opérations de levage, de manutention, de chargement ou de déchargement - la fabrication d’appareils transporteurs ou convoyeurs, de téléphériques, etc. - la fabrication d’ascenseurs, d’escaliers mécaniques et de trottoirs roulants - la fabrication d’éléments spécialisés de matériels de levage et de manutention "
     },
     {
-        "lib_na9": "Fabrication de machines et d'équipements de bureau (à l'exception des ordinateurs et équipements périphériques)",
-        "cls_na9": 28.23,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الآلات والمعدات المكتبية باستثناء الحواسيب والمعدات الملحقة بها"
+        "cls_na9": "28.23",
+        "lib_na9": "Fabrication de machines et d'équipements de bureau (à l'exception des ordinateurs et équipements",
+        "description": "- la fabrication de machines à calculer - la fabrication de caisses enregistreuses - la fabrication de calculateurs, électroniques ou non - la fabrication de compteurs de timbres-poste, de machines de gestion du courrier (adressage, mise sous pli, cachetage et expédition de plis, ouverture, tri, numérisation), de relieuses - la fabrication de machines à écrire - la fabrication de machines à sténographie - la fabrication de relieuses de bureau (reliures plastiques ou à bande) - la fabrication de machines à écrire des chèques - la fabrication de machines à compter ou à encartoucher les pièces de monnaie - la fabrication de taille-crayons - la fabrication de machines à poser et à enlever les agrafes - la fabrication de machines à voter - la fabrication de distributeurs de ruban  138 I n st i t u t N a t i o nal d e la S ta tis tiq u e    - la fabrication de perforatrices - la fabrication de caisses enregistreuses fonctionnant mécaniquement - la fabrication de photocopieuses - la fabrication de cartouches d’encre - la fabrication de tableaux noirs, blancs, etc. - la fabrication de machines à dicter "
     },
     {
+        "cls_na9": "28.24",
         "lib_na9": "Fabrication d'outillage portatif à moteur incorporé",
-        "cls_na9": 28.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأدوات الآلية المنقولة ذات محرك مندمج",
-        "description": "- la fabrication d’outils portatifs à moteur électrique ou non électrique intégré ou pneumatique, tels que:\n• scies circulaires ou alternatives\n• tronçonneuses\n• perceuses et perceuses à percussion\n• ponceuses à main\n• marteaux pneumatiques\n• tampons\n• routeurs\n• meuleuses\n• agrafeuses\n• riveteuses pneumatiques\n• raboteuses\n• ciseaux et cisailles\n• clés à molette\n• cloueuses à poudre"
+        "description": "- la fabrication d’outils portatifs à moteur électrique ou non électrique intégré ou pneumatique, tels que: • scies circulaires ou alternatives • tronçonneuses • perceuses et perceuses à percussion • ponceuses à main • marteaux pneumatiques • tampons • routeurs • meuleuses • agrafeuses • riveteuses pneumatiques • raboteuses • ciseaux et cisailles • clés à molette • cloueuses à poudre "
     },
     {
+        "cls_na9": "28.25",
         "lib_na9": "Fabrication d'équipements aérauliques et frigorifiques industriels",
-        "cls_na9": 28.25,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع تجهيزات التهوئة وتجهيزات التبريد الصناعي",
-        "description": "- la fabrication d’équipements industriels pour la production du froid, y compris l’assemblage des éléments les\ncomposant\n- la fabrication de machines et d’appareils pour le conditionnement de l’air, y compris pour les véhicules automobiles\n- la fabrication de ventilateurs à usage non domestique\n- la fabrication d’échangeurs de chaleur\n- la fabrication de machines à liquéfier l’air ou le gaz\n- la fabrication de ventilateurs de grenier (ventilateurs sur pignon, ventilateurs sur toit, etc.)"
+        "description": "- la fabrication d’équipements industriels pour la production du froid, y compris l’assemblage des éléments les composant - la fabrication de machines et d’appareils pour le conditionnement de l’air, y compris pour les véhicules automobiles - la fabrication de ventilateurs à usage non domestique - la fabrication d’échangeurs de chaleur - la fabrication de machines à liquéfier l’air ou le gaz - la fabrication de ventilateurs de grenier (ventilateurs sur pignon, ventilateurs sur toit, etc.) "
     },
     {
+        "cls_na9": "28.29",
         "lib_na9": "Fabrication de machines diverses d'usage général",
-        "cls_na9": 28.29,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات متنوعة متعددة الأغراض"
+        "description": "- la fabrication d’appareils et d’instruments de pesage (autres que les balances de précision utilisées dans les laboratoires): • balances de ménage et de magasin, bascules, bascules à pesage continu, ponts-bascules, poids pour balances, etc. - la fabrication d’appareils pour la filtration ou l’épuration des liquides - la fabrication d’appareils à projeter, à disperser ou à pulvériser des matières liquides ou en poudre: • pistolets aérographes, extincteurs, machines et appareils à jet de sable, appareils de nettoyage à vapeur, etc. - la fabrication de machines et d’appareils à empaqueter ou emballer les marchandises: • machines et appareils à remplir, fermer, sceller, capsuler ou étiqueter, etc. - la fabrication de machines et d’appareils servant à nettoyer ou à sécher les bouteilles ainsi que de machines et d’appareils à gazéifier les boissons - la fabrication d’appareils de distillation ou de rectification pour les raffineries de pétrole, les industries chimiques, les industries des boissons, etc. - la fabrication de générateurs de gaz - la fabrication de calandres et de laminoirs ainsi que de cylindres pour ces machines (sauf pour le métal et le verre) - la fabrication de machines centrifuges (sauf les écrémeuses et les sèche-linge)  139     - la fabrication de joints d’étanchéité et de joints similaires composés de matériaux différents ou de plusieurs couches d’un même matériau - la fabrication de machines automatiques de vente de produits - la fabrication de niveaux, de mètres à ruban et d’outils à main similaires, d’instruments pour les travaux de mécanique de précision (sauf optiques) - la fabrication de matériel non électrique à souder et à braser - la fabrication de tours de refroidissement et de dispositifs similaires destinés au refroidissement direct fonctionnant avec de l’eau réinjectée "
     },
     {
+        "cls_na9": "28.30",
         "lib_na9": "Fabrication de machines agricoles et forestières",
-        "cls_na9": 28.3,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الآلات المستعملة في الفلاحة والغابات"
+        "description": "- la fabrication de tracteurs agricoles et forestiers - la fabrication de motoculteurs - la fabrication de faucheuses, y compris les tondeuses à gazon - la fabrication de remorques ou de semi-remorques autochargeuses ou autodéchargeuses, pour usages agricoles - la fabrication de machines, d’appareils et d’engins agricoles pour la préparation du sol, la plantation des cultures ou l’épandage des engrais: • charrues, épandeurs de fumier, semoirs, herses, etc. - la fabrication de machines, d’appareils et d’engins pour la récolte et le battage des produits agricoles: • moissonneuses, batteuses, machines pour le triage, etc. - la fabrication de machines à traire - la fabrication de machines et d’appareils de pulvérisation pour l’agriculture - la fabrication d’autres machines et appareils pour l’agriculture: • machines et appareils pour l’aviculture, l’apiculture, la préparation des aliments ou provendes pour animaux, etc. • machines pour le nettoyage, le triage ou le calibrage des œufs, des fruits, etc. "
     },
     {
+        "cls_na9": "28.41",
         "lib_na9": "Fabrication de machines de formage des métaux",
-        "cls_na9": 28.41,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الأدوات الآلية لتشكيل المعادن",
-        "description": "- la fabrication de machines de formage des métaux, y compris celles opérant par faisceaux laser, par ultrasons, par jet\nde plasma ou par impulsions magnétiques, etc.\n- la fabrication de machines-outils servant à tourner, percer, fraiser, limer, raboter, aléser, rectifier, etc.\n- la fabrication de machines-outils à estamper ou à presser\n- la fabrication de machines à poinçonner, presses hydrauliques, freins hydrauliques, marteaux-pilons, machines à forger, etc.\n- la fabrication de bancs à étirer, de machines pour exécuter un filetage par roulage ou de machines pour le travail des\nmétaux sous forme de fils"
+        "description": "- la fabrication de machines de formage des métaux, y compris celles opérant par faisceaux laser, par ultrasons, par jet de plasma ou par impulsions magnétiques, etc. - la fabrication de machines-outils servant à tourner, percer, fraiser, limer, raboter, aléser, rectifier, etc. - la fabrication de machines-outils à estamper ou à presser - la fabrication de machines à poinçonner, presses hydrauliques, freins hydrauliques, marteaux-pilons, machines à forger, etc. - la fabrication de bancs à étirer, de machines pour exécuter un filetage par roulage ou de machines pour le travail des métaux sous forme de fils "
     },
     {
+        "cls_na9": "28.49",
         "lib_na9": "Fabrication d'autres machines-outils",
-        "cls_na9": 28.49,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أدوات آلية أخرى",
-        "description": "- la fabrication de machines-outils pour le travail du bois, de l’os, de la pierre, du caoutchouc durci, des matières\nplastiques dures ou le travail à froid du verre, y compris celles opérant par faisceaux laser, par ultrasons, par jet de plasma\nou par impulsions magnétiques, etc.\n- la fabrication de porte-pièces pour machines-outils\n- la fabrication de plateaux diviseurs et autres dispositifs spéciaux pour machines-outils\n- la fabrication de machines-outils pour clouer, agrafer, coller ou autrement assembler le bois, le liège, l’os, le caoutchouc\ndurci ou les matières plastiques dures, etc.\n- la fabrication de machines de forage rotatives par percussion, de limeuses, de riveteuses, de machines à découper les\nfeuilles de métal, etc.\n- la fabrication de presses pour la fabrication de panneaux de bois\n- la fabrication de machines pour le traitement électrolytique\nCette classe comprend également:\n- la fabrication de pièces et accessoires destinés aux machines-outils énumérées"
+        "description": "- la fabrication de machines-outils pour le travail du bois, de l’os, de la pierre, du caoutchouc durci, des matières plastiques dures ou le travail à froid du verre, y compris celles opérant par faisceaux laser, par ultrasons, par jet de plasma ou par impulsions magnétiques, etc. - la fabrication de porte-pièces pour machines-outils - la fabrication de plateaux diviseurs et autres dispositifs spéciaux pour machines-outils - la fabrication de machines-outils pour clouer, agrafer, coller ou autrement assembler le bois, le liège, l’os, le caoutchouc durci ou les matières plastiques dures, etc. - la fabrication de machines de forage rotatives par percussion, de limeuses, de riveteuses, de machines à découper les feuilles de métal, etc. - la fabrication de presses pour la fabrication de panneaux de bois - la fabrication de machines pour le traitement électrolytique - la fabrication de pièces et accessoires destinés aux machines-outils énumérées "
     },
     {
+        "cls_na9": "28.91",
         "lib_na9": "Fabrication de machines pour la métallurgie",
-        "cls_na9": 28.91,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات العدانة"
+        "description": "- la fabrication de machines et d’appareils pour la manutention des métaux à haute température: • convertisseurs, lingotières, poches de coulée, machines à couler (mouler) - la fabrication de laminoirs à métaux et de leurs cylindres "
     },
     {
+        "cls_na9": "28.92",
         "lib_na9": "Fabrication de machines pour l'extraction ou la construction",
-        "cls_na9": 28.92,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات لإستخراج المعادن أو للبناء",
-        "description": "- la fabrication d’appareils élévateurs, transporteurs ou convoyeurs à action continue pour mines au fond ou autres\ntravaux souterrains\n- la fabrication de machines de sondage, de haveuses, de machines de forage et de machines à creuser les tunnels ou les\ngaleries (destinées ou non aux travaux souterrains)\n- la fabrication de machines et d’appareils à traiter les minéraux par criblage, triage, séparation, lavage, concassage, etc.\n- la fabrication de bétonnières et d’appareils à gâcher le ciment\n- la fabrication de machines et d’appareils de terrassement:\n• bouteurs (bulldozers), bouteurs biais (angledozers), niveleuses, décapeuses (scrapers), pelles mécaniques, chargeuses\net chargeuses-pelleteuses, etc.\n- la fabrication de sonnettes de battage et de machines pour l’arrachage des pieux, d’épandeurs de mortier et de bitume,\nde machines pour le surfaçage du béton, etc\n- la fabrication de tracteurs poseurs de voies et de tracteurs utilisés dans la construction et les mines\n- la fabrication de lames de bouteurs et de bouteurs biais\n- la fabrication de camions à benne tout-terrains"
+        "description": "- la fabrication d’appareils élévateurs, transporteurs ou convoyeurs à action continue pour mines au fond ou autres travaux souterrains - la fabrication de machines de sondage, de haveuses, de machines de forage et de machines à creuser les tunnels ou les galeries (destinées ou non aux travaux souterrains) - la fabrication de machines et d’appareils à traiter les minéraux par criblage, triage, séparation, lavage, concassage, etc. - la fabrication de bétonnières et d’appareils à gâcher le ciment - la fabrication de machines et d’appareils de terrassement: • bouteurs (bulldozers), bouteurs biais (angledozers), niveleuses, décapeuses (scrapers), pelles mécaniques, chargeuses et chargeuses-pelleteuses, etc. - la fabrication de sonnettes de battage et de machines pour l’arrachage des pieux, d’épandeurs de mortier et de bitume, de machines pour le surfaçage du béton, etc - la fabrication de tracteurs poseurs de voies et de tracteurs utilisés dans la construction et les mines - la fabrication de lames de bouteurs et de bouteurs biais - la fabrication de camions à benne tout-terrains "
     },
     {
+        "cls_na9": "28.93",
         "lib_na9": "Fabrication de machines pour l'industrie agro-alimentaire",
-        "cls_na9": 28.93,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات للصناعة الفلاحية-الغذائية",
-        "description": "- la fabrication de séchoirs pour produits agricoles\n- la fabrication de machines et d’appareils de laiterie:\n• écrémeuses\n• machines pour le traitement du lait (appareils homogénéisateurs, par exemple)\n• machines et appareils pour la transformation du lait (barattes, malaxeurs et machines à mouler le beurre)\n• machines et appareils de fromagerie (machines à lisser et à mouler, presses à fromage, etc.)\n- la fabrication de machines et d’appareils pour la minoterie:\n• machines pour le nettoyage, le triage ou le calibrage de semences, de grains ou de légumes à cosse secs (tarares, toiles\ntrieuses, séparateurs, machines à brosser les grains, etc.)\n• machines et appareils pour la production de farines, gruaux ou autres produits de minoterie (moulins à meules de\npierre, alimentateurs, machines à nettoyer les sons, mélangeurs, machines à décortiquer le riz, machines à casser les pois)\n- la fabrication de presses, de pressoirs et de fouloirs, etc., utilisés pour la fabrication du vin, du cidre, des jus de fruits, etc."
+        "description": "- la fabrication de séchoirs pour produits agricoles - la fabrication de machines et d’appareils de laiterie: • écrémeuses • machines pour le traitement du lait (appareils homogénéisateurs, par exemple) • machines et appareils pour la transformation du lait (barattes, malaxeurs et machines à mouler le beurre) • machines et appareils de fromagerie (machines à lisser et à mouler, presses à fromage, etc.) - la fabrication de machines et d’appareils pour la minoterie: • machines pour le nettoyage, le triage ou le calibrage de semences, de grains ou de légumes à cosse secs (tarares, toiles trieuses, séparateurs, machines à brosser les grains, etc.) • machines et appareils pour la production de farines, gruaux ou autres produits de minoterie (moulins à meules de pierre, alimentateurs, machines à nettoyer les sons, mélangeurs, machines à décortiquer le riz, machines à casser les pois) - la fabrication de presses, de pressoirs et de fouloirs, etc., utilisés pour la fabrication du vin, du cidre, des jus de fruits, etc.    - la fabrication de machines et d’appareils pour la boulangerie, la pâtisserie, la biscuiterie ou pour la fabrication des pâtes alimentaires: • fours de boulangerie, malaxeurs à pâte, machines à diviser la pâte, machines à mouler la pâte, machines à trancher, appareils de pâtisserie à doser les pâtes et les ingrédients, etc. - la fabrication de machines et d’appareils pour la transformation de divers produits alimentaires: • machines et appareils pour la confiserie ou pour la fabrication du cacao ou du chocolat, pour la sucrerie, pour la brasserie, pour le travail des viandes ou de la volaille, pour la préparation des fruits, des légumes ou des fruits à coque, pour la préparation des poissons, des crustacés, des coquillages et d’autres produits de la mer • appareils pour la filtration ou l’épuration • autres machines pour la préparation ou la fabrication industrielle de produits alimentaires ou de boissons - la fabrication de machines et d’appareils pour l’extraction ou la préparation des huiles ou des graisses animales ou végétales - la fabrication de machines et d’appareils pour la préparation du tabac et la fabrication de cigares, de cigarettes ou de tabac à pipe, à chiquer ou à priser - la fabrication de machines et d’appareils pour la préparation des aliments dans les hôtels et les restaurants "
     },
     {
+        "cls_na9": "28.94",
         "lib_na9": "Fabrication de machines pour les industries textiles",
-        "cls_na9": 28.94,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات لصناعة النسيج",
-        "description": "- la fabrication de machines pour l’industrie textile:\n• machines pour la préparation, la fabrication, le filage (extrusion), l’étirage, la texturation ou le tranchage des fibres,\ndes matières ou des fils textiles, synthétiques ou artificiels\n• machines pour la préparation des fibres textiles: égreneuses de coton, machines brise-balles, effilocheuses du type\nGarnett, batteurs-étaleurs à coton, machines à dessuinter la laine, machines à carboniser la laine, peigneuses, cardes,\nmétiers à mèches, etc.\n• métiers à filer\n• machines pour la préparation des fils textiles: bobinoirs, ourdissoirs et machines similaires\n• métiers à tisser, y compris les métiers à main\n• machines et métiers à bonneterie\n• machines et métiers à filet, à tulle, à dentelle, à passementerie, etc.\n- la fabrication de machines et d’appareils auxiliaires pour les machines de l’industrie textile:\n• ratières, mécaniques Jacquard, casse-chaînes et casse-trames, mécanismes de changement de navettes, broches, ailettes, etc\n- la fabrication de machines à imprimer sur les matières textiles\n- la fabrication de machines et d’appareils pour le traitement des tissus:\n• machines et appareils pour le lavage, le blanchiment, la teinture, l’apprêt, le finissage, l’enduction ou l’imprégnation\ndes tissus en matières textiles\n• machines à enrouler, dérouler, plier, couper ou denteler les tissus en matières textiles\n- la fabrication de machines et d’appareils de blanchisserie:\n• machines à repasser, y compris les presses à fixer\n• machines commerciales à laver et à sécher le linge\n• machines pour le nettoyage à sec\n- la fabrication de machines à coudre ainsi que de têtes et d’aiguilles pour machines à coudre (à usage domestique ou autre)\n- la fabrication de machines et d’appareils pour la fabrication ou le finissage du feutre ou des non-tissés\n- la fabrication de machines et d’appareils pour l’industrie du cuir:\n• machines et appareils pour la préparation, le tannage ou le travail des cuirs ou des peaux\n• machines et appareils pour la fabrication ou la réparation des chaussures et des autres ouvrages en cuir, en peau ou\nen pelleterie"
+        "description": "- la fabrication de machines pour l’industrie textile: • machines pour la préparation, la fabrication, le filage (extrusion), l’étirage, la texturation ou le tranchage des fibres, des matières ou des fils textiles, synthétiques ou artificiels • machines pour la préparation des fibres textiles: égreneuses de coton, machines brise-balles, effilocheuses du type Garnett, batteurs-étaleurs à coton, machines à dessuinter la laine, machines à carboniser la laine, peigneuses, cardes, métiers à mèches, etc. • métiers à filer • machines pour la préparation des fils textiles: bobinoirs, ourdissoirs et machines similaires • métiers à tisser, y compris les métiers à main • machines et métiers à bonneterie • machines et métiers à filet, à tulle, à dentelle, à passementerie, etc. - la fabrication de machines et d’appareils auxiliaires pour les machines de l’industrie textile: • ratières, mécaniques Jacquard, casse-chaînes et casse-trames, mécanismes de changement de navettes, broches, ailettes, etc - la fabrication de machines à imprimer sur les matières textiles - la fabrication de machines et d’appareils pour le traitement des tissus: • machines et appareils pour le lavage, le blanchiment, la teinture, l’apprêt, le finissage, l’enduction ou l’imprégnation des tissus en matières textiles • machines à enrouler, dérouler, plier, couper ou denteler les tissus en matières textiles - la fabrication de machines et d’appareils de blanchisserie: • machines à repasser, y compris les presses à fixer • machines commerciales à laver et à sécher le linge • machines pour le nettoyage à sec - la fabrication de machines à coudre ainsi que de têtes et d’aiguilles pour machines à coudre (à usage domestique ou autre) - la fabrication de machines et d’appareils pour la fabrication ou le finissage du feutre ou des non-tissés - la fabrication de machines et d’appareils pour l’industrie du cuir: • machines et appareils pour la préparation, le tannage ou le travail des cuirs ou des peaux • machines et appareils pour la fabrication ou la réparation des chaussures et des autres ouvrages en cuir, en peau ou en pelleterie "
     },
     {
+        "cls_na9": "28.95",
         "lib_na9": "Fabrication de machines pour les industries du papier et du carton",
-        "cls_na9": 28.95,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات لصناعة الورق والورق المقوى",
-        "description": "- la fabrication de machines pour la fabrication de pâte à papier\n- la fabrication de machines pour la fabrication du papier et du carton\n- la fabrication de machines pour la fabrication d’articles en papier ou en carton\n28.96 Fabrication de machines pour le travail du caoutchouc ou des plastiques\nCette classe comprend:\n- la fabrication de machines pour le travail du caoutchouc tendre ou des matières plastiques, ou pour la fabrication de\nproduits en ces matières:\n• extrudeuses, machines à mouler, machines à fabriquer ou à rechaper les pneumatiques et autres machines et appareils\nà fabriquer des produits spécifiques en caoutchouc ou en matières plastiques"
+        "description": "- la fabrication de machines pour la fabrication de pâte à papier - la fabrication de machines pour la fabrication du papier et du carton - la fabrication de machines pour la fabrication d’articles en papier ou en carton "
     },
     {
+        "cls_na9": "28.96",
         "lib_na9": "Fabrication de machines pour le travail du caoutchouc ou des plastiques",
-        "cls_na9": 28.96,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات لصناعة المطاط واللدائن"
+        "description": "- la fabrication de machines pour le travail du caoutchouc tendre ou des matières plastiques, ou pour la fabrication de produits en ces matières: • extrudeuses, machines à mouler, machines à fabriquer ou à rechaper les pneumatiques et autres machines et appareils à fabriquer des produits spécifiques en caoutchouc ou en matières plastiques   143     "
     },
     {
+        "cls_na9": "28.99",
         "lib_na9": "Fabrication d'autres machines d'usage spécifique n.c.a.",
-        "cls_na9": 28.99,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع آلات أخرى ذات الإستعمال المختص غ.م.س"
+        "description": "- la fabrication de séchoirs pour le bois, les pâtes à papier, les papiers ou les cartons et d’autres matières (à l’exception des produits agricoles et textiles) - la fabrication de machines et de matériel pour l’imprimerie, le brochage et la reliure et de machines pour les activités d’impression sur différents types de matériaux - la fabrication de machines et appareils pour la fabrication de tuiles, de briques, de pâtes céramiques formées, de tuyaux, d’électrodes de graphite, de craies à écrire et à dessiner, etc. - la fabrication de machines à fabriquer les semi-conducteurs - la fabrication de robots industriels multi-tâches à usage spécifique - la fabrication d’autres machines et appareils à usage spécifique: • machines pour l’assemblage de lampes, de tubes, de valves électriques ou électroniques ou d’ampoules • machines pour la fabrication ou le travail à chaud du verre ou des ouvrages en verre, des fibres et des fils de verre • machines et appareils pour la séparation isotopique - la fabrication de matériel d’équilibrage des pneumatiques et de réglage de géométrie, de matériel d’équilibrage (sauf équilibrage des roues) - la fabrication d’appareillages dits de \"graissage centralisé\" - la fabrication d’appareils et de dispositifs pour le lancement de véhicules aériens, de catapultes destinées à équiper des porte-avions et de matériel similaire - la fabrication de bancs solaires - la fabrication d’installations de bowling automatiques (par exemple: machines à requiller) - la fabrication de manèges, de balançoires, de stands de tir et d’autres attractions foraines "
     },
     {
+        "cls_na9": "29.10",
         "lib_na9": "Construction de véhicules automobiles",
-        "cls_na9": 29.1,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع عربات ذات محرك"
+        "description": "- la fabrication de voitures de tourisme - la fabrication de véhicules utilitaires: • camions et camionnettes, tracteurs routiers pour semi-remorques, etc. - la fabrication d’autobus, de trolleybus et d’autocars - la fabrication de moteurs pour véhicules automobiles - la fabrication de châssis pour véhicules à moteur - la fabrication d’autres véhicules automobiles: • autoneiges et motoneiges, véhicules spéciaux pour le transport de personnes sur les terrains de golf, véhicules amphibies • autopompes, balayeuses, bibliobus, voitures blindées, etc. • camions-bétonnières - la fabrication de véhicules tout terrain, karts et engins similaires, y compris les voitures de course - le réusinage de moteurs pour véhicules automobiles "
     },
     {
+        "cls_na9": "29.20",
         "lib_na9": "Fabrication de carrosseries et remorques",
-        "cls_na9": 29.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع هياكل السيارات والمقطورات"
+        "description": "- la fabrication de carrosseries, y compris les cabines, pour véhicules automobiles - l’aménagement de tous types de véhicules automobiles, de remorques et de semi-remorques - la fabrication de remorques et de semi-remorques: • camions-citernes, véhicules de déménagement • remorques pour le camping, etc. - la fabrication de cadres et de conteneurs spécialement conçus et équipés pour un ou plusieurs modes de transport "
     },
     {
+        "cls_na9": "29.31",
         "lib_na9": "Fabrication d'équipements électriques et électroniques automobiles",
-        "cls_na9": 29.31,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع معدّات كهربائية وإلكترونية للسيارات",
-        "description": "- la fabrication de dispositifs électriques pour véhicules automobiles, tels que génératrices, alternateurs, bougies\nd’allumage, jeux de fils pour bougies d’allumage, systèmes d’ouverture et de fermeture électriques des portières et des\nvitres, assemblage de jauges achetées dans le tableau de bord, régulateurs de tension, etc."
+        "description": "- la fabrication de dispositifs électriques pour véhicules automobiles, tels que génératrices, alternateurs, bougies d’allumage, jeux de fils pour bougies d’allumage, systèmes d’ouverture et de fermeture électriques des portières et des vitres, assemblage de jauges achetées dans le tableau de bord, régulateurs de tension, etc. "
     },
     {
+        "cls_na9": "29.32",
         "lib_na9": "Fabrication d'autres équipements automobiles",
-        "cls_na9": 29.32,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع معدّات أخرى للسيارات",
-        "description": "- la fabrication de parties et accessoires divers pour véhicules automobiles:\n• freins, boîtes de vitesses, essieux, roues, amortisseurs, radiateurs, silencieux, tuyaux d’échappement, catalyseurs,\nembrayages, volants, colonnes et boîtiers de direction\n- la fabrication de parties et accessoires pour carrosseries de véhicules automobiles:\n• ceintures de sécurité, coussins gonflables de sécurité, portières, pare-chocs\n- la fabrication de sièges de voitures"
+        "description": "- la fabrication de parties et accessoires divers pour véhicules automobiles: • freins, boîtes de vitesses, essieux, roues, amortisseurs, radiateurs, silencieux, tuyaux d’échappement, catalyseurs, embrayages, volants, colonnes et boîtiers de direction - la fabrication de parties et accessoires pour carrosseries de véhicules automobiles: • ceintures de sécurité, coussins gonflables de sécurité, portières, pare-chocs - la fabrication de sièges de voitures "
     },
     {
+        "cls_na9": "30.11",
         "lib_na9": "Construction de navires et de structures flottantes",
-        "cls_na9": 30.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع السفن والهياكل العائمة"
+        "description": "et la construction de structures flottantes: - la construction de navires de commerce: navires à passagers, transbordeurs, cargos, bateaux-citernes, remorqueurs, etc. - la construction de navires de guerre - la construction de bateaux de pêche et de navires usines procédant à la transformation du poisson - la construction d’aéroglisseurs (à l’exception des aéroglisseurs de plaisance) - la construction de plates-formes de forage flottantes ou submersibles - la construction de structures et d’engins flottants: • docks flottants, pontons, caissons, coffres d’amarrage flottants, bouées, réservoirs flottants, barges, allèges, gabares, pontons-grues, radeaux gonflables autres que récréatifs, etc. - la fabrication d’éléments métalliques pour la construction navale et de structures flottantes "
     },
     {
+        "cls_na9": "30.12",
         "lib_na9": "Construction de bateaux de plaisance",
-        "cls_na9": 30.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع مراكب النزهة"
+        "description": "- la construction de bateaux et de radeaux gonflables - la construction de voiliers, avec ou sans moteur auxiliaire - la construction de bateaux à moteur - la construction d’aéroglisseurs de plaisance - la fabrication de motos marines - la construction d’autres embarcations de plaisance et de sport: • canoës, kayaks, canots, skiffs "
     },
     {
-        "lib_na9": "Construction de locomotives et d'autre materiel ferroviaire roulant",
-        "cls_na9": 30.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع القاطرات ومعدات السكك الحديدية المتنقلة"
+        "cls_na9": "30.20",
+        "lib_na9": "Construction de locomotives et d’autre matériel ferroviaire roulant",
+        "description": "- la fabrication de locomotives et de locotracteurs électriques, diesel, à vapeur ou autres - la fabrication d’automotrices, d’autorails, de véhicules d’entretien ou de service - la fabrication de véhicules pour voies ferrées ou similaires dépourvus d’organes moteurs: • voitures pour voyageurs, wagons pour le transport de marchandises, wagons-citernes, wagons à déchargement automatique, wagons-ateliers, wagons-grues, tenders, etc. - la fabrication de parties de véhicules pour voies ferrées ou similaires: • bogies, essieux et roues, freins et leurs parties, crochets et autres systèmes d’attelage, tampons de choc et leurs parties, amortisseurs, châssis de wagons et de locomotives, caisses, soufflets, etc. - la fabrication de locomotives utilisées dans les mines et de wagonnets miniers - la fabrication d’appareils mécaniques et électromécaniques de signalisation, de sécurité, de contrôle ou de commande pour voies ferrées, voies fluviales, voies routières, installations portuaires et aéroports, etc. - la fabrication de sièges de wagons "
     },
     {
+        "cls_na9": "30.30",
         "lib_na9": "Construction aéronautique et spatiale",
-        "cls_na9": 30.3,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الطائرات والمركبات الفضائية"
+        "description": "- la construction d’avions conçus pour le transport de marchandises ou de passagers, pour les forces militaires, pour le sport ou pour d’autres usages - la construction d’hélicoptères - la construction de planeurs et d’ailes delta - la construction de dirigeables et de ballons à air chaud - la fabrication de parties et accessoires des appareils relevant de cette classe: • grands assemblages tels que fuselages, ailes, portes, gouvernes, trains d’atterrissage, réservoirs à combustibles, nacelles, etc. • hélices, rotors et pales de rotors pour hélicoptères • moteurs des types généralement utilisés pour la propulsion des véhicules aériens • parties de turboréacteurs et de turbopropulseurs - la fabrication d’appareils au sol d’entraînement au vol - la construction de véhicules spatiaux et de leurs véhicules lanceurs, de satellites, de sondes planétaires, de stations orbitales, de navettes spatiales - la fabrication de missiles balistiques intercontinentaux - la révision et la conversion des aéronefs et de leurs moteurs - la fabrication de sièges d’avions "
     },
     {
+        "cls_na9": "30.40",
         "lib_na9": "Construction de véhicules militaires de combat",
-        "cls_na9": 30.4,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع العربات العسكرية الحربية"
+        "description": "- la fabrication de chars - la fabrication de véhicules amphibies blindés de l’armée - la construction d’autres véhicules militaires de combat "
     },
     {
+        "cls_na9": "30.91",
         "lib_na9": "Fabrication de motocycles",
-        "cls_na9": 30.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الدراجات النارية",
-        "description": "- la fabrication de motocycles, de cyclomoteurs et de cycles équipés d’un moteur auxiliaire\n- la fabrication de moteurs pour motocycles\n- la fabrication de sidecars\n- la fabrication de parties et d’accessoires pour motocycles"
+        "description": "- la fabrication de motocycles, de cyclomoteurs et de cycles équipés d’un moteur auxiliaire - la fabrication de moteurs pour motocycles - la fabrication de sidecars - la fabrication de parties et d’accessoires pour motocycles "
     },
     {
+        "cls_na9": "30.92",
         "lib_na9": "Fabrication de bicyclettes et de véhicules pour invalides",
-        "cls_na9": 30.92,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الدراجات العادية وعربات المعوقين",
-        "description": "- la fabrication de bicyclettes et autres cycles (y compris les triporteurs), sans moteur, de tandems, bicyclettes et tricycles\nd’enfants\n- la fabrication de parties et d’accessoires de bicyclettes\n- la fabrication de véhicules pour invalides, avec ou sans moteur\n- la fabrication de parties et d’accessoires de véhicules pour invalides\n- la fabrication de landaus et de poussettes"
+        "description": "- la fabrication de bicyclettes et autres cycles (y compris les triporteurs), sans moteur, de tandems, bicyclettes et tricycles d’enfants - la fabrication de parties et d’accessoires de bicyclettes - la fabrication de véhicules pour invalides, avec ou sans moteur - la fabrication de parties et d’accessoires de véhicules pour invalides - la fabrication de landaus et de poussettes "
     },
     {
+        "cls_na9": "30.99",
         "lib_na9": "Fabrication d'autres équipements de transport n.c.a.",
-        "cls_na9": 30.99,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع معدات نقل أخرى غ.م.س",
-        "description": "- la fabrication de véhicules propulsés à la main: chariots à bagages, charrettes à bras, traîneaux, chariots pour achats, etc.\n- la fabrication de véhicules à traction animale: sulkies, charrettes, corbillards, etc."
+        "description": "- la fabrication de véhicules propulsés à la main: chariots à bagages, charrettes à bras, traîneaux, chariots pour achats, etc. - la fabrication de véhicules à traction animale: sulkies, charrettes, corbillards, etc. "
     },
     {
+        "cls_na9": "31.01",
         "lib_na9": "Fabrication de meubles de bureau et de magasin",
-        "cls_na9": 31.01,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أثاث المكاتب والمغازات"
+        "description": "tout lieu et pour tout usage. - la fabrication de sièges d’ameublement, de bureau et d’atelier, d’hôtels, de restaurants et de locaux publics - la fabrication de sièges pour salles de spectacles - la fabrication de meubles spéciaux pour magasins: comptoirs, présentoirs, rayonnages, etc. - la fabrication de meubles de bureau - la fabrication de bancs et de chaises de laboratoire et d’autres sièges de laboratoires, meubles de laboratoire (par exemple: armoires et tables) - la fabrication de mobilier pour églises, écoles, restaurants - les chariots décoratifs de restaurant, tels que chariots à dessert, à buffets "
     },
     {
+        "cls_na9": "31.02",
         "lib_na9": "Fabrication de meubles de cuisine",
-        "cls_na9": 31.02,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أثاث المطبخ",
-        "description": "- la fabrication de meubles de cuisine\n31.03 Fabrication de matelas\nCette classe comprend:\n- la fabrication de matelas:\n• matelas comportant des ressorts ou bien rembourrés ou garnis intérieurement d’un matériau de soutien\n• matelas non recouverts en caoutchouc alvéolaire ou en matières plastiques alvéolaires\n- la fabrication de sommiers"
+        "description": "- la fabrication de meubles de cuisine "
     },
     {
+        "cls_na9": "31.03",
         "lib_na9": "Fabrication de matelas",
-        "cls_na9": 31.03,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الحشايا (المضارب)"
+        "description": "- la fabrication de matelas: • matelas comportant des ressorts ou bien rembourrés ou garnis intérieurement d’un matériau de soutien • matelas non recouverts en caoutchouc alvéolaire ou en matières plastiques alvéolaires - la fabrication de sommiers "
     },
     {
+        "cls_na9": "31.08",
         "lib_na9": "Industries connexes de l'ameublement",
-        "cls_na9": 31.08,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعات ملحقة بصنع الأثاث"
+        "description": "- le laquage, le vernissage, la dorure, la peinture, etc., sur meubles - le capitonnage, le garnissage de meubles et le services des tapissiers décorateurs "
     },
     {
+        "cls_na9": "31.09",
         "lib_na9": "Fabrication d'autres meubles",
-        "cls_na9": 31.09,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أصناف أخرى من الأثاث"
+        "description": "- la fabrication de canapés et de canapés-lits - la fabrication de sièges de jardin - la fabrication de mobilier de jardin et de meubles des types utilisés dans les chambres à coucher, les salles à manger et de séjour, etc. - la fabrication de meubles de machines à coudre, de meubles de télévision, etc. "
     },
     {
+        "cls_na9": "32.11",
         "lib_na9": "Frappe de monnaie",
-        "cls_na9": 32.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "سكّ النقود",
-        "description": "- la fabrication de monnaies, y compris celles ayant cours légal, en métaux précieux ou non\n32.12 Fabrication d'articles de joaillerie et bijouterie\nCette classe comprend:\n- la fabrication de perles travaillées\n- la production de pierres gemmes (précieuses ou fines), travaillées, y compris le travail de pierres de qualité industrielle\net de pierres synthétiques ou reconstituées\n- le travail du diamant\n- la fabrication d’articles de bijouterie en métaux précieux, en plaqués ou en doublés de métaux précieux ou de pierres\ngemmes (précieuses ou fines) sur des métaux communs, ou en assemblages de métaux précieux et de pierres gemmes\n(précieuses ou fines) ou d’autres matériaux\n- la fabrication d’articles d’orfèvrerie en métaux précieux ou en plaqués ou doublés de métaux précieux sur des métaux\ncommuns:\n• vaisselle plate et creuse, couverts, articles de toilette, garnitures de bureau, articles à usage religieux, etc\n- la fabrication d’articles techniques et de laboratoire en métal précieux (sauf instruments ou parties d’instruments):\ncreusets, spatules, anodes de placage, etc.\n- la fabrication de bracelets de montres, de bracelets et d’étuis à cigarettes en métaux précieux\nCette classe comprend également:\n- la gravure, personnalisée ou non, d’articles en métaux précieux et non précieux"
+        "description": "- la fabrication de monnaies, y compris celles ayant cours légal, en métaux précieux ou non "
     },
     {
+        "cls_na9": "32.12",
         "lib_na9": "Fabrication d'articles de joaillerie et bijouterie",
-        "cls_na9": 32.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المجوهرات والحليّ والمصوغ"
+        "description": "- la fabrication de perles travaillées - la production de pierres gemmes (précieuses ou fines), travaillées, y compris le travail de pierres de qualité industrielle et de pierres synthétiques ou reconstituées - le travail du diamant - la fabrication d’articles de bijouterie en métaux précieux, en plaqués ou en doublés de métaux précieux ou de pierres gemmes (précieuses ou fines) sur des métaux communs, ou en assemblages de métaux précieux et de pierres gemmes (précieuses ou fines) ou d’autres matériaux - la fabrication d’articles d’orfèvrerie en métaux précieux ou en plaqués ou doublés de métaux précieux sur des métaux communs: • vaisselle plate et creuse, couverts, articles de toilette, garnitures de bureau, articles à usage religieux, etc - la fabrication d’articles techniques et de laboratoire en métal précieux (sauf instruments ou parties d’instruments): creusets, spatules, anodes de placage, etc. - la fabrication de bracelets de montres, de bracelets et d’étuis à cigarettes en métaux précieux - la gravure, personnalisée ou non, d’articles en métaux précieux et non précieux "
     },
     {
+        "cls_na9": "32.13",
         "lib_na9": "Fabrication d'articles de bijouterie fantaisie et articles similaires",
-        "cls_na9": 32.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع المجوهرات المقلّدة",
-        "description": "- la fabrication de bijoux de fantaisie:\n• bagues, bracelets, colliers et articles de bijouterie similaires en plaqués ou en doublés de métaux précieux sur métaux\ncommuns\n• articles de bijouterie contenant des pierres artificielles, telles que pierres précieuses artificielles, diamants de synthèse et\nautres\n- la fabrication de bracelets de montres en métal (à l’exception des métaux précieux)"
+        "description": "- la fabrication de bijoux de fantaisie: • bagues, bracelets, colliers et articles de bijouterie similaires en plaqués ou en doublés de métaux précieux sur métaux communs • articles de bijouterie contenant des pierres artificielles, telles que pierres précieuses artificielles, diamants de synthèse et autres - la fabrication de bracelets de montres en métal (à l’exception des métaux précieux) "
     },
     {
+        "cls_na9": "32.20",
         "lib_na9": "Fabrication d'instruments de musique",
-        "cls_na9": 32.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الآلات الموسيقية"
+        "description": "- la fabrication d’instruments à cordes - la fabrication d’instruments à cordes à clavier, y compris les pianos automatiques - la fabrication d’orgues à tuyaux et à clavier, y compris les harmoniums et les instruments similaires à clavier et à anches libres métalliques - la fabrication d’accordéons et d’instruments similaires, y compris les harmonicas à bouche - la fabrication d’instruments à vent - la fabrication d’instruments de musique à percussion - la fabrication d’instruments de musique dont le son est produit électroniquement - la fabrication de boîtes à musique, d’orchestrions, d’orgues de Barbarie, etc. - la fabrication de parties et d’accessoires d’instruments de musique: • métronomes, diapasons, cartes, disques et rouleaux pour instruments mécaniques, etc. - la fabrication de sifflets, de cornes d’appel et d’autres instruments d’appel ou de signalisation à bouche "
     },
     {
+        "cls_na9": "32.30",
         "lib_na9": "Fabrication d'articles de sport",
-        "cls_na9": 32.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع أدوات الرياضة"
+        "description": "- la fabrication d’articles et de matériels pour les sports et les jeux de plein air et de salle, en tout type de matériau: • balles et ballons durs, mous ou gonflables • raquettes, battes, clubs de golf • skis, fixations et bâtons pour skis • chaussures de ski • planches à voile et planches de surf • articles pour la pêche sportive, y compris les épuisettes • articles pour la chasse, l’alpinisme, etc. • gants et coiffures de sport en cuir • bassins pour piscines, pataugeoires, etc. • patins à glace, patins à roulettes, etc. • arcs et arbalètes • matériel pour gymnases, centres de santé ou d’athlétisme "
     },
     {
+        "cls_na9": "32.40",
         "lib_na9": "Fabrication de jeux et jouets",
-        "cls_na9": 32.4,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الألعاب واللعب"
+        "description": "d’enfant (à l’exception des bicyclettes et des tricycles en métal). - la fabrication de poupées et de vêtements et de pièces et accessoires pour poupées - la fabrication de figurines d’action - la fabrication de jouets représentant des animaux - la fabrication d’instruments de musique jouets - la fabrication de cartes à jouer - la fabrication de jeux de société et de jeux similaires - la fabrication de jeux électroniques: jeux d’échecs, etc. - la fabrication de modèles réduits et de modèles similaires pour le divertissement, de trains électriques, de jeux de construction, etc. - la fabrication de jeux à moteur ou à mouvement, de jeux fonctionnant au moyen de pièces de monnaie, de billards, de tables spéciales pour jeux de casino, etc. - la fabrication d’articles pour jeux de société - la fabrication de jouets à roues conçus pour être montés par les enfants, y compris les bicyclettes et tricycles en plastique - la fabrication de puzzles et d’articles similaires "
     },
     {
+        "cls_na9": "32.50",
         "lib_na9": "Fabrication d'instruments et de fournitures à usage médical et dentaire",
-        "cls_na9": 32.5,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صنع الآلات والمستلزمات المستعملة في المجال الطبي وفي طب الأسنان"
+        "description": "et d’appareils nécessaires à l’exercice de l’art dentaire, de dentiers, d’articles et d’appareils nécessaires à la pratique de l’orthodontie. La fabrication de mobilier pour la médecine, l’art dentaire ou les activités similaires, dont les fonctions spécifiques déterminent la finalité du produit, telles que les fauteuils de dentiste avec fonctions hydrauliques intégrées. - la fabrication de champs opératoires et de fils et compresses stériles - la fabrication de produits d’obturation dentaire et de ciments dentaires (à l’exception des préparations destinées à faciliter l’adhérence des dentiers), de cire dentaire et d’autres préparations à base de plâtre dentaire - la fabrication de ciments pour la réfection osseuse - la fabrication de fours de laboratoires dentaires - la fabrication d’appareils de nettoyage par ultrasons destinés à un usage en laboratoire - la fabrication de stérilisateurs de laboratoires - la fabrication d’équipements de distillation de laboratoire, de centrifugeuses de laboratoire - la fabrication de mobilier pour la médecine, la chirurgie, l’art dentaire ou l’art vétérinaire, tel que: • tables d’opération • tables d’examen • lits à mécanismes pour usages cliniques • fauteuils de dentistes - la fabrication de plaques et de vis pour la fixation des os, de seringues, d’aiguilles, de cathéters, de canules, etc - la fabrication d’instruments nécessaires à l’exercice de l’art dentaire (y compris les fauteuils de dentistes incorporant des appareils pour l’art dentaire) - la production de dents artificielles, bridges etc., fabriqués en laboratoires dentaires - la fabrication de matériel orthopédique et prothétique - la fabrication d’yeux artificiels - la fabrication de thermomètres médicaux - la fabrication d’articles ophtalmologiques, lunettes correctrices, lunettes de soleil, lentilles sur prescription, verres de contact, lunettes protectrices  152 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "32.91",
         "lib_na9": "Fabrication d'articles de brosserie",
-        "cls_na9": 32.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعة الفراشي والمكانس والمنافض",
-        "description": "- la fabrication de balais, de pinceaux et de brosses, même constituant des parties de machines, de balais mécaniques\npour emploi à la main, de balais à franges et de plumeaux, de brosses et de pinceaux à peindre, de rouleaux et de tampons\nà peindre, de raclettes en caoutchouc et d’autres brosses, balais, balayettes, etc.\n- la fabrication de brosses à habits et à chaussures\n32.99 Autres activités manufacturières n.c.a.\nCette classe comprend:\n- la fabrication d’équipements de protection\n• la fabrication de vêtements de sécurité résistant au feu et de protection\n• la fabrication de ceintures de sécurité pour poseurs de rails et autres ceintures à usage professionnel\n• la fabrication de bouées de sauvetage en liège\n• la fabrication de casques en plastique et d’autres équipements personnels de sécurité en matières plastiques (par\nexemple: les casques de protection pour l’athlétisme)\n• la fabrication de vêtements de protection pour la lutte contre l’incendie\n• la fabrication de coiffures de sécurité et d’autres équipements personnels de sécurité en métal\n• la fabrication de protections auditives (par exemple: contre le bruit ou pour la pratique de la natation)\n• la fabrication de masques à gaz\n- la fabrication de stylos et de crayons de tous types, mécaniques ou non\n- la fabrication de mines pour crayons\n- la fabrication de dateurs, de cachets ou de numéroteurs, d’appareils manuels pour l’impression d’étiquettes,\nd’imprimeries à main, de rubans encreurs préparés pour machines à écrire et de tampons encreurs\n- la fabrication de globes\n- la fabrication de parapluies, d’ombrelles, de parasols, de cannes, de cannes-sièges\n- la fabrication de boutons, de boutons-pression et de fermetures à glissière\n- la fabrication de briquets\n- la fabrication d’articles à usage personnel: pipes, vaporisateurs de toilette, bouteilles isolantes et autres récipients\nisothermiques à usage personnel ou domestique, perruques, fausses barbes, faux sourcils\n- la fabrication de divers articles: bougies, chandelles, cierges et articles similaires, fleurs, fruits et feuillages artificiels,\narticles-surprises, tamis et cribles à main, mannequins pour tailleurs, cercueils, etc.\n- la fabrication de compositions florales, bouquets, couronnes et articles similaires\n- les activités des taxidermistes"
+        "description": "- la fabrication de balais, de pinceaux et de brosses, même constituant des parties de machines, de balais mécaniques pour emploi à la main, de balais à franges et de plumeaux, de brosses et de pinceaux à peindre, de rouleaux et de tampons à peindre, de raclettes en caoutchouc et d’autres brosses, balais, balayettes, etc. - la fabrication de brosses à habits et à chaussures "
     },
     {
+        "cls_na9": "32.99",
         "lib_na9": "Autres activités manufacturières n.c.a.",
-        "cls_na9": 32.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "صناعات تحويلية أخرى غ.م.س"
+        "description": "- la fabrication d’équipements de protection • la fabrication de vêtements de sécurité résistant au feu et de protection • la fabrication de ceintures de sécurité pour poseurs de rails et autres ceintures à usage professionnel • la fabrication de bouées de sauvetage en liège • la fabrication de casques en plastique et d’autres équipements personnels de sécurité en matières plastiques (par exemple: les casques de protection pour l’athlétisme) • la fabrication de vêtements de protection pour la lutte contre l’incendie • la fabrication de coiffures de sécurité et d’autres équipements personnels de sécurité en métal • la fabrication de protections auditives (par exemple: contre le bruit ou pour la pratique de la natation) • la fabrication de masques à gaz - la fabrication de stylos et de crayons de tous types, mécaniques ou non - la fabrication de mines pour crayons - la fabrication de dateurs, de cachets ou de numéroteurs, d’appareils manuels pour l’impression d’étiquettes, d’imprimeries à main, de rubans encreurs préparés pour machines à écrire et de tampons encreurs - la fabrication de globes - la fabrication de parapluies, d’ombrelles, de parasols, de cannes, de cannes-sièges - la fabrication de boutons, de boutons-pression et de fermetures à glissière - la fabrication de briquets - la fabrication d’articles à usage personnel: pipes, vaporisateurs de toilette, bouteilles isolantes et autres récipients isothermiques à usage personnel ou domestique, perruques, fausses barbes, faux sourcils - la fabrication de divers articles: bougies, chandelles, cierges et articles similaires, fleurs, fruits et feuillages artificiels, articles-surprises, tamis et cribles à main, mannequins pour tailleurs, cercueils, etc. - la fabrication de compositions florales, bouquets, couronnes et articles similaires - les activités des taxidermistes "
     },
     {
+        "cls_na9": "33.11",
         "lib_na9": "Réparation d'ouvrages en métaux",
-        "cls_na9": 33.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح منتجات معدنية"
+        "description": "- la réparation de réservoirs, citernes et conteneurs métalliques - la réparation et l’entretien de conduites et pipelines - les services de réparation par soudure mobile - la réparation de fûts métalliques de transport - la réparation et l’entretien de générateurs produisant de la vapeur d’eau ou d’autres types de vapeur - la réparation et l’entretien d’appareils auxiliaires pour générateurs de vapeur: • condensateurs, économiseurs, surchauffeurs, collecteurs et accumulateurs de vapeur - la réparation et l’entretien de réacteurs nucléaires, à l’exception des séparateurs d’isotopes - la réparation et l’entretien de pièces destinées aux chaudières de navires ou de centrales électriques - la réparation de chaudières et de radiateurs de chauffage central - la réparation et l’entretien d’armes à feux et de pièces d’artillerie (y compris la réparation de fusils pour le tir sportif et de loisirs) - la réparation et l’entretien de chariots pour achats "
     },
     {
+        "cls_na9": "33.12",
         "lib_na9": "Réparation de machines et équipements mécaniques",
-        "cls_na9": 33.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح آلات ومعدات ميكانيكية"
+        "description": "l’installation de lames et de scies, la fourniture de services de réparation par soudure (par exemple: pour les activités liées à l’automobile ou générales), la réparation de machines et équipements agricoles ou autres machines et équipements industriels et lourds (par exemple: chariots élévateurs et autres matériels de manutention, machines-outils, équipements de réfrigération commerciaux, équipements de construction et machines des industries extractives), y compris les machines et les équipements relevant de la division 28. - la réparation et l’entretien de moteurs de véhicules autres qu’automobiles - la réparation et l’entretien de pompes, compresseurs et équipements similaires - la réparation et l’entretien de machines hydrauliques - la réparation de soupapes - la réparation d’organes mécaniques de transmission - la réparation et l’entretien de fours industriels - la réparation et l’entretien de matériel de levage et de manutention des matériaux - la réparation et l’entretien d’équipements industriels de réfrigération et de purification de l’air - la réparation et l’entretien de machines d’usage général de type commercial - la réparation de divers outillages portatifs à moteur incorporé - la réparation et l’entretien de machines-outils de découpe et de formage des métaux et de leurs accessoires - la réparation et l’entretien de diverses machines-outils - la réparation et l’entretien de tracteurs agricoles - la réparation et l’entretien de machines agricoles et forestières - la réparation et l’entretien de machines pour la métallurgie - la réparation et l’entretien de machines des industries extractives, pour la construction et les champs de pétrole et de gaz - la réparation et l’entretien de machines de transformation des aliments, des boissons et du tabac - la réparation et l’entretien de machines pour la production de vêtements en tissus et de cuir - la réparation et l’entretien de machines pour la papeterie - la réparation et l’entretien de machines pour le travail du caoutchouc ou des plastiques - la réparation et l’entretien de machines diverses d’usage spécifique relevant de la division 28 - la réparation et l’entretien de matériels de pesage - la réparation et l’entretien de distributeurs automatiques - la réparation et l’entretien de caisses enregistreuses - la réparation et l’entretien de photocopieuses - la réparation de calculateurs, électroniques ou non - la réparation de machines à écrire "
     },
     {
+        "cls_na9": "33.13",
         "lib_na9": "Réparation de matériels électroniques et optiques",
-        "cls_na9": 33.13,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح معدات الكترونية وبصرية"
+        "description": "de ceux qui sont considérés comme des articles domestiques. - la réparation et l’entretien d’équipements de mesure, d’essai, de navigation et de contrôle relevant du groupe 26.5, tels que: • instruments de moteurs d’aéronef • instruments de contrôle des émissions des véhicules à moteur • instruments météorologiques • instruments d’essai et de contrôle des propriétés physiques, électriques et chimiques • instruments de géodésie • détecteurs et moniteurs de radiation - la réparation et l'entretien d’équipements d’irradiation médicale, d’équipements électromédicaux et électrothérapeutiques relevant de la classe 26.60, tels que: • appareils d’imagerie par résonnance magnétique • appareils médicaux à ultrasons • stimulateurs cardiaques • appareils pour faciliter l’audition • électrocardiographes • appareils électromédicaux pour techniques endoscopiques • appareils pour irradiations - la réparation et l'entretien d’équipements et d’instruments optiques relevant de la classe 26.70 destinés à un usage commercial, tels que: • jumelles • microscopes (à l’exception des microscopes électroniques, protoniques) • télescopes • prismes et lentilles (sauf ophtalmiques) • matériel photographique "
     },
     {
+        "cls_na9": "33.14",
         "lib_na9": "Réparation d'équipements électriques",
-        "cls_na9": 33.14,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح معدات كهربائية"
+        "description": "du groupe 27.5 (appareils électroménagers). - la réparation et l’entretien des transformateurs de puissance, de distribution et de transformateurs spéciaux - la réparation et l’entretien de moteurs et de générateurs électriques et de groupes électrogènes à moteur - la réparation et l’entretien de commutateurs et de tableaux de distribution - la réparation et l’entretien de relais et de contrôles industriels - la réparation et l’entretien de piles et de batteries électriques - la réparation et l’entretien d’appareils d’éclairage électrique - la réparation et l’entretien de dispositifs de câblage porteurs et non porteurs de courant pour le câblage d’installations électriques "
     },
     {
+        "cls_na9": "33.15",
         "lib_na9": "Réparation et maintenance navale",
-        "cls_na9": 33.15,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح وصيانة السفن"
+        "description": "bateaux relèvent de la classe 30. - la réparation et l’entretien régulier des navires et bateaux - la réparation et l’entretien des bateaux de plaisance "
     },
     {
+        "cls_na9": "33.16",
         "lib_na9": "Réparation et maintenance d'aéronefs et d'engins spatiaux",
-        "cls_na9": 33.16,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح وصيانة الطائرات والمركبات الفضائية"
+        "description": "- la réparation et l’entretien d’aéronefs (à l’exception de la conversion, de la révision et de la reconstruction en usine) - la réparation et l’entretien de moteurs d’aéronefs "
     },
     {
+        "cls_na9": "33.17",
         "lib_na9": "Réparation et maintenance d'autres équipements de transport",
-        "cls_na9": 33.17,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح وصيانة وسائل نقل أخرى"
+        "description": "des motocycles et des bicyclettes. - la réparation et l’entretien des locomotives et des wagons (à l’exception de la reconstruction ou de la conversion en usine) - la réparation de véhicules à traction animale "
     },
     {
+        "cls_na9": "33.19",
         "lib_na9": "Réparation d'autres équipements",
-        "cls_na9": 33.19,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح معدات أخرى"
+        "description": "- la réparation des filets de pêche, y compris le raccommodage - la réparation de cordes, gréements, toiles et toiles goudronnées - la réparation de sacs d’engrais et de stockage de produits chimiques - la réparation ou le reconditionnement de palettes en bois, de fûts ou de tonneaux de transport et d’articles similaires - la réparation de billards électriques et d’autres jeux fonctionnant au moyen de pièces de monnaie - la restauration d’orgues et d’autres instruments de musique historiques "
     },
     {
+        "cls_na9": "33.20",
         "lib_na9": "Installation de machines et d'équipements industriels",
-        "cls_na9": 33.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تركيب آلات ومعدات صناعية"
+        "description": "partie intégrante de bâtiments ou de structures similaires, telles que l’installation de câblages électriques, d’escaliers mécaniques, de systèmes antieffraction ou de systèmes de conditionnement d’air sont classées dans la construction. - l’installation de machines industrielles dans un site industriel - l’assemblage d’équipements de contrôle des processus industriels - l’installation d’autres équipements industriels tels que: • équipements de communication • gros systèmes et ordinateurs similaires • équipements d’irradiation médicale et électromédicaux, etc. - le démantèlement de machines et d’équipements à usage général - les activités des installateurs de moulins - le gréage des machines - l’installation de jeux de quilles automatiques (bowlings) "
     },
     {
+        "cls_na9": "35.11",
         "lib_na9": "Production d'électricité",
-        "cls_na9": 35.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إنتاج الكهرباء",
-        "description": "- l’exploitation des installations de production d’électricité, y compris la production d’origine thermique, nucléaire,\nhydroélectrique, par turbine à gaz, par centrale diesel ou à partir d’autres sources d’énergie renouvelables"
+        "description": "- l’exploitation des installations de production d’électricité, y compris la production d’origine thermique, nucléaire, hydroélectrique, par turbine à gaz, par centrale diesel ou à partir d’autres sources d’énergie renouvelables "
     },
     {
+        "cls_na9": "35.12",
         "lib_na9": "Transport d'électricité",
-        "cls_na9": 35.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل الكهرباء",
-        "description": "- l’exploitation de systèmes de transmission qui transportent l’électricité du site de production au système de distribution\n35.13 Distribution d'électricité\nCette classe comprend:\n- l’exploitation des systèmes de distribution (c’est-à-dire lignes, pylônes, compteurs et câbles) qui transportent le courant\nélectrique reçu des installations de production ou du système de transmission au consommateur final\n35.14 Commerce d'électricité\nCette classe comprend:\n- la vente d’électricité au consommateur\n- les activités des courtiers en courant électrique ou des agents qui organisent la vente d’électricité via des systèmes de\ndistribution de courant exploités par d’autres\n- l’exploitation des échanges d’électricité et de capacité de transfert pour le courant électrique\n35.2 Production et distribution de combustibles gazeux\nCe groupe comprend la fabrication et la distribution du gaz naturel ou synthétique aux consommateurs au moyen d’un\nréseau de canalisations. Les marchands et négociants qui négocient la vente de gaz naturel par l’entremise de réseaux\nde distribution du gaz exploités par d’autres sont également compris. L’exploitation distincte de gazoducs, transportant\ndu gaz généralement sur de longues distances et reliant les producteurs et les distributeurs du gaz ou différents centres\nurbains, n’est pas comprise dans ce groupe et relève des autres services de transport par conduites.\n35.21 Production de combustibles gazeux"
+        "description": "- l’exploitation de systèmes de transmission qui transportent l’électricité du site de production au système de distribution "
     },
     {
+        "cls_na9": "35.13",
         "lib_na9": "Distribution d'électricité",
-        "cls_na9": 35.13,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": 0,
-        "arb_na9": "توزيع الكهرباء"
+        "description": "- l’exploitation des systèmes de distribution (c’est-à-dire lignes, pylônes, compteurs et câbles) qui transportent le courant électrique reçu des installations de production ou du système de transmission au consommateur final "
     },
     {
+        "cls_na9": "35.14",
         "lib_na9": "Commerce d'électricité",
-        "cls_na9": 35.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "بيع الكهرباء"
+        "description": "- la vente d’électricité au consommateur - les activités des courtiers en courant électrique ou des agents qui organisent la vente d’électricité via des systèmes de distribution de courant exploités par d’autres - l’exploitation des échanges d’électricité et de capacité de transfert pour le courant électrique 35.2 Production et distribution de combustibles gazeux Ce groupe comprend la fabrication et la distribution du gaz naturel ou synthétique aux consommateurs au moyen d’un réseau de canalisations. Les marchands et négociants qui négocient la vente de gaz naturel par l’entremise de réseaux de distribution du gaz exploités par d’autres sont également compris. L’exploitation distincte de gazoducs, transportant du gaz généralement sur de longues distances et reliant les producteurs et les distributeurs du gaz ou différents centres urbains, n’est pas comprise dans ce groupe et relève des autres services de transport par conduites. "
     },
     {
+        "cls_na9": "35.21",
         "lib_na9": "Production de combustibles gazeux",
-        "cls_na9": 35.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج المحروقات الغازية"
+        "description": "- la production, pour les besoins de l’approvisionnement en gaz, de gaz obtenus par distillation du charbon ou à partir de sous-produits de l’agriculture ou de déchets - la production de combustibles gazeux d’une valeur calorifique déterminée par purification, mélange ou d’autres traitements de gaz d’origines diverses, y compris le gaz naturel "
     },
     {
+        "cls_na9": "35.22",
         "lib_na9": "Distribution de combustibles gazeux par conduites",
-        "cls_na9": 35.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "توزيع المحروقات الغازية عبر الأنابيب",
-        "description": "- la distribution par conduites de combustibles gazeux de tous types"
+        "description": "- la distribution par conduites de combustibles gazeux de tous types "
     },
     {
+        "cls_na9": "35.23",
         "lib_na9": "Commerce de combustibles gazeux par conduites",
-        "cls_na9": 35.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "بيع المحروقات الغازية عبر الأنابيب",
-        "description": "- la vente au consommateur de gaz acheminé par des conduites\n- les activités des courtiers en gaz ou des agents qui organisent la vente de gaz via des systèmes de distribution de gaz\nexploités par d’autres\n- les échanges de produits et de capacité de transfert pour les combustibles gazeux"
+        "description": "- la vente au consommateur de gaz acheminé par des conduites - les activités des courtiers en gaz ou des agents qui organisent la vente de gaz via des systèmes de distribution de gaz exploités par d’autres - les échanges de produits et de capacité de transfert pour les combustibles gazeux "
     },
     {
+        "cls_na9": "35.30",
         "lib_na9": "Production et distribution de vapeur et d'air conditionné",
-        "cls_na9": 35.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج وتوزيع البخار والهواء المكيّف"
+        "description": "- la production, la collecte et la distribution de vapeur et d’eau chaude pour le chauffage, la force motrice et d’autres usages - la production et la distribution d’air réfrigéré - la production et la distribution d’eau froide pour le refroidissement - la production de glace pour des usages alimentaires ou autres (par exemple, pour le refroidissement)  160 I n st i t u t N a t i o nal d e la S ta tis tiq u e    SECTION E  PRODUCTION ET DISTRIBUTION D'EAU; ASSAINISSEMENT, GESTION DES DÉCHETS ET DÉPOLLUTION  Cette section comprend les activités liées à la gestion (comprenant les services de collecte, de traitement et d’élimination) de différents types de déchets, tels que déchets solides ou autres produits par les industries ou les ménages, ainsi que les sites contaminés. Le produit résultant du processus de traitement des déchets ou des eaux usées peut être éliminé ou devenir une matière de base pour un autre processus de production. Les activités liées à la distribution d’eau sont également comprises dans cette section, car elles sont souvent effectuées dans le cadre du traitement des eaux usées ou par des unités actives dans ce domaine.  36 Captage, traitement et distribution d'eau Cette division comprend les activités de captage, de traitement et de distribution d’eau pour les besoins des ménages et des industries. Le captage d’eau de plusieurs origines et la distribution par différents moyens sont également compris. 36.0 Captage, traitement et distribution d'eau "
     },
     {
+        "cls_na9": "36.00",
         "lib_na9": "Captage, traitement et distribution d'eau",
-        "cls_na9": 36.0,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تجميع المياه ومعالجتها وتوزيعها"
+        "description": "des industries. Le captage d’eau de plusieurs origines et la distribution par différents moyens sont également compris. L’exploitation de canaux d’irrigation est également comprise, mais la fourniture de services d’irrigation comme l’arrosage automatique et d’autres services similaires de soutien à l’activité agricole, n’est pas comprise. - le captage d’eau à partir de rivières, de lacs et de puits, etc. - la collecte d’eau de pluie - le traitement de l’eau aux fins de la distribution d’eau - le traitement de l’eau pour des usages industriels ou autres - le dessalement de l’eau de mer ou d’eaux souterraines, pour autant que la production d’eau constitue l’activité principale - la distribution de l’eau par conduites, camions ou autres moyens de transport - l’exploitation de canaux d’irrigation "
     },
     {
+        "cls_na9": "37.00",
         "lib_na9": "Collecte et traitement des eaux usées",
-        "cls_na9": 37.0,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "جمع ومعالجة المياه المستعملة"
+        "description": "- l’exploitation de réseaux d’assainissement ou d’installations de traitement des déchets - la collecte et le transport des eaux résiduaires humaines ou industrielles provenant d’un ou de plusieurs utilisateurs et des eaux de pluie au moyen de réseaux d’assainissement, de collecteurs, de fosses et d’autres moyens de transports (camions de vidange, etc.) - la vidange et le nettoyage des puisards, des fosses septiques, des puits et des fosses, l’entretien des toilettes chimiques - le traitement des eaux usées (humaines ou industrielles, eaux usées des piscines, etc.) au moyen de procédés physiques, chimiques et biologiques, tels que la dilution, le criblage, la filtration, la sédimentation, etc. - l’entretien et le nettoyage des égouts et des canalisations, y compris le curetage des égouts "
     },
     {
+        "cls_na9": "38.11",
         "lib_na9": "Collecte des déchets non dangereux",
-        "cls_na9": 38.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "جمع النفايات غير الخطرة",
-        "description": "- la collecte des déchets solides non dangereux (par exemple: les ordures) au niveau local, comme l’enlèvement de déchets\ndes ménages et des entreprises au moyen de poubelles, de bacs à roulettes, de conteneurs, etc., et peut comprendre les\nmatériaux mixtes récupérables\n- la collecte de matériaux recyclables\n- l’enlèvement des détritus collectés dans les boîtes à ordures dans les lieux publics\nCette classe comprend également:\n- l’enlèvement de déchets de construction et de démolition\n- la collecte et l’enlèvement de décombres\n- l’enlèvement des déchets de production des usines de textiles\n- l’exploitation d’installations de transfert de déchets non dangereux"
+        "description": "- la collecte des déchets solides non dangereux (par exemple: les ordures) au niveau local, comme l’enlèvement de déchets des ménages et des entreprises au moyen de poubelles, de bacs à roulettes, de conteneurs, etc., et peut comprendre les matériaux mixtes récupérables - la collecte de matériaux recyclables - l’enlèvement des détritus collectés dans les boîtes à ordures dans les lieux publics - l’enlèvement de déchets de construction et de démolition - la collecte et l’enlèvement de décombres - l’enlèvement des déchets de production des usines de textiles - l’exploitation d’installations de transfert de déchets non dangereux "
     },
     {
+        "cls_na9": "38.12",
         "lib_na9": "Collecte des déchets dangereux",
-        "cls_na9": 38.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "جمع النفايات الخطرة"
+        "description": "substances dangereuses pour la santé humaine et pour l’environnement, telles que des substances explosives, oxydantes, inflammables, toxiques, irritantes, nocives, cancérogènes, corrosives, infectieuses ou autres. Elle comprend également les activités d’identification, de traitement, d’emballage et d’étiquetage des déchets pour le transport. - la collecte de déchets dangereux, tels que: • huiles usagées de navires ou de garages • déchets biologiques dangereux • déchets nucléaires • piles usagées, etc. - l’exploitation d’installations de transfert de déchets dangereux "
     },
     {
+        "cls_na9": "38.21",
         "lib_na9": "Traitement et élimination des déchets non dangereux",
-        "cls_na9": 38.21,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "معالجة النفايات غير الخطرة والتخلص منها"
+        "description": "- l’exploitation de décharges pour l’élimination de déchets non dangereux - l’élimination de déchets non dangereux par combustion ou incinération ou d’autres méthodes, avec ou sans production d’électricité ou de vapeur, de carburants de substitution, de biométhane, de cendres et d’autres sous-produits destinés à un usage ultérieur, etc. - le traitement des déchets organiques dans le but de les éliminer  162 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "38.22",
         "lib_na9": "Traitement et élimination des déchets dangereux",
-        "cls_na9": 38.22,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "معالجة النفايات الخطرة والتخلص منها"
+        "description": "les déchets contenant des substances dangereuses pour la santé humaine et pour l’environnement, telles que des substances explosives, oxydantes, inflammables, toxiques, irritantes, nocives, cancérogènes, corrosives, infectieuses ou autres. - l’exploitation d’installations de traitement de déchets dangereux - le traitement et l’élimination d’animaux toxiques vivants ou morts et d’autres déchets contaminés - l’incinération de déchets dangereux - l’élimination de biens usés tels que les réfrigérateurs pour éliminer des déchets dangereux - le traitement, l’élimination et le stockage de déchets radioactifs nucléaires, y compris: • traitement et élimination des déchets radioactifs transitoires des hôpitaux, c’est-à-dire qui se dégraderont au cours du transport • conditionnement, préparation et autre traitement des déchets nucléaires avant leur stockage "
     },
     {
+        "cls_na9": "38.31",
         "lib_na9": "Démantèlement d'épaves",
-        "cls_na9": 38.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إزالة حطام السفن، السيارات، الحواسيب..."
+        "description": "matériels) à des fins de récupération. "
     },
     {
+        "cls_na9": "38.32",
         "lib_na9": "Récupération de déchets triés",
-        "cls_na9": 38.32,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "خدمات إسترداد الفضلات المصنّفة"
+        "description": "premières secondaires en mettant généralement en œuvre des processus de transformation mécanique ou chimique. et en triant les matériaux récupérables dans les flux de déchets non dangereux (les ordures) ou en séparant et en triant les matériaux de récupération non triés, tels que papier, plastique, boîtes à boisson et métaux usagés. Les processus de transformation mécanique ou chimique concernés sont notamment: - le broyage, par des procédés mécaniques, d’objets métalliques tels que vieilles voitures, machines à laver hors d’usage, vieux vélos, etc. - la réduction, par des procédés mécaniques, d’objets métalliques volumineux tels que les wagons de chemin de fer - le déchirage de déchets métalliques, de véhicules en fin de vie, etc. - d’autres méthodes de traitement mécanique telles que le découpage et le pressage pour réduire le volume - la récupération de métaux à partir de déchets photographiques, par exemple: les bains de fixation ou des films ou papiers photographiques - la récupération du caoutchouc (par exemple, sous forme de pneumatiques usagés) pour produire des matières premières secondaires - le triage et le pastillage de matières plastiques en vue d’obtenir des matières premières secondaires utilisables pour la fabrication de tubes, de pots de fleurs, de palettes, etc - la transformation (nettoyage, fusion, broyage) de déchets de plastique ou de caoutchouc en granulés - le broyage, le nettoyage et le triage du verre - le broyage, le nettoyage et le triage d’autres déchets (par exemple, décombres et gravats) en vue d’obtenir des matières premières secondaires - la transformation d’huiles et de graisses alimentaires usées en matières premières secondaires - la transformation d’autres déchets et résidus d’aliments, de boissons et de tabac en matières premières secondaires  163     "
     },
     {
+        "cls_na9": "39.00",
         "lib_na9": "Dépollution et autres services de gestion des déchets",
-        "cls_na9": 39.0,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إزالة التلوث وخدمات أخرى للتصرف في النفايات"
+        "description": "- la décontamination des sols et des eaux souterraines pollués, in situ ou ex situ, par exemple: à l’aide de méthodes mécaniques/chimiques ou biologiques - la décontamination d’usines ou de sites, y compris des usines et des sites nucléaires - la décontamination et la dépollution des eaux superficielles à la suite de pollutions accidentelles, par exemple: par l’enlèvement de polluants ou l’application de produits chimiques - le nettoyage des rejets d’hydrocarbures sur terre, dans les eaux superficielles, dans l’océan ou dans la mer, y compris les zones côtières - le désamiantage, l’enlèvement des peintures à base de plomb, la réduction des matières toxiques, etc. - les autres activités spécialisées de lutte contre la pollution "
     },
     {
+        "cls_na9": "41.10",
         "lib_na9": "Promotion immobilière",
-        "cls_na9": 41.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "التطوير العقاري"
+        "description": "- les activités de promotion immobilière pour la construction d’immeubles résidentiels ou d’autres types de constructions en réunissant les moyens financiers, techniques et humains nécessaires à la réalisation de projets immobiliers destinés ultérieurement à la vente "
     },
     {
+        "cls_na9": "41.20",
         "lib_na9": "Construction de bâtiments résidentiels et non résidentiels",
-        "cls_na9": 41.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تشييد المباني السكنية وغير السكنية"
+        "description": "- la construction de bâtiments résidentiels de tous types • maisons unifamiliales • immeubles à appartements, y compris tours d’habitations - la construction de bâtiments non résidentiels de tous types: • bâtiments destinés à abriter des activités de production industrielle, par exemple: usines, ateliers, usines d’assemblage, etc. • hôpitaux, écoles, bureaux  165     • hôtels, magasins, centres commerciaux, restaurants • bâtiments aéroportuaires • salles de sport • parkings couverts et souterrains • entrepôts • bâtiments religieux - l’assemblage et la construction d’ouvrages préfabriqués sur les chantiers - le remaniement ou la rénovation de structures résidentielles existantes "
     },
     {
+        "cls_na9": "42.11",
         "lib_na9": "Construction de routes et autoroutes",
-        "cls_na9": 42.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إنجاز الطرق والطرق السيارة",
-        "description": "- la construction d’autoroutes, de rues, de chaussées et d’autres voies pour véhicules et piétons\n- les travaux de revêtement de chaussées, ponts ou tunnels:\n• asphaltage des chaussées\n• marquage à la peinture des chaussées et autres travaux de marquage\n• installation de barrières de sécurité, de panneaux de circulation, etc.\n- la construction de pistes d’atterrissage"
+        "description": "- la construction d’autoroutes, de rues, de chaussées et d’autres voies pour véhicules et piétons - les travaux de revêtement de chaussées, ponts ou tunnels: • asphaltage des chaussées • marquage à la peinture des chaussées et autres travaux de marquage • installation de barrières de sécurité, de panneaux de circulation, etc. - la construction de pistes d’atterrissage "
     },
     {
+        "cls_na9": "42.12",
         "lib_na9": "Construction de voies ferrées",
-        "cls_na9": 42.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إنجاز السكك الحديدية",
-        "description": "- la construction de voies ferrées de surface et souterraines"
+        "description": "- la construction de voies ferrées de surface et souterraines "
     },
     {
+        "cls_na9": "42.13",
         "lib_na9": "Construction de ponts et tunnels",
-        "cls_na9": 42.13,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تشييد الجسور والأنفاق",
-        "description": "- la construction de ponts, y compris ceux destinés à supporter des routes surélevées\n- la construction de tunnels"
+        "description": "- la construction de ponts, y compris ceux destinés à supporter des routes surélevées - la construction de tunnels "
     },
     {
+        "cls_na9": "42.21",
         "lib_na9": "Construction de réseaux pour fluides",
-        "cls_na9": 42.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إنجاز شبكات نقل السوائل"
+        "description": "faisant partie intégrante de ces systèmes. - la construction d’ouvrages de génie civil pour: • des conduites couvrant de longues distances et urbaines • des conduites d’eau et la construction de lignes • des systèmes d’irrigation (canaux) • des réservoirs - la construction de: • réseaux d’assainissement, y compris leur réparation • stations d’épuration • stations de pompage - le forage de puits d’eau "
     },
     {
+        "cls_na9": "42.22",
         "lib_na9": "Construction de réseaux électriques et de télécommunications",
-        "cls_na9": 42.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "مدّ أسلاك الكهرباء والإتصالات"
+        "description": "bâtiments et structures faisant partie intégrante de ces systèmes. - la construction d’ouvrages de génie civil pour: • des lignes de communication et de transport d’énergie électrique à longue distance et urbaines • des centrales électriques "
     },
     {
+        "cls_na9": "42.91",
         "lib_na9": "Construction d'ouvrages maritimes et fluviaux",
-        "cls_na9": 42.91,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تشييد منشآت في المياه",
-        "description": "- la construction de:\n• voies navigables, ports, ouvrages fluviaux, ports de plaisance (marinas), écluses, etc.\n• barrages et digues\n- le dragage des voies navigables"
+        "description": "- la construction de: • voies navigables, ports, ouvrages fluviaux, ports de plaisance (marinas), écluses, etc. • barrages et digues - le dragage des voies navigables "
     },
     {
+        "cls_na9": "42.99",
         "lib_na9": "Construction d'autres ouvrages de génie civil n.c.a.",
-        "cls_na9": 42.99,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تشييد منشآت الهندسة المدنية الأخرى غ.م.س"
+        "description": "- la construction d’installations industrielles, à l’exception des bâtiments, telles que: • raffineries • usines chimiques - les travaux de construction, autres que de bâtiments, tels que: • installations sportives extérieures - le lotissement de terrains, avec amélioration (par exemple, par l’ajout de routes, d’infrastructures de réseaux, etc.) "
     },
     {
+        "cls_na9": "43.11",
         "lib_na9": "Travaux de démolition",
-        "cls_na9": 43.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال الهدم",
-        "description": "- la démolition d’immeubles et d’autres constructions\n43.12 Travaux de préparation des sites\nCette classe comprend:\n- le déblayage des chantiers\n- les travaux de terrassement: creusement, comblement, nivellement de chantiers de construction, ouverture de tranchées,\ndérochement, destruction à l’explosif, etc.\n- la préparation de sites pour l’exploitation minière:\n• enlèvement des déblais et autres travaux d’aménagement et de préparation des terrains et des sites miniers, à l’exception\ndes sites de pétrole ou de gaz\nCette classe comprend également:\n- le drainage des chantiers de construction\n- le drainage des terrains agricoles et sylvicoles"
+        "description": "- la démolition d’immeubles et d’autres constructions "
     },
     {
+        "cls_na9": "43.12",
         "lib_na9": "Travaux de préparation des sites",
-        "cls_na9": 43.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال إعداد المواقع"
+        "description": "- le déblayage des chantiers - les travaux de terrassement: creusement, comblement, nivellement de chantiers de construction, ouverture de tranchées, dérochement, destruction à l’explosif, etc. - la préparation de sites pour l’exploitation minière: • enlèvement des déblais et autres travaux d’aménagement et de préparation des terrains et des sites miniers, à l’exception des sites de pétrole ou de gaz - le drainage des chantiers de construction - le drainage des terrains agricoles et sylvicoles "
     },
     {
+        "cls_na9": "43.13",
         "lib_na9": "Forages et sondages",
-        "cls_na9": 43.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "حفر الآبار والحفر الإختباري",
-        "description": "- les sondages d’essai, les forages d’essai et les carottages pour la construction ainsi que pour les études géophysiques,\ngéologiques et similaires"
+        "description": "- les sondages d’essai, les forages d’essai et les carottages pour la construction ainsi que pour les études géophysiques, géologiques et similaires "
     },
     {
+        "cls_na9": "43.21",
         "lib_na9": "Installation électrique",
-        "cls_na9": 43.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أشغال تركيب الكهرباء"
+        "description": "- l’installation de: • câbles et appareils électriques • câbles de télécommunications • câblage de réseau informatique et de télévision par câble, y compris les fibres optiques • paraboles • installations d’éclairage • systèmes d’alarme incendie • systèmes d’alarme contre les effractions • appareils d’éclairage de rue et signaux électriques • éclairage des pistes d’atterrissage • capteurs d’énergie solaire électriques - la connexion d’appareils électriques et d’électroménagers, y compris le chauffage par panneau rayonnant "
     },
     {
+        "cls_na9": "43.22",
         "lib_na9": "Travaux de plomberie et installation de chauffage et de conditionnement d'air",
-        "cls_na9": 43.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أشغال السباكة وتركيب معدّات التدفئة وتكييف الهواء"
+        "description": "conditionnement d’air, ainsi que les extensions, les transformations, l’entretien et les réparations. - l’installation dans des bâtiments ou d’autres projets de construction des éléments suivants: • systèmes de chauffage (à l’électricité, au gaz et au mazout) • chaudières, tours de refroidissement • les capteurs d’énergie solaire non électriques • plomberie et appareils sanitaires • matériel et conduites de ventilation et de climatisation • appareils à gaz • conduites de distribution de vapeur • installations d’extinction automatique d’incendie • systèmes d’arrosage automatique des pelouses - les travaux d’installation de conduits "
     },
     {
+        "cls_na9": "43.29",
         "lib_na9": "Autres travaux d'installation",
-        "cls_na9": 43.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أشغال تركيب أخرى"
+        "description": "conditionnement d’air ou de machines industrielles dans des bâtiments et des ouvrages de génie civil. - l’installation dans des bâtiments ou d’autres projets de construction des éléments suivants: • monte-charge, escaliers mécaniques, y compris leur réparation et entretien • portes automatiques et tambours • paratonnerres • aspirateurs • isolation thermique, acoustique et antivibrations "
     },
     {
+        "cls_na9": "43.31",
         "lib_na9": "Travaux de plâtrerie",
-        "cls_na9": 43.31,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال جبسيّة",
-        "description": "- la mise en œuvre dans des bâtiments ou d’autres projets de construction de plâtre ou de stuc pour enduits intérieurs et\nextérieurs, y compris les matériaux de lattage associés\n43.32 Travaux de menuiserie\nCette classe comprend:\n- l’installation de portes (à l’exception des portes automatiques et tambours), de fenêtres, de dormants de portes et de\nfenêtres, d’escaliers, en bois ou en d’autres matériaux\n- l’installation de meubles tels que cuisines équipées, d’escaliers, d’équipements pour magasins etc.\n- les aménagements intérieurs tels que plafonds, cloisons mobiles, etc."
+        "description": "- la mise en œuvre dans des bâtiments ou d’autres projets de construction de plâtre ou de stuc pour enduits intérieurs et extérieurs, y compris les matériaux de lattage associés "
     },
     {
+        "cls_na9": "43.32",
         "lib_na9": "Travaux de menuiserie",
-        "cls_na9": 43.32,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال النجارة"
+        "description": "- l’installation de portes (à l’exception des portes automatiques et tambours), de fenêtres, de dormants de portes et de fenêtres, d’escaliers, en bois ou en d’autres matériaux - l’installation de meubles tels que cuisines équipées, d’escaliers, d’équipements pour magasins etc. - les aménagements intérieurs tels que plafonds, cloisons mobiles, etc. "
     },
     {
+        "cls_na9": "43.33",
         "lib_na9": "Travaux de revêtement des sols et des murs",
-        "cls_na9": 43.33,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال تغليف الأرضية والجدران",
-        "description": "- la pose dans des bâtiments ou d’autres projets de construction des éléments suivants:\n• revêtements muraux ou carrelages en céramique, en béton ou en pierre de taille; installation de poêles en céramique\n• parquets et autres revêtements de sols en bois, revêtements muraux en bois\n• moquettes et revêtements de sols en linoléum, y compris en caoutchouc ou en matières plastiques\n• revêtements de sols et de murs en granito, en marbre, en granit ou en ardoise\n• papiers peints\n43.34 Travaux de miroiterie de bâtiments; vitrerie\nCette classe comprend:\n- la pose de vitrage extérieurs, simples ou isolants\n- l'instalation de la miroiterie de batiment: portes en glace,vitrines, etc."
+        "description": "- la pose dans des bâtiments ou d’autres projets de construction des éléments suivants: • revêtements muraux ou carrelages en céramique, en béton ou en pierre de taille; installation de poêles en céramique • parquets et autres revêtements de sols en bois, revêtements muraux en bois • moquettes et revêtements de sols en linoléum, y compris en caoutchouc ou en matières plastiques • revêtements de sols et de murs en granito, en marbre, en granit ou en ardoise • papiers peints "
     },
     {
+        "cls_na9": "43.34",
         "lib_na9": "Travaux de miroiterie de bâtiments; vitrerie",
-        "cls_na9": 43.34,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تركيب المرايا والزجاج"
+        "description": "- la pose de vitrage extérieurs, simples ou isolants - l'instalation de la miroiterie de batiment: portes en glace,vitrines, etc. "
     },
     {
+        "cls_na9": "43.35",
         "lib_na9": "Travaux de peinture",
-        "cls_na9": 43.35,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال دهن المباني",
-        "description": "- la peinture intérieure et extérieure des bâtiments\n- les travaux de peinture sur des ouvrages de génie civil\n- les travaux de peinture sur les ossatures métaliques (eventuellement sur coques de navires)\nCette classe ne comprend pas :\n- le marquage des chaussées et des parkings, voir 42.11\n43.39 Autres travaux de finition\nCette classe comprend:\n- le nettoyage de nouveaux bâtiments après leur construction\n- les autres travaux d’achèvement et de finition des bâtiments n.c.a."
+        "description": "- la peinture intérieure et extérieure des bâtiments - les travaux de peinture sur des ouvrages de génie civil - les travaux de peinture sur les ossatures métaliques (eventuellement sur coques de navires) Cette classe ne comprend pas : - le marquage des chaussées et des parkings, voir 42.11 "
     },
     {
+        "cls_na9": "43.39",
         "lib_na9": "Autres travaux de finition",
-        "cls_na9": 43.39,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال أخرى متممة للبناء"
+        "description": "- le nettoyage de nouveaux bâtiments après leur construction - les autres travaux d’achèvement et de finition des bâtiments n.c.a. "
     },
     {
+        "cls_na9": "43.91",
         "lib_na9": "Travaux de couverture",
-        "cls_na9": 43.91,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشغال تغطية سطوح المباني",
-        "description": "- le montage de charpentes\n- la pose de couvertures"
+        "description": "- le montage de charpentes - la pose de couvertures "
     },
     {
+        "cls_na9": "43.99",
         "lib_na9": "Autres travaux de construction spécialisés n.c.a.",
-        "cls_na9": 43.99,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة البناء المتخصصة الأخرى غ.م.س",
-        "description": "- les activités de construction spécialisées qui concernent un aspect commun à différents ouvrages et requièrent des\ncompétences ou du matériel spécialisés:\n• réalisation de fondations, y compris battage de pieux\n• travaux d’imperméabilisation et d’étanchéité\n• travaux de déshumidification des bâtiments\n• fonçage de puits\n• le montage d’éléments de structures métalliques\n• cintrage d’ossatures métalliques\n• maçonnerie, pavage\n• montage et démontage d’échafaudages et de plates-formes de travail, à l’exclusion de la location d’échafaudages et\nde plates-formes de travail\n• construction de cheminées et de fours industriels\n• travaux spécialisés qui, pour des raisons d’accès, nécessitent des aptitudes à l’escalade et l’utilisation d’un matériel\nparticulier, c’est-à-dire travail en hauteur sur des structures élevées\n- les travaux sous-marins\n- la construction de piscines extérieures\n- le nettoyage à la vapeur, le sablage et les activités analogues appliquées aux parties extérieures des bâtiments\n- la location de grues et d’autres matériels de construction, ne correspondant pas à une activité de construction spécifique,\navec opérateur"
+        "description": "- les activités de construction spécialisées qui concernent un aspect commun à différents ouvrages et requièrent des compétences ou du matériel spécialisés: • réalisation de fondations, y compris battage de pieux • travaux d’imperméabilisation et d’étanchéité • travaux de déshumidification des bâtiments • fonçage de puits • le montage d’éléments de structures métalliques • cintrage d’ossatures métalliques • maçonnerie, pavage • montage et démontage d’échafaudages et de plates-formes de travail, à l’exclusion de la location d’échafaudages et de plates-formes de travail • construction de cheminées et de fours industriels • travaux spécialisés qui, pour des raisons d’accès, nécessitent des aptitudes à l’escalade et l’utilisation d’un matériel particulier, c’est-à-dire travail en hauteur sur des structures élevées - les travaux sous-marins - la construction de piscines extérieures - le nettoyage à la vapeur, le sablage et les activités analogues appliquées aux parties extérieures des bâtiments - la location de grues et d’autres matériels de construction, ne correspondant pas à une activité de construction spécifique, avec opérateur "
     },
     {
+        "cls_na9": "45.11",
         "lib_na9": "Commerce de voitures et de véhicules automobiles légers",
-        "cls_na9": 45.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة السيّارات والمركبات الخفيفة ذات المحركات",
-        "description": "- le commerce de gros et de détail de véhicules neufs ou usagés:\n• véhicules automobiles pour le transport des personnes, y compris les véhicules spéciaux tels qu’ambulances, minibus,\netc. (dont le poids est inférieur ou égal à 3,5 tonnes)\nCette classe comprend également:\n- le commerce de gros et de détail de véhicules automobiles tout terrain (dont le poids est inférieur ou égal à 3,5 tonnes)"
+        "description": "- le commerce de gros et de détail de véhicules neufs ou usagés: • véhicules automobiles pour le transport des personnes, y compris les véhicules spéciaux tels qu’ambulances, minibus, etc. (dont le poids est inférieur ou égal à 3,5 tonnes) - le commerce de gros et de détail de véhicules automobiles tout terrain (dont le poids est inférieur ou égal à 3,5 tonnes) "
     },
     {
+        "cls_na9": "45.19",
         "lib_na9": "Commerce d'autres véhicules automobiles",
-        "cls_na9": 45.19,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المركبات الأخرى ذات المحركات",
-        "description": "- le commerce de gros et de détail de véhicules neufs ou usagés:\n• camions, remorques et semi-remorques\n• véhicules pour le camping tels que caravanes et autocaravanes (camping-cars)\nCette classe comprend également:\n- le commerce de gros et de détail de véhicules automobiles tout terrain (dont le poids est supérieur à 3,5 tonnes)"
+        "description": "- le commerce de gros et de détail de véhicules neufs ou usagés: • camions, remorques et semi-remorques • véhicules pour le camping tels que caravanes et autocaravanes (camping-cars) - le commerce de gros et de détail de véhicules automobiles tout terrain (dont le poids est supérieur à 3,5 tonnes) "
     },
     {
+        "cls_na9": "45.20",
         "lib_na9": "Entretien et réparation de véhicules automobiles",
-        "cls_na9": 45.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "صيانة وإصلاح المركبات ذات المحركات"
+        "description": "- l’entretien et la réparation de véhicules automobiles: • réparation mécanique • réparation électrique • réparation des systèmes d’injection électroniques • entretien courant • réparation de carrosserie • réparation de pièces de véhicules automobiles • lavage, lustrage, etc. • peinture, y compris au pistolet • réparation de pare-brise et de vitres • réparation des sièges de voiture - la réparation, la pose ou le remplacement de pneumatiques et de chambres à air - le traitement antirouille - le montage de pièces et accessoires ne faisant pas partie du processus de fabrication "
     },
     {
+        "cls_na9": "45.31",
         "lib_na9": "Commerce de gros d'équipements automobiles",
-        "cls_na9": 45.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة قطع الغيار ولوازم المركبات ذات المحركات بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "45.32",
         "lib_na9": "Commerce de détail d'équipements automobiles",
-        "cls_na9": 45.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة قطع الغيار ولوازم المركبات ذات المحركات بالتفصيل"
+        "description": ""
     },
     {
+        "cls_na9": "45.41",
         "lib_na9": "Commerce de motocycles",
-        "cls_na9": 45.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الدراجات النارية"
+        "description": "- le commerce de gros et de détail de motocycles, y compris les cyclomoteurs - le commerce de gros et de détail de pièces et d’accessoires de motocycles (y compris par des intermédiaires et par correspondance) "
     },
     {
+        "cls_na9": "45.42",
         "lib_na9": "Réparation de motocycles",
-        "cls_na9": 45.42,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الدراجات النارية",
-        "description": "- l’entretien et la réparation de motocycles"
+        "description": "- l’entretien et la réparation de motocycles "
     },
     {
-        "lib_na9": "Intermédiaires du commerce en matières premières agricoles, animaux vivants, matières premières textiles et produits semi-finis",
-        "cls_na9": 46.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة المواد الأوّلية الفلاحية والحيوانات الحيّة ومواد النسيج الأوّلية والمواد النصف جاهزة"
+        "cls_na9": "46.11",
+        "lib_na9": "Intermédiaires du commerce en matières premières agricoles, animaux vivants, matières premières textiles et",
+        "description": ""
     },
     {
+        "cls_na9": "46.12",
         "lib_na9": "Intermédiaires du commerce en combustibles, métaux, minéraux et produits chimiques",
-        "cls_na9": 46.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة المحروقات والمعادن وخامات المعادن والمواد الكيميائية"
+        "description": "• combustibles, minéraux, métaux et produits chimiques, y compris les engrais "
     },
     {
+        "cls_na9": "46.13",
         "lib_na9": "Intermédiaires du commerce en bois et matériaux de construction",
-        "cls_na9": 46.13,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة الخشب ومواد البناء"
+        "description": ""
     },
     {
+        "cls_na9": "46.14",
         "lib_na9": "Intermédiaires du commerce en machines, équipements industriels, navires et avions",
-        "cls_na9": 46.14,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة الآلات والتجهيزات الصناعية والسفن والطائرات"
+        "description": "• machines, y compris machines de bureau et ordinateurs, équipements industriels, navires et avions "
     },
     {
+        "cls_na9": "46.15",
         "lib_na9": "Intermédiaires du commerce en meubles, articles de ménage et quincaillerie",
-        "cls_na9": 46.15,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة الأثاث والأدوات المنزلية والمواد الحديدية المتنوعة"
+        "description": ""
     },
     {
+        "cls_na9": "46.16",
         "lib_na9": "Intermédiaires du commerce en textiles, habillement, fourrures, chaussures et articles en cuir",
-        "cls_na9": 46.16,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة النسيج والملابس والفراء والأحذية ومنتوجات أخرى من الجلد"
+        "description": ""
     },
     {
+        "cls_na9": "46.17",
         "lib_na9": "Intermédiaires du commerce en denrées, boissons et tabac",
-        "cls_na9": 46.17,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة المواد الغذائية والمشروبات والتبغ"
+        "description": ""
     },
     {
+        "cls_na9": "46.18",
         "lib_na9": "Intermédiaires spécialisés dans le commerce d'autres produits spécifiques",
-        "cls_na9": 46.18,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة مختصون في مواد خاصة أخرى"
+        "description": ""
     },
     {
+        "cls_na9": "46.19",
         "lib_na9": "Intermédiaires du commerce en produits divers",
-        "cls_na9": 46.19,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وسطاء تجارة مواد متنوعة"
+        "description": ""
     },
     {
+        "cls_na9": "46.21",
         "lib_na9": "Commerce de gros de céréales, de tabac non manufacturé, de semences et d'aliments pour le bétail",
-        "cls_na9": 46.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الحبوب والتبغ الخام والبذور والعلف الحيواني بالجملة",
-        "description": "- le commerce de gros de céréales et de semences\n- le commerce de gros de fruits oléagineux\n- le commerce de gros de tabac non manufacturé\n- le commerce de gros daliments pour animaux et dautres matières premières agricoles"
+        "description": "- le commerce de gros de céréales et de semences - le commerce de gros de fruits oléagineux - le commerce de gros de tabac non manufacturé - le commerce de gros daliments pour animaux et dautres matières premières agricoles "
     },
     {
+        "cls_na9": "46.22",
         "lib_na9": "Commerce de gros de fleurs et plantes",
-        "cls_na9": 46.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الزهور والنباتات بالجملة",
-        "description": "- le commerce de gros de fleurs, plantes et bulbes\n46.23 Commerce de gros d'animaux vivants\n46.24 Commerce de gros de cuirs et peaux\n46.3 Commerce de gros de produits alimentaires, de boissons et de tabac\n46.31 Commerce de gros de fruits et légumes\nCette classe comprend:\n- le commerce de gros de fruits et légumes frais\n- le commerce de gros de fruits et légumes en conserve\n46.32 Commerce de gros de viandes et de produits à base de viande\n46.33 Commerce de gros de produits laitiers, œufs, huiles et matières grasses comestibles"
+        "description": "- le commerce de gros de fleurs, plantes et bulbes "
     },
     {
+        "cls_na9": "46.23",
         "lib_na9": "Commerce de gros d'animaux vivants",
-        "cls_na9": 46.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الحيوانات الحيّة بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "46.24",
         "lib_na9": "Commerce de gros de cuirs et peaux",
-        "cls_na9": 46.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الجلود الخام والجلود المدبوغة بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "46.31",
         "lib_na9": "Commerce de gros de fruits et légumes",
-        "cls_na9": 46.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الفواكه والخضر بالجملة"
+        "description": "- le commerce de gros de fruits et légumes frais - le commerce de gros de fruits et légumes en conserve "
     },
     {
+        "cls_na9": "46.32",
         "lib_na9": "Commerce de gros de viandes et de produits à base de viande",
-        "cls_na9": 46.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة اللحوم ومنتجاتها بالجملة"
+        "description": ""
     },
     {
-        "lib_na9": "Commerce de gros de produits laitiers, oeufs, huiles et matieres grasses comestibles",
-        "cls_na9": 46.33,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الألبان ومشتقاتها والبيض والزيوت والدّهنيات الصالحة للإستهلاك بالجملة"
+        "cls_na9": "46.33",
+        "lib_na9": "Commerce de gros de produits laitiers, œufs, huiles et matières grasses comestibles",
+        "description": "- le commerce de gros de produits laitiers - le commerce de gros d’œufs et d’ovoproduits - le commerce de gros d’huiles et de graisses comestibles d’origine animale et végétale  175     "
     },
     {
+        "cls_na9": "46.34",
         "lib_na9": "Commerce de gros de boissons",
-        "cls_na9": 46.34,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المشروبات بالجملة",
-        "description": "- le commerce de gros de boissons alcoolisées\n- le commerce de gros de boissons non alcoolisées\nCette classe comprend également:\n- l’achat de vin en vrac et sa mise en bouteilles sans transformation"
+        "description": "- le commerce de gros de boissons alcoolisées - le commerce de gros de boissons non alcoolisées - l’achat de vin en vrac et sa mise en bouteilles sans transformation "
     },
     {
+        "cls_na9": "46.35",
         "lib_na9": "Commerce de gros de produits à base de de tabac",
-        "cls_na9": 46.35,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة التبغ بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "46.36",
         "lib_na9": "Commerce de gros de sucre, chocolat et confiserie, de café, thé, cacao et épices",
-        "cls_na9": 46.36,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة السكر والشكلاطة والحلويات والبن والشاي والكاكاو والتوابل بالجملة",
-        "description": "- le commerce de gros de sucre, chocolat et confiserie\n- le commerce de gros de produits de boulangerie\n- le commerce de gros de café, thé, cacao et épices\n46.37 Commerce de gros de poissons, crustacés et mollusques\n46.38 Commerce de gros spécialisé d'autres produits alimentaires\nCette classe comprend également:\n- le commerce de gros d’aliments pour animaux de compagnie\n46.39 Commerce de gros non spécialisé de denrées alimentaires, de boissons et de tabac\n46.4 Commerce de gros de biens domestiques\nCe groupe comprend le commerce de gros de biens domestiques, y compris les articles textiles.\n46.41 Commerce de gros de textiles\nCette classe comprend:\n- le commerce de gros de fils\n- le commerce de gros de tissus\n- le commerce de gros de linge de maison, etc.\n- le commerce de gros d’articles de mercerie: aiguilles, fils, etc."
+        "description": "- le commerce de gros de sucre, chocolat et confiserie - le commerce de gros de produits de boulangerie - le commerce de gros de café, thé, cacao et épices "
     },
     {
+        "cls_na9": "46.37",
         "lib_na9": "Commerce de gros de poissons, crustacés et mollusques",
-        "cls_na9": 46.37,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأسماك والقشريات والرخويات بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "46.38",
         "lib_na9": "Commerce de gros spécialisé d'autres produits alimentaires",
-        "cls_na9": 46.38,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة بالجملة متخصصة في مواد غذائية أخرى"
+        "description": "- le commerce de gros d’aliments pour animaux de compagnie "
     },
     {
+        "cls_na9": "46.39",
         "lib_na9": "Commerce de gros non spécialisé de denrées alimentaires, de boissons et de tabac",
-        "cls_na9": 46.39,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة بالجملة غير متخصصة في المواد الغذائية والمشروبات والتبغ"
+        "description": ""
     },
     {
+        "cls_na9": "46.41",
         "lib_na9": "Commerce de gros de textiles",
-        "cls_na9": 46.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة النسيج بالجملة"
+        "description": "- le commerce de gros de fils - le commerce de gros de tissus - le commerce de gros de linge de maison, etc. - le commerce de gros d’articles de mercerie: aiguilles, fils, etc. "
     },
     {
+        "cls_na9": "46.42",
         "lib_na9": "Commerce de gros d'habillement et de chaussures",
-        "cls_na9": 46.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الملابس والأحذية بالجملة",
-        "description": "- le commerce de gros d’articles d’habillement, y compris les vêtements de sport\n- le commerce de gros d’accessoires du vêtement tels que gants, cravates et bretelles\n- le commerce de gros de chaussures\n- le commerce de gros d’articles en fourrure\n- le commerce de gros de parapluies"
+        "description": "- le commerce de gros d’articles d’habillement, y compris les vêtements de sport - le commerce de gros d’accessoires du vêtement tels que gants, cravates et bretelles - le commerce de gros de chaussures - le commerce de gros d’articles en fourrure - le commerce de gros de parapluies "
     },
     {
+        "cls_na9": "46.43",
         "lib_na9": "Commerce de gros d'appareils électroménagers",
-        "cls_na9": 46.43,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأجهزة الكهربائية المنزلية"
+        "description": "- le commerce de gros d’appareils électroménagers - le commerce de gros d’appareils de radio et de télévision - le commerce de gros de produits photographiques et optiques - le commerce de gros d’appareils de chauffage électriques - le commerce de gros de cassettes contenant des enregistrements sonores et vidéo, de CD, de DVD "
     },
     {
+        "cls_na9": "46.44",
         "lib_na9": "Commerce de gros de vaisselle, verrerie et produits d'entretien",
-        "cls_na9": 46.44,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة آنية المائدة ومصنوعات الزجاج المنزلية ومواد الصيانة بالجملة",
-        "description": "- le commerce de gros de porcelaine et de verrerie\n- le commerce de gros de produits d’entretien\n46.45 Commerce de gros de parfumerie et de produits de beauté\nCette classe comprend:\n- le commerce de gros de parfumerie, de produits de beauté et de savons\n46.46 Commerce de gros de produits pharmaceutiques\nCette classe comprend:\n- le commerce de détail de produits pharmaceutiques et médicaux\n46.47 Commerce de gros de meubles, de tapis et d'appareils d'éclairage\nCette classe comprend:\n- le commerce de gros de mobilier domestique\n- le commerce de gros de tapis\n- le commerce de gros d’appareils d’éclairage"
+        "description": "- le commerce de gros de porcelaine et de verrerie - le commerce de gros de produits d’entretien "
     },
     {
+        "cls_na9": "46.45",
         "lib_na9": "Commerce de gros de parfumerie et de produits de beauté",
-        "cls_na9": 46.45,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة العطور ومواد التجميل بالجملة"
+        "description": "- le commerce de gros de parfumerie, de produits de beauté et de savons "
     },
     {
+        "cls_na9": "46.46",
         "lib_na9": "Commerce de gros de produits pharmaceutiques",
-        "cls_na9": 46.46,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المواد الصيدلية بالجملة"
+        "description": "- le commerce de détail de produits pharmaceutiques et médicaux "
     },
     {
+        "cls_na9": "46.47",
         "lib_na9": "Commerce de gros de meubles, de tapis et d'appareils d'éclairage",
-        "cls_na9": 46.47,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأثاث والزرابي ومعدات الإضاءة بالجملة"
+        "description": "- le commerce de gros de mobilier domestique - le commerce de gros de tapis - le commerce de gros d’appareils d’éclairage "
     },
     {
+        "cls_na9": "46.48",
         "lib_na9": "Commerce de gros d'articles d'horlogerie et de bijouterie",
-        "cls_na9": 46.48,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الساعات والمجوهرات بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "46.49",
         "lib_na9": "Commerce de gros d'autres biens domestiques",
-        "cls_na9": 46.49,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة لوازم شخصية ومنزلية أخرى بالجملة",
-        "description": "- le commerce de gros d’ouvrages en bois, vannerie et liège, etc.\n- le commerce de gros de cycles et de leurs pièces et accessoires\n- le commerce de gros de papeterie, de livres, de journaux et de périodiques\n- le commerce de gros d’articles de maroquinerie et d’accessoires de voyage\n- le commerce de gros d’instruments de musique\n- le commerce de gros de jeux et jouets\n- le commerce de gros d’articles de sport, y compris de chaussures spéciales de sport, telles que des chaussures de ski\n46.5 Commerce de gros d'équipements de l'information et de la communication\nCe groupe comprend le commerce de gros d’équipements des technologies de l’information et de la communication\n(TIC), c’est-à-dire des ordinateurs, des équipements de télécommunication et des piéces.\n46.51 Commerce de gros d'ordinateurs, d'équipements informatiques périphériques et de logiciels\nCette classe comprend:\n- le commerce de gros d’ordinateurs et d’équipements périphériques\n- le commerce de gros de logiciels"
+        "description": "- le commerce de gros d’ouvrages en bois, vannerie et liège, etc. - le commerce de gros de cycles et de leurs pièces et accessoires - le commerce de gros de papeterie, de livres, de journaux et de périodiques - le commerce de gros d’articles de maroquinerie et d’accessoires de voyage - le commerce de gros d’instruments de musique - le commerce de gros de jeux et jouets - le commerce de gros d’articles de sport, y compris de chaussures spéciales de sport, telles que des chaussures de ski 46.5 Commerce de gros d'équipements de l'information et de la communication Ce groupe comprend le commerce de gros d’équipements des technologies de l’information et de la communication (TIC), c’est-à-dire des ordinateurs, des équipements de télécommunication et des piéces. "
     },
     {
+        "cls_na9": "46.51",
         "lib_na9": "Commerce de gros d'ordinateurs, d'équipements informatiques périphériques et de logiciels",
-        "cls_na9": 46.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة أجهزة الحاسوب وتجهيزاته الطرفية والبرمجيات بالجملة"
+        "description": "- le commerce de gros d’ordinateurs et d’équipements périphériques - le commerce de gros de logiciels "
     },
     {
+        "cls_na9": "46.52",
         "lib_na9": "Commerce de gros de composants et d'équipements électroniques et de télécommunication",
-        "cls_na9": 46.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المكونات والتجهيزات الإلكترونية والإتصالات بالجملة"
+        "description": "- le commerce de gros de tubes et de valves électroniques - le commerce de gros de dispositifs à semi-conducteurs - le commerce de gros de puces électroniques et de circuits intégrés - le commerce de gros de circuits imprimés - le commerce de gros de bandes et disquettes vierges pour le son et l’image, de disques magnétiques et optiques vierges (CD, DVD) - le commerce de gros d’équipements téléphoniques et de communications "
     },
     {
+        "cls_na9": "46.61",
         "lib_na9": "Commerce de gros de matériel agricole",
-        "cls_na9": 46.61,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المعدات الفلاحية بالجملة",
-        "description": "- le commerce de gros de machines et de matériel agricoles:\n• charrues, épandeurs de fumier, semoirs\n• moissonneuses\n• batteuses\n• machines à traire\n• machines et appareils pour l’aviculture, l’apiculture\n• tracteurs agricoles et forestiers\nCette classe comprend également:\n- les tondeuses à gazon, quel que soit leur mode de fonctionnement\n46.62 Commerce de gros de machines-outils\nCette classe comprend:\n- le commerce de gros de machines-outils de tout type et pour tout type de matériau\nCette classe comprend également:\n- le commerce de gros de machines-outils commandées par ordinateur\n46.63 Commerce de gros de machines pour l'extraction, la construction et le génie civil\n46.64 Commerce de gros de machines pour l'industrie textile et l'habillement\nCette classe comprend également:\n- le commerce de gros de machines pour l’industrie textile et de machines à coudre et à tricoter, commandées par\nordinateur\n46.65 Commerce de gros de mobilier de bureau\nCette classe comprend:\n- les services de commerce de gros concernant les:\n• produits classés sous 31.01 (Fabrication de meubles de bureau et de magasin)\n46.66 Commerce de gros d'autres machines et équipements de bureau\nCette classe comprend:\n- le commerce de gros de machines et d’équipements de bureau, à l’exception des ordinateurs et des équipements\npériphériques"
+        "description": "- le commerce de gros de machines et de matériel agricoles: • charrues, épandeurs de fumier, semoirs • moissonneuses • batteuses • machines à traire • machines et appareils pour l’aviculture, l’apiculture • tracteurs agricoles et forestiers - les tondeuses à gazon, quel que soit leur mode de fonctionnement "
     },
     {
+        "cls_na9": "46.62",
         "lib_na9": "Commerce de gros de machines-outils",
-        "cls_na9": 46.62,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الآلات الميكانيكية بالجملة"
+        "description": "- le commerce de gros de machines-outils de tout type et pour tout type de matériau - le commerce de gros de machines-outils commandées par ordinateur "
     },
     {
+        "cls_na9": "46.63",
         "lib_na9": "Commerce de gros de machines pour l'extraction, la construction et le génie civil",
-        "cls_na9": 46.63,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الآلات الخاصة بالصناعات الإستخراجية وبالبناء وبالهندسة المدنية بالجملة"
+        "description": ""
     },
     {
+        "cls_na9": "46.64",
         "lib_na9": "Commerce de gros de machines pour l'industrie textile et l'habillement",
-        "cls_na9": 46.64,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة آلات صناعة النسيج والملابس بالجملة"
+        "description": "- le commerce de gros de machines pour l’industrie textile et de machines à coudre et à tricoter, commandées par ordinateur "
     },
     {
+        "cls_na9": "46.65",
         "lib_na9": "Commerce de gros de mobilier de bureau",
-        "cls_na9": 46.65,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة أثاث المكتب بالجملة"
+        "description": "- les services de commerce de gros concernant les: • produits classés sous 31.01 (Fabrication de meubles de bureau et de magasin) "
     },
     {
+        "cls_na9": "46.66",
         "lib_na9": "Commerce de gros d'autres machines et équipements de bureau",
-        "cls_na9": 46.66,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة آلات وتجهيزات المكتب بالجملة"
+        "description": "- le commerce de gros de machines et d’équipements de bureau, à l’exception des ordinateurs et des équipements périphériques "
     },
     {
+        "cls_na9": "46.67",
         "lib_na9": "Commerce de gros d'autres matériels électriques",
-        "cls_na9": 46.67,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة معدات كهربائية أخرى بالجملة"
+        "description": "le commerce de gros de fils, d’interrupteurs et d’autres matériels d’installation à usage industriel - le commerce de gros d’autres matériels électriques tels que les moteurs et les transformateurs - le commerce de gros d’instruments et d’appareils de mesure - le commerce de gros de matériel électrique de signalisation rouitère "
     },
     {
+        "cls_na9": "46.69",
         "lib_na9": "Commerce de gros d'autres machines et équipements",
-        "cls_na9": 46.69,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة آلات وتجهيزات أخرى بالجملة",
-        "description": "- le commerce de gros de matériels de transport autres que les véhicules automobiles, les cycles et les motocycles\n- le commerce de gros de robots pour chaînes de montage\n- le commerce de gros d’autres machines utilisées dans l’industrie (à l’exception des machines pour l’extraction, la\nconstruction, le génie civil et l’industrie textile)\n- le commerce de gros de matériels pour la navigation et d’autres services\nCette classe comprend également:\n- le commerce gros de matériel de garage et de soudage\n- le commerce de gros d'engrennages et d'équimements de transmission\n- le commerce gros de matériel non électrique de signalisation routière\n- le commerce de gros d'articles techniques en caoutchouc et en plastique\n- le commerce de gros à destination de l'industrie d'appareils aérauliques tels que ventilateurs, climatiseurs, machines et\néquipements pour le conditionnement de l'air\n- le commerce de gros à destination du commerce et des services d'appareils aérauliques tels que ventilateurs,\nclimatiseurs, machines et équipements pour le conditionnement de l'air"
+        "description": "- le commerce de gros de matériels de transport autres que les véhicules automobiles, les cycles et les motocycles - le commerce de gros de robots pour chaînes de montage - le commerce de gros d’autres machines utilisées dans l’industrie (à l’exception des machines pour l’extraction, la construction, le génie civil et l’industrie textile) - le commerce de gros de matériels pour la navigation et d’autres services - le commerce gros de matériel de garage et de soudage - le commerce de gros d'engrennages et d'équimements de transmission - le commerce gros de matériel non électrique de signalisation routière - le commerce de gros d'articles techniques en caoutchouc et en plastique - le commerce de gros à destination de l'industrie d'appareils aérauliques tels que ventilateurs, climatiseurs, machines et équipements pour le conditionnement de l'air - le commerce de gros à destination du commerce et des services d'appareils aérauliques tels que ventilateurs, climatiseurs, machines et équipements pour le conditionnement de l'air "
     },
     {
+        "cls_na9": "46.71",
         "lib_na9": "Commerce de gros de combustibles et de produits annexes",
-        "cls_na9": 46.71,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المحروقات والمنتجات ذات العلاقة  بالجملة",
-        "description": "- le commerce de gros de carburants, de graisses, de lubrifiants, d’huiles, tels que:\n• charbon de bois, charbon, coke, bois de chauffage, naphte\n• pétrole brut, gasoil, essence, mazout, kérosène\n• gaz de pétrole liquéfié, butane et propane\n• huiles de graissage et graisses lubrifiantes, produits pétroliers raffinés\n46.72 Commerce de gros de minerais et métaux\nCette classe comprend:\n- le commerce de gros de minerais métalliques ferreux et non ferreux\n- le commerce de gros de métaux ferreux et non ferreux sous formes primaires\n- le commerce de gros de demi-produits en métaux ferreux et non ferreux n.c.a.\n- le commerce de gros d’or et d’autres métaux précieux"
+        "description": "- le commerce de gros de carburants, de graisses, de lubrifiants, d’huiles, tels que: • charbon de bois, charbon, coke, bois de chauffage, naphte • pétrole brut, gasoil, essence, mazout, kérosène • gaz de pétrole liquéfié, butane et propane • huiles de graissage et graisses lubrifiantes, produits pétroliers raffinés "
     },
     {
+        "cls_na9": "46.72",
         "lib_na9": "Commerce de gros de minerais et métaux",
-        "cls_na9": 46.72,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المعادن وخامات المعادن بالجملة"
+        "description": "- le commerce de gros de minerais métalliques ferreux et non ferreux - le commerce de gros de métaux ferreux et non ferreux sous formes primaires - le commerce de gros de demi-produits en métaux ferreux et non ferreux n.c.a. - le commerce de gros d’or et d’autres métaux précieux "
     },
     {
+        "cls_na9": "46.73",
         "lib_na9": "Commerce de gros de bois et de produits dérivés",
-        "cls_na9": 46.73,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الخشب ومشتقات الخشب بالجملة",
-        "description": "- le commerce de gros de bois brut\n- le commerce de gros de produits de la transformation primaire et secondaire du bois\n- le commerce de gros de panneaux de bois, parquets, lambris, etc\n- le commerce de gros de menuiseries et fermetures de batiment en bois"
+        "description": "- le commerce de gros de bois brut - le commerce de gros de produits de la transformation primaire et secondaire du bois - le commerce de gros de panneaux de bois, parquets, lambris, etc - le commerce de gros de menuiseries et fermetures de batiment en bois   179     "
     },
     {
+        "cls_na9": "46.74",
         "lib_na9": "Commerce de gros de matériaux de construction et d'appareils sanitaires",
-        "cls_na9": 46.74,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة مواد البناء ومعدات التجهيز الصحي بالجملة",
-        "description": "- le commerce de gros de peintures et de vernis\n- le commerce de gros de matériaux de construction:\n• sable, gravier, ciment, plâtre, brisues, tuiles, etc.\n- le commerce de gros de papiers peints et de revêtements de sols\n- le commerce de gros de verre plat\n- le commerce de gros d’appareils sanitaires:\n• baignoires, lavabos, cuvettes d’aisance et autres porcelaines sanitaires\n- le commerce de gros de bâtiments préfabriqués\n46.75 Commerce de gros de quincaillerie et fournitures pour plomberie et chauffage\nCette classe comprend:\n- le commerce de gros de quincaillerie génrale (vis, boulons, clous, fils, grillages, tréfilés\n- le commerce de gros d’articles de serrurerie\n- le commerce de gros de fixations\n- le commerce de gros de chaudières\n- le commerce de gros de fournitures pour installations sanitaires:\n• tubes, tuyaux, raccords de tuyauterie, robinets, raccordements en T, tuyaux en caoutchouc, etc.\n- le commerce de gros d’outils tels que marteaux, scies, tournevis et outils similaires à main\n46.76 Commerce de gros de produits chimiques\nCette classe comprend:\n- le commerce de gros de produits chimiques industriels:\n• aniline, encres d’imprimerie, huiles essentielles, gaz industriels, colles chimiques, matières colorantes, résine\nsynthétique, méthanol, paraffine, parfums et essences, soude, sel industriel, acides et soufre, produits amylacés, etc.\n- le commerce de gros d’engrais et de produits phytosanitaires\n46.77 Commerce de gros d'autres produits intermédiaires\nCette classe comprend:\n- le commerce de gros de matières plastiques sous formes primaires\n- le commerce de gros de caoutchouc\n- le commerce de gros de fibres textiles, etc.\n- le commerce de gros de pates à papier, papier et carton en vrac\n- le commerce de gros de pierres précieuses"
+        "description": "- le commerce de gros de peintures et de vernis - le commerce de gros de matériaux de construction: • sable, gravier, ciment, plâtre, brisues, tuiles, etc. - le commerce de gros de papiers peints et de revêtements de sols - le commerce de gros de verre plat - le commerce de gros d’appareils sanitaires: • baignoires, lavabos, cuvettes d’aisance et autres porcelaines sanitaires - le commerce de gros de bâtiments préfabriqués "
     },
     {
+        "cls_na9": "46.75",
         "lib_na9": "Commerce de gros de quincaillerie et fournitures pour plomberie et chauffage",
-        "cls_na9": 46.75,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المواد الحديدية ولوازم السباكة والتدفئة بالجملة"
+        "description": "- le commerce de gros de quincaillerie génrale (vis, boulons, clous, fils, grillages, tréfilés - le commerce de gros d’articles de serrurerie - le commerce de gros de fixations - le commerce de gros de chaudières - le commerce de gros de fournitures pour installations sanitaires: • tubes, tuyaux, raccords de tuyauterie, robinets, raccordements en T, tuyaux en caoutchouc, etc. - le commerce de gros d’outils tels que marteaux, scies, tournevis et outils similaires à main "
     },
     {
+        "cls_na9": "46.76",
         "lib_na9": "Commerce de gros de produits chimiques",
-        "cls_na9": 46.76,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المواد الكيميائية بالجملة"
+        "description": "- le commerce de gros de produits chimiques industriels: • aniline, encres d’imprimerie, huiles essentielles, gaz industriels, colles chimiques, matières colorantes, résine synthétique, méthanol, paraffine, parfums et essences, soude, sel industriel, acides et soufre, produits amylacés, etc. - le commerce de gros d’engrais et de produits phytosanitaires "
     },
     {
+        "cls_na9": "46.77",
         "lib_na9": "Commerce de gros d'autres produits intermédiaires",
-        "cls_na9": 46.77,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة مواد وسيطة أخرى بالجملة"
+        "description": "- le commerce de gros de matières plastiques sous formes primaires - le commerce de gros de caoutchouc - le commerce de gros de fibres textiles, etc. - le commerce de gros de pates à papier, papier et carton en vrac - le commerce de gros de pierres précieuses    "
     },
     {
+        "cls_na9": "46.78",
         "lib_na9": "Commerce de gros de déchets et débris",
-        "cls_na9": 46.78,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة النفايات والفضلات (الخردة) بالجملة",
-        "description": "- le commerce de gros de déchets et débris métalliques et non métalliques et de matériaux de récupération, y compris la\ncollecte, le tri, la séparation, le démontage de biens usés tels que les automobiles afin de récupérer des pièces réutilisables,\nle reconditionnement, le stockage et la livraison mais sans réelle transformation. De plus, les déchets achetés et vendus\nont une valeur résiduelle.\nCette classe comprend également:\n- le démantèlement d’automobiles, d’ordinateurs, de télévisions et d’autres matériels à des fins de récupération de pièces\npour les revendre"
+        "description": "- le commerce de gros de déchets et débris métalliques et non métalliques et de matériaux de récupération, y compris la collecte, le tri, la séparation, le démontage de biens usés tels que les automobiles afin de récupérer des pièces réutilisables, le reconditionnement, le stockage et la livraison mais sans réelle transformation. De plus, les déchets achetés et vendus ont une valeur résiduelle. - le démantèlement d’automobiles, d’ordinateurs, de télévisions et d’autres matériels à des fins de récupération de pièces pour les revendre "
     },
     {
+        "cls_na9": "46.90",
         "lib_na9": "Commerce de gros non spécialisé",
-        "cls_na9": 46.9,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أصناف أخرى من تجارة الجملة غير المتخصصة"
+        "description": "- le commerce de gros de divers produits et articles sans spécialisation particulière  47 Commerce de détail, à l’exception des automobiles et des motocycles Cette division comprend la revente (vente sans transformation) au public de biens neufs ou d’occasion essentiellement destinés à la consommation des particuliers ou des ménages, par des magasins, des grands magasins, des comptoirs et des kiosques, des maisons de vente par correspondance, des colporteurs et des marchands ambulants, des coopératives de consommateurs, etc. Le commerce de détail s’organise d’abord selon la nature des points de vente (en magasin: groupes 47.1 à 47.7; hors magasin: groupes 47.8 et 47.9). Le commerce de détail en magasin comprend la vente au détail de biens usagés (classe 47.79). Pour la vente au détail en magasin, il existe une autre distinction entre le commerce de détail en magasin spécialisé (groupes 47.2 à 47.7) et le commerce de détail en magasin non spécialisé (groupe 47.1). Les groupes ci-dessus sont à leur tour subdivisés en fonction de la gamme des produits vendus. La vente hors magasin est subdivisée en fonction des formes de commerce, comme la vente au détail sur éventaires et marchés (groupe 47.8) et les autres commerces de détail hors magasin, par correspondance, porte-à-porte, au moyen de distributeurs automatiques, etc. (groupe 47.9). Les articles vendus dans cette division se limitent aux articles désignés habituellement par les termes de \"biens de consommation\". C’est pourquoi elle exclut les articles n’entrant normalement pas dans le circuit du commerce de détail, tels que céréales, machines industrielles, etc. Cette division comprend également l’activité des unités consistant principalement à vendre au grand public, à partir d’une exposition des marchandises, des produits tels que ordinateurs personnels, articles de papeterie, peinture ou bois, même si ces produits ne sont pas destinés à une utilisation personnelle ou domestique. La manutention est une activité habituelle du commerce et n’a pas d’effet sur la nature des marchandises: elle peut inclure les activités de tri, séparation, mélange et conditionnement. Cette division comprend également le commerce de détail par des intermédiaires et les activités des maisons de vente aux enchères au détail. Cette division ne comprend pas: - le commerce des produits de la ferme par l’exploitant agricole, voir division 01 - la fabrication et le commerce de biens généralement rangés sous Industrie manufacturière, dans les divisions 10 à 32 - le commerce de véhicules automobiles, de motocycles ainsi que de leurs pièces, voir division 45 - le commerce de céréales, de minerais, de pétrole brut, de produits chimiques industriels, de produits sidérurgiques et de machines et d’équipements industriels, voir division 46 - la vente de produits alimentaires et de boissons à consommer sur place ainsi que la vente de produits alimentaires à emporter, voir division 56 - la location au public d’articles personnels et domestiques, voir 77.2 47.1 Commerce de détail en magasin non spécialisé Ce groupe comprend le commerce de détail d’une large gamme de produits dans la même unité (en magasin non spécialisé), comme les supermarchés ou les grands magasins. "
     },
     {
-        "lib_na9": "Commerce de gros de meubles, de tapis et d'appareils d'éclairage",
-        "cls_na9": 46.47,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأثاث والزرابي ومعدات الإضاءة بالجملة"
-    },
-    {
+        "cls_na9": "47.11",
         "lib_na9": "Commerce d'alimentation générale",
-        "cls_na9": 47.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة مواد التغذية العامة بالتفصيل",
-        "description": "- le commerce de détail non spécialisé à prédominance alimantaire en magasin d'une surface de vente inférieur à 120 m2\n47.12 Supérettes, supermarchés et hypermarchés"
+        "description": "- le commerce de détail non spécialisé à prédominance alimantaire en magasin d'une surface de vente inférieur à 120 m2 "
     },
     {
+        "cls_na9": "47.12",
         "lib_na9": "Supérettes, supermarchés et hypermarchés",
-        "cls_na9": 47.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "مغازات ذات مساحة كبيرة (سوبرات، سوبرماركت وهيبارماركت)"
+        "description": "- le commerce de détail non spécialisé à prédominance alimentaire en magasin d'une surface de vente supérieure ou égale à 120 m2 - les activités des grandes surfaces qui — en sus des produits alimentaires, des boissons et du tabac qui représentent le plus gros des ventes — proposent également diverses autres lignes de produits tels que articles d’habillement, meubles, petits appareils, articles de quincaillerie, produits cosmétiques, etc.  181     "
     },
     {
-        "lib_na9": "Commerce de détail de  produits divers de l'artisanat",
-        "cls_na9": 47.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة مصنوعات تقليدية متنوعة بالتفصيل",
-        "description": "le commerce de détail non spécialisé d'objets artisanaux divers:\n• chaussures traditionnelles en toutes matières: balgha, sandale, tmak, koubkab, etc.\n• articles traditionnels d'habillement en tissu, étoffe ou en cuir.\n• accessoires traditionnels du vêtement tels que: ceintures, chapeaux, etc.\n• linge de maison et couvertures traditionnels, etc.\n47.19 Autre commerce de détail en magasin non spécialisé\nCette classe comprend:\n- le commerce de détail d’une large gamme de produits sans prédominance des produits alimentaires, des boissons et du tabac\n- les activités des grands magasins qui proposent un éventail complet de produits, y compris les articles d’habillement,\nles meubles, les petits appareils, les articles de quincaillerie, les produits cosmétiques, les articles de joaillerie, les jouets,\nles articles de sport, etc.\n47.2 Commerce de détail alimentaire en magasin spécialisé\n47.21 Commerce de détail de fruits et légumes en magasin spécialisé\nCette classe comprend:\n- le commerce de détail de fruits et légumes frais\n- le commerce de détail de fruits et légumes en conserve\n47.22 Commerce de détail de viandes et de produits à base de viande en magasin spécialisé\nCette classe comprend:\n- le commerce de détail de viandes et produits à base de viande (y compris la volaille)\n47.23 Commerce de détail de poissons, crustacés et mollusques en magasin spécialisé\nCette classe comprend:\n- le commerce de détail des poissons, d’autres produits de la mer et des préparations à partir de ces produits\n47.24 Commerce de détail de pain, pâtisserie et confiserie en magasin spécialisé\n47.25 Commerce de détail de boissons en magasin spécialisé\nCette classe comprend:\n- le commerce de détail de boissons (non destinées à la consommation sur place):\n• boissons alcoolisées\n• boissons non alcoolisées\n47.26 Commerce de détail de produits à base de tabac en magasin spécialisé\nCette classe comprend:\n- le commerce de détail de tabac\n- le commerce de détail de produits à base de tabac\n47.27 Commerce de détail de produits laitiers\nCette classe comprend:\n- le commerce de détail de laits, de beurres, de fromages, de produits laitiers frais et d'œufs"
+        "cls_na9": "47.13",
+        "lib_na9": "Commerce de détail de produits divers de l'artisanat",
+        "description": "le commerce de détail non spécialisé d'objets artisanaux divers: • chaussures traditionnelles en toutes matières: balgha, sandale, tmak, koubkab, etc. • articles traditionnels d'habillement en tissu, étoffe ou en cuir. • accessoires traditionnels du vêtement tels que: ceintures, chapeaux, etc. • linge de maison et couvertures traditionnels, etc. "
     },
     {
+        "cls_na9": "47.19",
         "lib_na9": "Autre commerce de détail en magasin non spécialisé",
-        "cls_na9": 47.19,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة أخرى بالتفصيل في المتاجر غير المتخصصة"
+        "description": "- le commerce de détail d’une large gamme de produits sans prédominance des produits alimentaires, des boissons et du tabac - les activités des grands magasins qui proposent un éventail complet de produits, y compris les articles d’habillement, les meubles, les petits appareils, les articles de quincaillerie, les produits cosmétiques, les articles de joaillerie, les jouets, les articles de sport, etc. 47.2 Commerce de détail alimentaire en magasin spécialisé "
     },
     {
+        "cls_na9": "47.21",
         "lib_na9": "Commerce de détail de fruits et légumes en magasin spécialisé",
-        "cls_na9": 47.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الفواكه والخضر بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail de fruits et légumes frais - le commerce de détail de fruits et légumes en conserve "
     },
     {
+        "cls_na9": "47.22",
         "lib_na9": "Commerce de détail de viandes et de produits à base de viande en magasin spécialisé",
-        "cls_na9": 47.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة اللحوم ومشتقات اللحوم بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail de viandes et produits à base de viande (y compris la volaille) "
     },
     {
+        "cls_na9": "47.23",
         "lib_na9": "Commerce de détail de poissons, crustacés et mollusques en magasin spécialisé",
-        "cls_na9": 47.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأسماك والقشريات والرخويات بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail des poissons, d’autres produits de la mer et des préparations à partir de ces produits "
     },
     {
+        "cls_na9": "47.24",
         "lib_na9": "Commerce de détail de pain, pâtisserie et confiserie en magasin spécialisé",
-        "cls_na9": 47.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الخبز والمرطبات والحلويات بالتفصيل في متاجر متخصصة"
+        "description": ""
     },
     {
+        "cls_na9": "47.25",
         "lib_na9": "Commerce de détail de boissons en magasin spécialisé",
-        "cls_na9": 47.25,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المشروبات بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail de boissons (non destinées à la consommation sur place): • boissons alcoolisées • boissons non alcoolisées "
     },
     {
+        "cls_na9": "47.26",
         "lib_na9": "Commerce de détail de produits à base de tabac en magasin spécialisé",
-        "cls_na9": 47.26,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة التبغ ومشتقاته بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail de tabac - le commerce de détail de produits à base de tabac "
     },
     {
+        "cls_na9": "47.27",
         "lib_na9": "Commerce de détail de produits laitiers",
-        "cls_na9": 47.27,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الألبان ومشتقاتها بالتفصيل"
+        "description": "- le commerce de détail de laits, de beurres, de fromages, de produits laitiers frais et d'œufs    "
     },
     {
+        "cls_na9": "47.28",
         "lib_na9": "Commerces de détail de grains, légumes secs et produits d'épicerie",
-        "cls_na9": 47.28,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الحبوب والخضر الجافة ومواد البقالة (عطرية) بالتفصيل",
-        "description": "- le commerce de détail de produits d'épicerie et de conserves\nCette classe comprend également:\n- le commerce de détail de pois chiches grillés (hammas)\n47.29 Autres commerces de détail alimentaires en magasin spécialisé\nCette classe comprend:\n- le commerce de détail spécialisé en produits alimentaires non cités antérieurement"
+        "description": "- le commerce de détail de produits d'épicerie et de conserves - le commerce de détail de pois chiches grillés (hammas) "
     },
     {
+        "cls_na9": "47.29",
         "lib_na9": "Autres commerces de détail alimentaires en magasin spécialisé",
-        "cls_na9": 47.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة مواد غذائية أخرى بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail spécialisé en produits alimentaires non cités antérieurement  182 I n st i t u t N a t i o nal d e la S ta tis tiq u e    47.3 Commerce de détail de carburants en magasin spécialisé "
     },
     {
+        "cls_na9": "47.30",
         "lib_na9": "Commerce de détail de carburants en magasin spécialisé",
-        "cls_na9": 47.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الوقود بالتفصيل في متاجر متخصصة"
+        "description": "- le commerce de détail de carburants pour véhicules automobiles et motocycles - le commerce de détail de lubrifiants et de produits de refroidissement pour véhicules automobiles "
     },
     {
+        "cls_na9": "47.41",
         "lib_na9": "Commerce de détail d'ordinateurs, d'unités périphériques et de logiciels en magasin spécialisé",
-        "cls_na9": 47.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة بالتفصيل لأجهزة الحاسوب ووحداته الطرفية والبرمجيات الخاصة في متاجر متخصصة",
-        "description": "- le commerce de détail d’ordinateurs\n- le commerce de détail d’équipements périphériques\n- le commerce de détail de consoles de jeux vidéo\n- le commerce de détail de logiciels non personnalisés, y compris les jeux vidéo"
+        "description": "- le commerce de détail d’ordinateurs - le commerce de détail d’équipements périphériques - le commerce de détail de consoles de jeux vidéo - le commerce de détail de logiciels non personnalisés, y compris les jeux vidéo "
     },
     {
+        "cls_na9": "47.42",
         "lib_na9": "Commerce de détail de matériels de télécommunication en magasin spécialisé",
-        "cls_na9": 47.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة بالتفصيل لمعدات الإتصال في مغازات متخصصة"
+        "description": ""
     },
     {
+        "cls_na9": "47.43",
         "lib_na9": "Commerce de détail de matériels audio/vidéo en magasin spécialisé",
-        "cls_na9": 47.43,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المعدات السمعية البصرية بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail d’appareils de radio et de télévision\n- le commerce de détail d’appareils audio et vidéo\n- le commerce de détail de lecteurs et enregistreurs de CD et de DVD\n47.5 Commerce de détail d'autres équipements du foyer en magasin spécialisé\nCe groupe comprend le commerce de détail d’équipements ménagers, tels que textiles, quincaillerie, tapis, appareils\nélectriques ou meubles, en magasins spécialisés.\n47.51 Commerce de détail de textiles en magasin spécialisé\nCette classe comprend:\n- le commerce de détail de tissus\n- le commerce de détail de fils à tricoter\n- le commerce de détail de matériaux de base pour la fabrication de tapis, de tapisseries ou de broderies\n- le commerce de détail de textiles\n- le commerce de détail d’articles de mercerie: aiguilles, fils, etc."
+        "description": "- le commerce de détail d’appareils de radio et de télévision - le commerce de détail d’appareils audio et vidéo - le commerce de détail de lecteurs et enregistreurs de CD et de DVD 47.5 Commerce de détail d'autres équipements du foyer en magasin spécialisé Ce groupe comprend le commerce de détail d’équipements ménagers, tels que textiles, quincaillerie, tapis, appareils électriques ou meubles, en magasins spécialisés. "
     },
     {
+        "cls_na9": "47.51",
         "lib_na9": "Commerce de détail de textiles en magasin spécialisé",
-        "cls_na9": 47.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة النسيج بالتفصيل في مغازات متخصصة"
+        "description": "- le commerce de détail de tissus - le commerce de détail de fils à tricoter - le commerce de détail de matériaux de base pour la fabrication de tapis, de tapisseries ou de broderies - le commerce de détail de textiles - le commerce de détail d’articles de mercerie: aiguilles, fils, etc. "
     },
     {
+        "cls_na9": "47.52",
         "lib_na9": "Commerce de détail de quincaillerie, peintures et verres en magasin spécialisé",
-        "cls_na9": 47.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المنتجات الحديدية (كانكايري) والدهن والزجاج بالتفصيل في مغازات متخصصة"
+        "description": "- le commerce de détail d’articles de quincaillerie - le commerce de détail de peintures, de vernis et d’émaux - le commerce de détail de verre plat - le commerce de détail d’autres matériaux de construction tels que briques, bois, appareils sanitaires - le commerce de détail de matériaux et de matériels de bricolage - le commerce de détail de tondeuses à gazon, quel que soit le mode de propulsion - le commerce de détail de saunas  183    "
     },
     {
+        "cls_na9": "47.53",
         "lib_na9": "Commerce de détail de tapis, moquettes et revêtements de murs et de sols en magasin spécialisé",
-        "cls_na9": 47.53,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الزرابي والمفروشات والأغطية الحائطية والأرضية  بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail de tapis et moquettes\n- le commerce de détail de rideaux et de voilages\n- le commerce de détail de papiers peints et de revêtements de sols"
+        "description": "- le commerce de détail de tapis et moquettes - le commerce de détail de rideaux et de voilages - le commerce de détail de papiers peints et de revêtements de sols "
     },
     {
+        "cls_na9": "47.54",
         "lib_na9": "Commerce de détail d'appareils électroménagers en magasin spécialisé",
-        "cls_na9": 47.54,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الآلات الكهربائية المنزلية بالتفصيل في مغازات متخصصة"
+        "description": ""
     },
     {
+        "cls_na9": "47.59",
         "lib_na9": "Commerce de détail de meubles, appareils d'éclairage et autres articles de ménage en magasin spécialisé",
-        "cls_na9": 47.59,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأثاث ومعدات الاضاءة والتجهيزات المنزلية الأخرى بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail de mobilier domestique\n- le commerce de détail d’appareils d’éclairage\n- le commerce de détail d’ustensiles ménagers, de coutellerie, de vaisselle, de verrerie, de porcelaine et de poterie\n- le commerce de détail d’ouvrages en bois, liège et vannerie\n- le commerce de détail d’appareils ménagers non électriques\n- le commerce de détail d’instruments de musique et de partitions\n- le commerce de détail de systèmes de sécurité à alarmes électriques, de dispositifs de verrouillage et de coffres-forts,\nsans services d’installation ou de maintenance\n- le commerce de détail d’appareils et d’articles de ménage ou d’économie domestique n.c.a."
+        "description": "- le commerce de détail de mobilier domestique - le commerce de détail d’appareils d’éclairage - le commerce de détail d’ustensiles ménagers, de coutellerie, de vaisselle, de verrerie, de porcelaine et de poterie - le commerce de détail d’ouvrages en bois, liège et vannerie - le commerce de détail d’appareils ménagers non électriques - le commerce de détail d’instruments de musique et de partitions - le commerce de détail de systèmes de sécurité à alarmes électriques, de dispositifs de verrouillage et de coffres-forts, sans services d’installation ou de maintenance - le commerce de détail d’appareils et d’articles de ménage ou d’économie domestique n.c.a. "
     },
     {
+        "cls_na9": "47.61",
         "lib_na9": "Commerce de détail de livres en magasin spécialisé",
-        "cls_na9": 47.61,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الكتب بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail de livres de toute nature"
+        "description": "- le commerce de détail de livres de toute nature "
     },
     {
+        "cls_na9": "47.62",
         "lib_na9": "Commerce de détail de journaux et papeterie en magasin spécialisé",
-        "cls_na9": 47.62,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الجرائد والمجلات ومنتجات من الورق بالتفصيل في مغازات متخصصة"
+        "description": "- le commerce de détail de fournitures de bureau telles que stylos, crayons, papier, etc. "
     },
     {
+        "cls_na9": "47.63",
         "lib_na9": "Commerce de détail d'enregistrements musicaux et vidéo en magasin spécialisé",
-        "cls_na9": 47.63,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة تسجيلات الموسيقى والفيديو بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail d’enregistrements musicaux, de cassettes audio, de CD et de cassettes\n- le commerce de détail de vidéocassettes et de DVD\nCette classe comprend également:\n- le commerce de détail de bandes et disques vierges\n47.64 Commerce de détail d'articles de sport en magasin spécialisé"
+        "description": "- le commerce de détail d’enregistrements musicaux, de cassettes audio, de CD et de cassettes - le commerce de détail de vidéocassettes et de DVD - le commerce de détail de bandes et disques vierges "
     },
     {
+        "cls_na9": "47.64",
         "lib_na9": "Commerce de détail d'articles de sport en magasin spécialisé",
-        "cls_na9": 47.64,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة معدات رياضية بالتفصيل في مغازات متخصصة"
+        "description": "- le commerce de détail d’articles de sport, d’articles pour la pêche, de matériel de camping, de bateaux et de bicyclettes "
     },
     {
+        "cls_na9": "47.65",
         "lib_na9": "Commerce de détail de jeux et jouets en magasin spécialisé",
-        "cls_na9": 47.65,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الألعاب واللعب بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail de jeux et de jouets, en toutes matières"
+        "description": "- le commerce de détail de jeux et de jouets, en toutes matières "
     },
     {
+        "cls_na9": "47.71",
         "lib_na9": "Commerce de détail d'habillement en magasin spécialisé",
-        "cls_na9": 47.71,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الملابس بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail d’articles d’habillement\n- le commerce de détail d’articles en fourrure\n- le commerce de détail d’accessoires du vêtement tels que gants, cravates, bretelles, etc."
+        "description": "- le commerce de détail d’articles d’habillement - le commerce de détail d’articles en fourrure - le commerce de détail d’accessoires du vêtement tels que gants, cravates, bretelles, etc. "
     },
     {
+        "cls_na9": "47.72",
         "lib_na9": "Commerce de détail de chaussures et d'articles en cuir en magasin spécialisé",
-        "cls_na9": 47.72,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأحذية ومصنوعات من الجلد بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail de chaussures\n- le commerce de détail d’articles en cuir\n- le commerce de détail d’accessoires de voyage en cuir ou en cuirs synthétiques"
+        "description": "- le commerce de détail de chaussures - le commerce de détail d’articles en cuir - le commerce de détail d’accessoires de voyage en cuir ou en cuirs synthétiques "
     },
     {
+        "cls_na9": "47.73",
         "lib_na9": "Commerce de détail de produits pharmaceutiques en magasin spécialisé",
-        "cls_na9": 47.73,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المواد الصيدلية بالتفصيل في مغازات متخصصة",
-        "description": "- le commerce de détail de produits pharmaceutiques\n47.74 Commerce de détail d'articles médicaux et orthopédiques en magasin spécialisé\n47.75 Commerce de détail de parfumerie et de produits de beauté en magasin spécialisé\nCette classe comprend:\n- le commerce de détail de parfums et de produits de beauté\n47.76 Commerce de détail de fleurs, plantes, graines, engrais, animaux de compagnie et aliments pour ces animaux en\nmagasin spécialisé\n47.77 Commerce de détail d'articles d'horlogerie et de bijouterie en magasin spécialisé\n47.78 Commerce de détail de charbon et combustibles\nCette classe comprend:\n- le commerce de détail de bois de chauffage et de charbon de bois\n- le commerce de détail de combustibles liquides et gazeux pour le chauffage ou pour usages domestiques"
+        "description": "- le commerce de détail de produits pharmaceutiques "
     },
     {
+        "cls_na9": "47.74",
         "lib_na9": "Commerce de détail d'articles médicaux et orthopédiques en magasin spécialisé",
-        "cls_na9": 47.74,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الأدوات الطبية وأدوات تقويم الأعضاء بالتفصيل في مغازات متخصصة"
+        "description": ""
     },
     {
+        "cls_na9": "47.75",
         "lib_na9": "Commerce de détail de parfumerie et de produits de beauté en magasin spécialisé",
-        "cls_na9": 47.75,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة العطور ومواد التجميل بالتفصيل في مغازات متخصصة"
+        "description": "- le commerce de détail de parfums et de produits de beauté "
     },
     {
-        "lib_na9": "Commerce de détail de fleurs, plantes, graines, engrais, animaux de compagnie et aliments pour ces animaux en magasin spécialisé",
-        "cls_na9": 47.76,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الزهور والنباتات والبذور والأسمدة والحيوانات الأليفة والأغذية الخاصة بها بالتفصيل في مغازات متخصصة"
+        "cls_na9": "47.76",
+        "lib_na9": "Commerce de détail de fleurs, plantes, graines, engrais, animaux de compagnie et aliments pour ces animaux en",
+        "description": ""
     },
     {
+        "cls_na9": "47.77",
         "lib_na9": "Commerce de détail d'articles d'horlogerie et de bijouterie en magasin spécialisé",
-        "cls_na9": 47.77,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الساعات وأدواتها والمجوهرات بالتفصيل في مغازات متخصصة"
+        "description": ""
     },
     {
+        "cls_na9": "47.78",
         "lib_na9": "Commerce de détail de charbon et combustibles",
-        "cls_na9": 47.78,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة الفحم والمحروقات بالتفصيل"
+        "description": "- le commerce de détail de bois de chauffage et de charbon de bois - le commerce de détail de combustibles liquides et gazeux pour le chauffage ou pour usages domestiques "
     },
     {
+        "cls_na9": "47.79",
         "lib_na9": "Autres commerces de détail de biens neufs en magasin spécialisé",
-        "cls_na9": 47.79,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أصناف أخرى من تجارة المنتجات الجديدة بالتفصيل في مغازات متخصصة"
+        "description": "- le commerce de détail de matériel photographique, optique et de matériel de précision - les activités des opticiens - le commerce de détail de souvenirs et d’articles religieux - les activités des galeries d’art commerciales - le commerce de détail d’armes et de munitions - le commerce de détail de timbres-poste et de pièces de monnaie - la vente au détail d’objets d’art - le commerce de détail de produits non alimentaires n.c.a.  185     47.8 Commerce de détail de biens neufs sur éventaires et marchés; Commerce de biens d'occasion Ce groupe comprend le commerce de détail de tous types de produits neufs ou d’occasion présentés sur des éventaires, généralement mobiles, installés sur la voie publique ou sur un emplacement de marché déterminé. "
     },
     {
+        "cls_na9": "47.81",
         "lib_na9": "Commerce de détail alimentaire sur éventaires et marchés",
-        "cls_na9": 47.81,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة المنتجات الغذائية بالتفصيل عن طريق العرض والأسواق"
+        "description": ""
     },
     {
+        "cls_na9": "47.82",
         "lib_na9": "Commerce de détail de textiles, d'habillement et de chaussures sur éventaires et marchés",
-        "cls_na9": 47.82,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة النسيج والملابس والأحذية عن طريق العرض والأسواق"
+        "description": ""
     },
     {
+        "cls_na9": "47.83",
         "lib_na9": "Autres commerces de détail sur éventaires et marchés",
-        "cls_na9": 47.83,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أصناف أخرى من تجارة التفصيل عن طريق العرض والأسواق",
-        "description": "- les autres commerces de détail sur éventaires et marchés comme par exemples:\n• tapis et moquettes\n• livres\n• jeux et jouets\n• appareils ménagers et produits électroniques grand public\n• enregistrements musicaux et vidéo, etc.\n47.84 Commerce de détail de fripes\n47.85 Commerce de détail de biens d'antiquité et de brocante\nCette classe comprend:\n- le commerce de détail de brocante, d'antiquités et d'objets d'art anciens\n- les activités des centres de vente aux enchères (commerce de détail)"
+        "description": "- les autres commerces de détail sur éventaires et marchés comme par exemples: • tapis et moquettes • livres • jeux et jouets • appareils ménagers et produits électroniques grand public • enregistrements musicaux et vidéo, etc. "
     },
     {
+        "cls_na9": "47.84",
         "lib_na9": "Commerce de détail de fripes",
-        "cls_na9": 47.84,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة بالتفصيل للملابس المستعملة"
+        "description": ""
     },
     {
+        "cls_na9": "47.85",
         "lib_na9": "Commerce de détail de biens d'antiquité et de brocante",
-        "cls_na9": 47.85,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "تجارة بالتفصيل للمنتجات القديمة (العتيقة)"
+        "description": "- le commerce de détail de brocante, d'antiquités et d'objets d'art anciens - les activités des centres de vente aux enchères (commerce de détail) "
     },
     {
+        "cls_na9": "47.89",
         "lib_na9": "Autres commerces de détail de biens d'occasion",
-        "cls_na9": 47.89,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أصناف أخرى من تجارة بالتفصيل للمنتجات المستعملة"
+        "description": ""
     },
     {
+        "cls_na9": "47.91",
         "lib_na9": "Vente à distance",
-        "cls_na9": 47.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "البيع عن بعد (عن طريق المراسلة)"
+        "description": "où l’acheteur fait son choix à l’aide de publicités, de catalogues, d’informations figurant sur un site web, de modèles ou de tout autre moyen publicitaire et effectue sa commande par courrier, téléphone ou Internet (en général grâce à des procédures particulières prévues par les sites web). Les produits achetés peuvent être téléchargés directement sur Internet ou livrés physiquement au client. - le commerce de détail de tous types de produits par correspondance - le commerce de détail de tous types de produits par Internet - la vente directe par téléphone ou par le truchement de la radio ou de la télévision - les activités de vente aux enchères au détail sur Internet "
     },
     {
+        "cls_na9": "47.99",
         "lib_na9": "Autres commerces de détail hors magasin, éventaires ou marchés",
-        "cls_na9": 47.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أصناف أخرى من تجارة التفصيل خارج المغازات، عن طريق العرض والأسواق",
-        "description": "- le commerce de détail de tous types de produits exercé selon des modalités non prévues dans les classes précédentes:\n• vente directe ou démarcheurs\n• par distributeurs automatiques, etc.\n- la vente directe de combustibles (mazout, bois de chauffage, etc.) livrés chez le client\n- les autres activités de vente aux enchères hors magasin (détail, à l’exception d’Internet)\n- le commerce de détail (hors magasin) par des intermédiaires du commerce"
+        "description": "- le commerce de détail de tous types de produits exercé selon des modalités non prévues dans les classes précédentes: • vente directe ou démarcheurs • par distributeurs automatiques, etc. - la vente directe de combustibles (mazout, bois de chauffage, etc.) livrés chez le client - les autres activités de vente aux enchères hors magasin (détail, à l’exception d’Internet) - le commerce de détail (hors magasin) par des intermédiaires du commerce   187     SECTION H TRANSPORTS ET ENTREPOSAGE Cette section couvre les activités liées au transport, régulier ou non, de passagers et de marchandises, par rail, par conduites, par route, par eau ou par air et les activités connexes, telles que la gestion d’installations de terminaux et de stationnement, la manutention du fret, l’entreposage, etc. Cette section comprend la location de matériel de transport avec chauffeur ou opérateur. Elle comprend également les activités de poste et de courrier. Cette section ne comprend pas: - les grosses réparations ou transformations apportées aux matériels de transport autres que les véhicules automobiles, voir groupe 33.1 - la construction, l’entretien et la réparation de routes, de voies ferrées, de ports, de terrains d’aviation, voir division 42 - l’entretien et la réparation de véhicules automobiles, voir 45.20 - la location de matériel de transport sans chauffeur ni opérateur, voir 77.1 et 77.3  49 Transports terrestres et transport par conduites Cette division couvre les activités de transport de passagers et de marchandises par la route et le rail, ainsi que le transport de marchandises par conduites. 49.1 Transport ferroviaire interurbain de voyageurs "
     },
     {
+        "cls_na9": "49.10",
         "lib_na9": "Transport ferroviaire interurbain de voyageurs",
-        "cls_na9": 49.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل المسافرين بين المدن عبر السكك الحديدية"
+        "description": "- le transport ferroviaire de voyageurs au moyen de matériel ferroviaire circulant sur de grandes lignes, distribuées sur une grande zone géographique - le transport interurbain de passagers par chemin de fer - l’exploitation de voitures-lits et de voitures-restaurants dans le cadre d’une exploitation intégrée par les compagnies de chemin de fer "
     },
     {
+        "cls_na9": "49.20",
         "lib_na9": "Transports ferroviaires de fret",
-        "cls_na9": 49.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل البضائع عبر السكك الحديدية"
+        "description": "- le transport ferroviaire de fret sur de grandes lignes, ainsi que sur des lignes secondaires "
     },
     {
+        "cls_na9": "49.31",
         "lib_na9": "Transports urbains et suburbains de voyageurs",
-        "cls_na9": 49.31,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل المسافرين في المدن والضواحي",
-        "description": "- le transport par voie terrestre de passagers par des systèmes de transport urbain et suburbain. Il peut s’agir de divers\nmodes de transport, tels que autobus ou autocar, tramway, trolley-bus, métro souterrain ou aérien, etc. Les activités de\ntransport de passagers sont effectuées sur des lignes déterminées, conformément à un horaire établi des départs et arrivées\naux arrêts indiqués sur ces horaires.\nCette classe comprend également:\n- l’exploitation de navettes vers les aéroports et les gares\n- l’exploitation de funiculaires, de téléphériques, etc., s’inscrivant dans le cadre de systèmes de transport urbain et suburbain"
+        "description": "- le transport par voie terrestre de passagers par des systèmes de transport urbain et suburbain. Il peut s’agir de divers modes de transport, tels que autobus ou autocar, tramway, trolley-bus, métro souterrain ou aérien, etc. Les activités de transport de passagers sont effectuées sur des lignes déterminées, conformément à un horaire établi des départs et arrivées aux arrêts indiqués sur ces horaires. - l’exploitation de navettes vers les aéroports et les gares - l’exploitation de funiculaires, de téléphériques, etc., s’inscrivant dans le cadre de systèmes de transport urbain et suburbain "
     },
     {
+        "cls_na9": "49.32",
         "lib_na9": "Transports de voyageurs par taxis et par louage",
-        "cls_na9": 49.32,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل المسافرين على متن سيارات التاكسي وسيارات الأجرة",
-        "description": "- le transport des voyageurs par taxis et par louage, y compris les services de centrale de réservation\nCette classe comprend également:\n- les autres types de location de voitures particulières avec chauffeur\nCette ne comprend pas :\n- le transport en ambulance, voir 86.92\n49.33 Autres transports terrestres réguliers de voyageurs, interurbain\nCette classe comprend:\n- le transport interurbain des voyageur par autocars, sur des lignes et selon des horaires déterminés, même à caractére\nsaisonnier\n49.39 Autres transports terrestres de voyageurs n.c.a.\nCette classe comprend:\n- les autres transports routiers de passagers:\n• transports à la demande, excursions et autres services occasionnels de transport par autocar\n• navettes d’aéroports\n• l’exploitation de téléphériques, de funiculaires, d’engins de remontée mécanique ne s’inscrivant pas dans le cadre de\nsystèmes de transport urbain et suburbain\nCette classe comprend également:\n- l’exploitation d’autobus scolaires et de bus de transport des travailleurs\n- le transport de voyageurs par véhicules à traction humaine ou animale"
+        "description": "- le transport des voyageurs par taxis et par louage, y compris les services de centrale de réservation - les autres types de location de voitures particulières avec chauffeur Cette ne comprend pas : - le transport en ambulance, voir 86.92 "
     },
     {
+        "cls_na9": "49.33",
         "lib_na9": "Autres transports terrestres réguliers de voyageurs, interurbain",
-        "cls_na9": 49.33,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أصناف أخرى من النقل البري المنتظم للمسافرين، بين المدن"
+        "description": "- le transport interurbain des voyageur par autocars, sur des lignes et selon des horaires déterminés, même à caractére saisonnier "
     },
     {
+        "cls_na9": "49.39",
         "lib_na9": "Autres transports terrestres de voyageurs n.c.a.",
-        "cls_na9": 49.39,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أصناف أخرى من النقل البري للمسافرين غ.م.س"
+        "description": "- les autres transports routiers de passagers: • transports à la demande, excursions et autres services occasionnels de transport par autocar • navettes d’aéroports • l’exploitation de téléphériques, de funiculaires, d’engins de remontée mécanique ne s’inscrivant pas dans le cadre de systèmes de transport urbain et suburbain - l’exploitation d’autobus scolaires et de bus de transport des travailleurs - le transport de voyageurs par véhicules à traction humaine ou animale "
     },
     {
+        "cls_na9": "49.41",
         "lib_na9": "Transports routiers de fret",
-        "cls_na9": 49.41,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل البري للبضائع",
-        "description": "- les activités de transport de marchandises par route:\n• le transport de bois de sciage\n• le transport de bétail\n• le transport frigorifique\n• le transport lourd\n• le transport en vrac, y compris par camions-citernes, y compris la collecte de lait dans les fermes\n• le transport de voitures\n• le transport de déchets, sans collecte ni élimination\nCette classe comprend également:\n- la location de camions avec chauffeur\n- le transport de marchandises par véhicules à traction humaine ou animale"
+        "description": "- les activités de transport de marchandises par route: • le transport de bois de sciage • le transport de bétail • le transport frigorifique • le transport lourd • le transport en vrac, y compris par camions-citernes, y compris la collecte de lait dans les fermes • le transport de voitures • le transport de déchets, sans collecte ni élimination - la location de camions avec chauffeur - le transport de marchandises par véhicules à traction humaine ou animale "
     },
     {
+        "cls_na9": "49.42",
         "lib_na9": "Services de déménagement",
-        "cls_na9": 49.42,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات الرحيل (نقل الأثاث)"
+        "description": "- les services de déménagement par transport routier fournis aux entreprises et aux ménages  189     49.5 Transports par conduites "
     },
     {
+        "cls_na9": "49.50",
         "lib_na9": "Transports par conduites",
-        "cls_na9": 49.5,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل عبر الأنابيب"
+        "description": "- le transport de gaz, de liquides, d’eau, de boues et d’autres substances, par conduites - l’exploitation de stations de pompage "
     },
     {
+        "cls_na9": "50.10",
         "lib_na9": "Transports maritimes et côtiers de passagers",
-        "cls_na9": 50.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل البحري والساحلي للمسافرين"
+        "description": "- le transport maritime et côtier, régulier ou non, de passagers: • l’exploitation de bateaux d’excursion, de croisière ou de tourisme • l’exploitation de bacs, de bateaux-taxis, etc. - la location de bateaux de plaisance avec équipage pour le transport maritime et côtier (par exemple: pour des croisières de pêche) "
     },
     {
+        "cls_na9": "50.20",
         "lib_na9": "Transports maritimes et côtiers de fret",
-        "cls_na9": 50.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل البحري والساحلي للبضائع"
+        "description": "- le transport maritime et côtier, régulier ou non, de marchandises - l’exploitation de remorqueurs et de pousseurs de péniches, de plates-formes de forage pétrolier, etc. - la location de bateaux avec équipage pour le transport maritime et côtier de fret "
     },
     {
+        "cls_na9": "50.30",
         "lib_na9": "Transports fluviaux de passagers",
-        "cls_na9": 50.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل المسافرين عبر الأنهار"
+        "description": "- le transport de passagers sur les fleuves, les canaux, les lacs et les autres voies navigables intérieures, y compris les ports et les docks - la location de bateaux de plaisance avec équipage pour le transport fluvial "
     },
     {
+        "cls_na9": "50.40",
         "lib_na9": "Transports fluviaux de fret",
-        "cls_na9": 50.4,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نقل البضائع عبر الأنهار"
+        "description": "- le transport de marchandises sur les fleuves, les canaux, les lacs et les autres voies navigables intérieures, y compris les ports et les docks - la location de bateaux avec équipage pour le transport fluvial de fret "
     },
     {
+        "cls_na9": "51.10",
         "lib_na9": "Transports aériens de passagers",
-        "cls_na9": 51.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل الجوي للمسافرين"
+        "description": "- le transport aérien de passagers sur des lignes régulières et avec des horaires réguliers - les vols par charters pour passagers - les vols de tourisme - la location de matériels de transport aérien avec pilote aux fins du transport de passagers - les activités générales d’aviation, telles que: • le transport de passagers par des aéro-clubs à des fins de cours ou de loisirs "
     },
     {
+        "cls_na9": "51.21",
         "lib_na9": "Transports aériens de fret",
-        "cls_na9": 51.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل الجوي للبضائع",
-        "description": "- le transport aérien de marchandises sur des lignes régulières et avec des horaires réguliers\n- les transports aériens non réguliers de marchandises\nCette classe comprend également:\n- la location de matériels de transport aérien avec pilote aux fins du transport de marchandises\n51.22 Transports spatiaux\nCette classe comprend:\n- le lancement de satellites et de véhicules spatiaux\n- le transport, dans l’espace, de marchandises et de personnes"
+        "description": "- le transport aérien de marchandises sur des lignes régulières et avec des horaires réguliers - les transports aériens non réguliers de marchandises - la location de matériels de transport aérien avec pilote aux fins du transport de marchandises "
     },
     {
+        "cls_na9": "51.22",
         "lib_na9": "Transports spatiaux",
-        "cls_na9": 51.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "النقل عبر الفضاء"
+        "description": "- le lancement de satellites et de véhicules spatiaux - le transport, dans l’espace, de marchandises et de personnes  52 Entreposage et services auxiliaires des transports Cette division comprend les activités d’entreposage et les services auxiliaires des transports, tels que l’exploitation des infrastructures de transport (comme les aéroports, les ports, les tunnels, les ponts, etc.), les activités des agences de transport et de manutention du fret. 52.1 Entreposage et stockage "
     },
     {
+        "cls_na9": "52.11",
         "lib_na9": "Entreposage et stockage frigorifique",
-        "cls_na9": 52.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التخزين في مستودعات التبريد",
-        "description": "- l’exploitation pour compte de tiers d'instalation d'entreposage frigorifique ou de lieux de stockage réfrigéré, y compris\nà caractére industriel ou agricole\nCette classe comprend également:\n- la congélation par air forcé pour compte de tiers\n52.12 Entreposage et stockage non frigorifique\nCette classe comprend :\n- l'exploitation pour compte de tiers d'installations d'entreposage non frigorifique ou de lieux de stockage (entrepôts, silos,\nréservoirs, hangars, etc.), y compris à caractère industriel ou agricole"
+        "description": "- l’exploitation pour compte de tiers d'instalation d'entreposage frigorifique ou de lieux de stockage réfrigéré, y compris à caractére industriel ou agricole - la congélation par air forcé pour compte de tiers "
     },
     {
+        "cls_na9": "52.12",
         "lib_na9": "Entreposage et stockage non frigorifique",
-        "cls_na9": 52.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التخزين في مستودعات غير مبرّدة"
+        "description": "- l'exploitation pour compte de tiers d'installations d'entreposage non frigorifique ou de lieux de stockage (entrepôts, silos, réservoirs, hangars, etc.), y compris à caractère industriel ou agricole "
     },
     {
+        "cls_na9": "52.21",
         "lib_na9": "Services auxiliaires des transports terrestres",
-        "cls_na9": 52.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "خدمات ملحقة بالنقل البري",
-        "description": "- les activités liées au transport terrestre de personnes, d’animaux ou de marchandises:\n• l’exploitation d’installations de terminaux telles que gares ferroviaires, gares routières, postes de manutention de marchandises\n• l’exploitation de l’infrastructure ferroviaire\n• l’exploitation de routes, de ponts, de tunnels, d’aires de stationnement, de parcs à voitures ou à vélos, d’entreposage\nde caravanes durant l’hiver\n- les opérations d’aiguillage\n- les services de remorquage et de dépannage\nCette classe comprend également:\n- la liquéfaction du gaz en vue de son transport"
+        "description": "- les activités liées au transport terrestre de personnes, d’animaux ou de marchandises: • l’exploitation d’installations de terminaux telles que gares ferroviaires, gares routières, postes de manutention de marchandises • l’exploitation de l’infrastructure ferroviaire • l’exploitation de routes, de ponts, de tunnels, d’aires de stationnement, de parcs à voitures ou à vélos, d’entreposage de caravanes durant l’hiver - les opérations d’aiguillage - les services de remorquage et de dépannage - la liquéfaction du gaz en vue de son transport "
     },
     {
+        "cls_na9": "52.22",
         "lib_na9": "Services auxiliaires des transports par eau",
-        "cls_na9": 52.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "خدمات ملحقة بالنقل عبر المياه",
-        "description": "- les activités liées au transport par eau de personnes, d’animaux ou de fret:\n• l’exploitation d’installations de terminaux telles que ports et quais\n• l’exploitation d’écluses, etc.\n• les activités liées à la navigation, au pilotage et au mouillage\n• les activités de sauvetage et de déchargement par allèges\n• les activités des phares"
+        "description": "- les activités liées au transport par eau de personnes, d’animaux ou de fret: • l’exploitation d’installations de terminaux telles que ports et quais • l’exploitation d’écluses, etc. • les activités liées à la navigation, au pilotage et au mouillage • les activités de sauvetage et de déchargement par allèges • les activités des phares "
     },
     {
+        "cls_na9": "52.23",
         "lib_na9": "Services auxiliaires des transports aériens",
-        "cls_na9": 52.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "خدمات ملحقة بالنقل الجوي",
-        "description": "- les activités liées au transport aérien de personnes, d’animaux ou de marchandises:\n• l’exploitation d’installations de terminaux telles que aéroports, etc.\n• les activités de contrôle des aéroports et de la circulation aérienne\n• les services au sol sur les terrains d’aviation, etc.\nCette classe comprend également:\n- les services de prévention et de lutte contre les incendies dans les aéroports"
+        "description": "- les activités liées au transport aérien de personnes, d’animaux ou de marchandises: • l’exploitation d’installations de terminaux telles que aéroports, etc. • les activités de contrôle des aéroports et de la circulation aérienne • les services au sol sur les terrains d’aviation, etc. - les services de prévention et de lutte contre les incendies dans les aéroports "
     },
     {
+        "cls_na9": "52.24",
         "lib_na9": "Manutention",
-        "cls_na9": 52.24,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "مناولة البضائع (شحن البضائع وتفريغها)",
-        "description": "- le chargement et le déchargement de marchandises ou de bagages, quel que soit le mode de transport utilisé\n- l’arrimage et le débardage de marchandises\n- le chargement et le déchargement de wagons de transport de marchandises"
+        "description": "- le chargement et le déchargement de marchandises ou de bagages, quel que soit le mode de transport utilisé - l’arrimage et le débardage de marchandises - le chargement et le déchargement de wagons de transport de marchandises "
     },
     {
+        "cls_na9": "52.29",
         "lib_na9": "Autres services auxiliaires des transports",
-        "cls_na9": 52.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات أخرى ملحقة بالنقل",
-        "description": "- l’expédition de marchandises\n- l’organisation ou l’exécution d’opérations de transport par route, par eau ou par air\n- l’organisation d’envois individuels et groupés (y compris l’enlèvement et la livraison de marchandises et le groupage\ndes envois)\n- l’établissement et l’obtention de documents et de lettres de transport\n- les activités des agents en douane\n- les activités des commissaires de transport de fret maritime ainsi que des agents de fret aérien\n- le courtage maritime et aérien\n- les opérations de manutention des marchandises, comme l’emballage temporaire destiné uniquement à protéger les\nmarchandises pendant leur passage en transit, le déballage, la prise d’échantillons et le pesage"
+        "description": "- l’expédition de marchandises - l’organisation ou l’exécution d’opérations de transport par route, par eau ou par air - l’organisation d’envois individuels et groupés (y compris l’enlèvement et la livraison de marchandises et le groupage des envois) - l’établissement et l’obtention de documents et de lettres de transport - les activités des agents en douane - les activités des commissaires de transport de fret maritime ainsi que des agents de fret aérien - le courtage maritime et aérien - les opérations de manutention des marchandises, comme l’emballage temporaire destiné uniquement à protéger les marchandises pendant leur passage en transit, le déballage, la prise d’échantillons et le pesage "
     },
     {
+        "cls_na9": "53.10",
         "lib_na9": "Activités de poste dans le cadre d'une obligation de service universel",
-        "cls_na9": 53.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة البريد في إطار واجبات الخدمات الدولية"
+        "description": "désignés pour assumer l’obligation de service universel. Ces activités comprennent l’utilisation de l’infrastructure de service universel, y compris les points de vente au détail, les installations de tri et de traitement et les transporteurs pour l’enlèvement et la livraison du courrier. La distribution peut inclure des envois de la poste aux lettres, c’est-à-dire des lettres, des cartes postales, des imprimés (journaux, périodiques, publicités, etc.), de petits paquets, des marchandises ou des documents. Sont compris également les autres services nécessaires pour remplir l’obligation de service universel. - la levée, le tri, l’acheminement et la distribution (nationale ou internationale) de lettres et de colis et paquets (assimilés à du courrier) par les services postaux chargés de l’obligation de service universel. Il peut être fait appel à un ou à plusieurs modes de transport et l’acheminement peut avoir lieu par un moyen de transport détenu en propre (privé) ou par un moyen de transport public. - la collecte du courrier et des colis dans les boîtes à lettres publiques ou les bureaux de poste "
     },
     {
+        "cls_na9": "53.20",
         "lib_na9": "Autres activités de poste et de courrier",
-        "cls_na9": 53.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أصناف أخرى من أنشطة البريد ونقل الطرود"
+        "description": "- la levée, le tri, l’acheminement et la distribution (nationale ou internationale) de lettres et de colis et paquets (assimilés à du courrier) par des entreprises opérant en dehors de l’obligation de service universel. Il peut être fait appel à un ou à plusieurs modes de transport et l’acheminement peut avoir lieu par un moyen de transport détenu en propre (privé) ou par un moyen de transport public. - les services de livraison à domicile "
     },
     {
+        "cls_na9": "55.10",
         "lib_na9": "Hôtels et hébergement similaire",
-        "cls_na9": 55.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "النزل وأصناف الإيواء المماثلة"
+        "description": "hebdomadaire, pour un séjour de courte durée. L’offre comprend la fourniture d'un hébergement meublé dans des chambres ou des suites. Elle propose un service quotidien des lits et de nettoyage de la chambre. Cette offre comprend également une gamme d’autres services tels que repas et boissons, garage, blanchisserie, piscine et salle de culture physique, installations pour conférences et séminaires. - les hôtels - les hôtels de tourisme - les hôtels à appartements - les motels "
     },
     {
+        "cls_na9": "55.20",
         "lib_na9": "Hébergement touristique et autre hébergement de courte durée",
-        "cls_na9": 55.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الإيواء السياحي والإيواء لمدة قصيرة"
+        "description": "hebdomadaire, principalement pour un séjour de courte durée comprenant, dans un espace limité, des pièces complètement meublées ou des espaces de vie, de repas et de repos et disposant d’installations pour cuisiner ou de cuisines intégrées. Il peut s’agir d’appartements situés dans de petits bâtiments indépendants à plusieurs niveaux ou dans des ensembles de bâtiments ou de maisons, cabanes, pavillons ou chalets isolés. Lorsque des services supplémentaires sont proposés, ils sont d’un niveau minimal. - les maisons de vacances pour enfants et autres - les appartements et pavillons de vacances - les maisons et cabanes de vacances sans service de nettoyage - les auberges de jeunesse et les refuges de montagne "
     },
     {
+        "cls_na9": "55.30",
         "lib_na9": "Terrains de camping et parcs pour caravanes ou véhicules de loisirs",
-        "cls_na9": 55.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "فضاءات للمخيمات وفضاءات للكرفانات أو لعربات الترفيه"
+        "description": "- la mise à disposition d’hébergement dans des terrains de camping, des parcs pour caravanes, des camps de loisirs et des camps de chasse et de pêche pour des séjours de courte durée - la mise à disposition d’installations et d’espaces destinés aux véhicules de loisirs - les abris et bivouacs permettant de planter une tente et/ou de poser des sacs de couchage "
     },
     {
+        "cls_na9": "55.90",
         "lib_na9": "Autres hébergements",
-        "cls_na9": 55.9,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أصناف الإيواء الأخرى"
+        "description": "individuelles ou pour plusieurs personnes, des résidences pour étudiants, des foyers pour travailleurs migrants (saisonniers), etc. - les résidences d’étudiants - les internats - les foyers pour travailleurs - les chambres meublées et les pensions de famille - les voitures-lits  56 Restauration Cette division comprend les activités consistant à fournir des repas complets ou des boissons pour consommation immédiate, qu’il s’agisse de restaurants traditionnels, de self-services ou d’établissements proposant des plats à emporter, établissements permanents ou temporaires, avec ou sans places assises. L’élément décisif est le fait que les plats soient destinés à une consommation immédiate et non le type d’établissement qui les propose. La production de repas qui ne sont pas destinés à être consommés immédiatement ou de denrées alimentaires préparées qui ne sont pas considérées comme constituant un repas n’est pas comprise (voir division 10 Industries alimentaires et division 11 Industrie des boissons). La vente de denrées alimentaires non produites par l’unité et qui ne sont pas considérées comme constituant un repas ou de repas qui ne sont pas destinés à être consommés immédiatement est également exclue (voir section G Commerce). 56.1 Restaurants et services de restauration mobile "
     },
     {
+        "cls_na9": "56.11",
         "lib_na9": "Restauration traditionnelle",
-        "cls_na9": 56.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "مطاعم من النوع التقليدي",
-        "description": "- les activités de restauration avec un service à la table ainsi que celles fonctionnant en libre- service\nCette classe comprend également:\n- les restaurants à thèmes (restaurant spécialisés, restaurant exotiques, etc.) dés lors qu'ils offrent une possibilité de choix\nentre plusieurs types de plats\n- les activités des bars et des restaurants installés à bord de moyens de transport, s’ils sont exploités par des unités distinctes\n- les cafés-restaurants associant les activités de restauration et de vente de boissons"
+        "description": "- les activités de restauration avec un service à la table ainsi que celles fonctionnant en libre- service - les restaurants à thèmes (restaurant spécialisés, restaurant exotiques, etc.) dés lors qu'ils offrent une possibilité de choix entre plusieurs types de plats - les activités des bars et des restaurants installés à bord de moyens de transport, s’ils sont exploités par des unités distinctes - les cafés-restaurants associant les activités de restauration et de vente de boissons "
     },
     {
+        "cls_na9": "56.12",
         "lib_na9": "Restauration de type rapide",
-        "cls_na9": 56.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "مطاعم متخصصة في الأكلة السريعة",
-        "description": "- la fourniture au comptoir d'aliments et de boissons à consommer sur place ou à emporter,\nprésentés dans des conditionnements jetables:\n• les restaurants de restauration rapide: humburgers, pizzerias, viennoiseries, croissanteries, crèperies,\nsandwitheries, friteries, service au volants (drive in), etc.\n• les restaurants proposant principalement des repas à emporter\n• la vente de crème glacée dans des chariots\n• la vente de repas dans des équipements mobiles\n• la préparation de repas sur des éventaires ou sur les marchés"
+        "description": "- la fourniture au comptoir d'aliments et de boissons à consommer sur place ou à emporter, présentés dans des conditionnements jetables: • les restaurants de restauration rapide: humburgers, pizzerias, viennoiseries, croissanteries, crèperies, sandwitheries, friteries, service au volants (drive in), etc. • les restaurants proposant principalement des repas à emporter • la vente de crème glacée dans des chariots • la vente de repas dans des équipements mobiles • la préparation de repas sur des éventaires ou sur les marchés  196 I n st i t u t N a t i o nal d e la S ta tis tiq u e    - salons de thé "
     },
     {
+        "cls_na9": "56.21",
         "lib_na9": "Services des traiteurs",
-        "cls_na9": 56.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات ممونو أطعمة (تريتور أي صانعو الأكلات) في المناسبات"
+        "description": "le client, à l’endroit précisé par celui-ci et pour une occasion particulière. "
     },
     {
+        "cls_na9": "56.29",
         "lib_na9": "Autres services de restauration",
-        "cls_na9": 56.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات الطعام الأخرى"
+        "description": "conclues avec le client, pour une durée déterminée. L’exploitation en concession de services de restauration, comme dans des installations sportives ou autres, est également comprise. Les repas sont généralement préparés dans des cuisines centrales. - les activités des entreprises fournissant des repas (par exemple: pour des entreprises de transport) - l’exploitation en concession de services de restauration, comme dans des installations sportives ou autres - l’exploitation en concession de cantines ou de cafétérias (par exemple: pour des usines, des bureaux, des hôpitaux ou des écoles) "
     },
     {
+        "cls_na9": "56.31",
         "lib_na9": "Cafés",
-        "cls_na9": 56.31,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "المقاهي",
-        "description": "- les activités de préparation et de service de boissons non alcoolisées, sans restauration, destinées à la consommation\nsur place.\nCette classe ne comprend pas :\n- la revente de boissons emballées/préparées, voir 47\n- la vente au détail de boissons par le biais de distributeurs automatiques, voir 47.99\n- l'exploitation de discothèques et de pistes de danse sans service de boissons, voir 93.29\n56.32 Débits de boissons alcoolisées\nCette classe comprend:\n- les activités de préparation et de service de boissons alcoolisées, sans restauration, destinées à la consommation sur\nplace (bars, brasseries)\nCette classe comprend également:\n- les discothèques avec prédominance du service de boissons"
+        "description": "- les activités de préparation et de service de boissons non alcoolisées, sans restauration, destinées à la consommation sur place. Cette classe ne comprend pas : - la revente de boissons emballées/préparées, voir 47 - la vente au détail de boissons par le biais de distributeurs automatiques, voir 47.99 - l'exploitation de discothèques et de pistes de danse sans service de boissons, voir 93.29 "
     },
     {
+        "cls_na9": "56.32",
         "lib_na9": "Débits de boissons alcoolisées",
-        "cls_na9": 56.32,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الحانات"
+        "description": "- les activités de préparation et de service de boissons alcoolisées, sans restauration, destinées à la consommation sur place (bars, brasseries) - les discothèques avec prédominance du service de boissons "
     },
     {
-        "lib_na9": "Edition de livres",
-        "cls_na9": 58.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر الكتب"
+        "cls_na9": "58.11",
+        "lib_na9": "Édition de livres",
+        "description": "encore sur Internet. - l’édition de livres, de brochures, de prospectus et de publications similaires, y compris l’édition de dictionnaires et d’encyclopédies - l’édition d’atlas, de cartes et de plans - l’édition de livres audio - l’édition d’encyclopédies et d’ouvrages similaires sur CD-ROM "
     },
     {
-        "lib_na9": "Edition de répertoires et de fichiers d'adresses",
-        "cls_na9": 58.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر الأدلة وقوائم العناوين"
+        "cls_na9": "58.12",
+        "lib_na9": "Édition de répertoires et de fichiers d'adresses",
+        "description": "forme, mais pas dans leur contenu. Ces listes peuvent être publiées sous forme imprimée ou électronique. - la publication de fichiers d’adresses - l’édition d’annuaires - l’édition d’autres répertoires et recueils, comme la jurisprudence, les compendiums pharmaceutiques, etc. "
     },
     {
-        "lib_na9": "Edition de journaux",
-        "cls_na9": 58.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر الجرائد"
+        "cls_na9": "58.13",
+        "lib_na9": "Édition de journaux",
+        "description": "semaine. Ces informations peuvent être publiées sous forme imprimée ou électronique, y compris sur Internet. "
     },
     {
-        "lib_na9": "Edition de revues et périodiques",
-        "cls_na9": 58.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر المجلات والدوريات"
+        "cls_na9": "58.14",
+        "lib_na9": "Édition de revues et périodiques",
+        "description": "également l’édition de programmes pour les émissions de radio ou de télévision. "
     },
     {
+        "cls_na9": "58.19",
         "lib_na9": "Autres activités d'édition",
-        "cls_na9": 58.19,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة نشر أخرى",
-        "description": "- l’édition (y compris en ligne) de:\n• catalogues\n• photos, gravures et cartes postales\n• cartes de vœux\n• formulaires\n• affiches, reproductions d’œuvres d’art\n• matériel publicitaire\n• autre matériel imprimé\n- la publication en ligne de statistiques et d’autres informations"
+        "description": "- l’édition (y compris en ligne) de: • catalogues • photos, gravures et cartes postales • cartes de vœux • formulaires • affiches, reproductions d’œuvres d’art • matériel publicitaire • autre matériel imprimé - la publication en ligne de statistiques et d’autres informations "
     },
     {
-        "lib_na9": "Edition de jeux électroniques",
-        "cls_na9": 58.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر الألعاب الإلكترونية",
-        "description": "- l’édition de jeux pour tout type de plates-formes\n58.29 Édition d'autres logiciels"
+        "cls_na9": "58.21",
+        "lib_na9": "Édition de jeux électroniques",
+        "description": "- l’édition de jeux pour tout type de plates-formes "
     },
     {
-        "lib_na9": "Edition d'autres logiciels",
-        "cls_na9": 58.29,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "نشر البرمجيات الأخرى"
+        "cls_na9": "58.29",
+        "lib_na9": "Édition d'autres logiciels",
+        "description": "- l’édition de logiciels prêts à l’utilisation (non personnalisés), y compris la traduction ou l’adaptation de logiciels non personnalisés pour un marché déterminé, pour compte propre: • systèmes d’exploitation • applications commerciales et autres "
     },
     {
+        "cls_na9": "59.11",
         "lib_na9": "Production de films cinématographiques, de vidéo et de programmes de télévision",
-        "cls_na9": 59.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إنتاج الأفلام السينمائية وأفلام الفيديو وبرامج التلفزة",
-        "description": "- la production de films, de vidéos, d’émissions de télévision (séries télévisées, documentaires, etc.) ou de publicités."
+        "description": "- la production de films, de vidéos, d’émissions de télévision (séries télévisées, documentaires, etc.) ou de publicités. "
     },
     {
+        "cls_na9": "59.12",
         "lib_na9": "Post-production de films cinématographiques, de vidéo et de programmes de télévision",
-        "cls_na9": 59.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة مابعد إنتاج الأفلام السينمائية والفيديو وبرامج التلفزة"
+        "description": "sous-titrage, création de génériques, sous-titrage codé, production de graphiques, animations d’images et effets spéciaux informatiques, de même que le développement et le traitement de films cinématographiques et les activités des laboratoires spécialisés dans la production de films d’animation. - les activités des cinémathèques, etc. "
     },
     {
+        "cls_na9": "59.13",
         "lib_na9": "Distribution de films cinématographiques, de vidéo et de programmes de télévision",
-        "cls_na9": 59.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "توزيع الأفلام السينمائية والفيديو وبرامج التلفزة",
-        "description": "- la distribution de productions cinématographiques et vidéo, de DVD et d’autres productions similaires auprès des\ncinémas, des réseaux et stations de télévision et d’autres exploitants\nCette classe comprend également:\n- l’acquisition des droits de diffusion de productions cinématographiques et vidéo et de DVD"
+        "description": "- la distribution de productions cinématographiques et vidéo, de DVD et d’autres productions similaires auprès des cinémas, des réseaux et stations de télévision et d’autres exploitants - l’acquisition des droits de diffusion de productions cinématographiques et vidéo et de DVD "
     },
     {
+        "cls_na9": "59.14",
         "lib_na9": "Projection de films cinématographiques",
-        "cls_na9": 59.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "عرض الأفلام السينمائية",
-        "description": "- la projection de films cinématographiques ou de bandes vidéo dans des salles de cinéma, en plein air ou dans d’autres\ninstallations de projection\n- les activités des ciné-clubs\n59.2 Enregistrement sonore et édition musicale\n59.20 Enregistrement sonore et édition musicale\nCette classe comprend les activités liées à la production de matrices sonores, telles que cassettes, CD, à leur sortie, leur\npromotion et leur distribution auprès de grossistes, de détaillants ou directement du public. Ces activités peuvent ou non\nêtre intégrées à l’activité de production de matrices au sein d’une même unité. Si ce n’est pas le cas, l’unité réalisant ces\nactivités doit obtenir les droits de reproduction et de diffusion avant de réaliser les matrices.\nCette classe comprend également les services d’enregistrement sonore en studio ou dans d’autres installations, y compris\nla production d’émissions de radio enregistrées (c’est-à-dire pas en direct).\nCette classe comprend les activités d’édition musicale, c’est-à-dire les activités consistant à acquérir et à enregistrer les\ndroits d’auteur pour les compositions musicales, de promotion, d’autorisation et d’utilisation de ces compositions dans\ndes enregistrements, à la radio, à la télévision, dans des films, des spectacles ou les médias. Les unités actives dans cette\nclasse peuvent détenir les droits d’auteur ou gérer les droits d’auteur musicaux pour le compte de leur détenteur. Cette\nclasse comprend également l’édition de livres musicaux et de partitions."
+        "description": "- la projection de films cinématographiques ou de bandes vidéo dans des salles de cinéma, en plein air ou dans d’autres installations de projection - les activités des ciné-clubs 59.2 Enregistrement sonore et édition musicale "
     },
     {
+        "cls_na9": "59.20",
         "lib_na9": "Enregistrement sonore et édition musicale",
-        "cls_na9": 59.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التسجيلات الصوتية والنشر الموسيقي"
+        "description": "promotion et leur distribution auprès de grossistes, de détaillants ou directement du public. Ces activités peuvent ou non être intégrées à l’activité de production de matrices au sein d’une même unité. Si ce n’est pas le cas, l’unité réalisant ces activités doit obtenir les droits de reproduction et de diffusion avant de réaliser les matrices. la production d’émissions de radio enregistrées (c’est-à-dire pas en direct). droits d’auteur pour les compositions musicales, de promotion, d’autorisation et d’utilisation de ces compositions dans des enregistrements, à la radio, à la télévision, dans des films, des spectacles ou les médias. Les unités actives dans cette classe peuvent détenir les droits d’auteur ou gérer les droits d’auteur musicaux pour le compte de leur détenteur. Cette classe comprend également l’édition de livres musicaux et de partitions.  60 Programmation et diffusion Cette division comprend les activités consistant à créer du contenu ou à acquérir le droit de diffuser du contenu, avant de le diffuser: émissions de radio et de télévision, y compris les émissions de divertissement, dinformation, les émissionsdébats et dautres émissions. La télédiffusion de données est également comprise et est généralement intégrée aux émissions de radio et de télévision. La télédiffusion peut faire appel à plusieurs technologies: réseau hertzien, satellite, câble ou Internet. Cette division comprend la production de programmes destinés à la câblodistribution (format réduit, informations, sport, enseignement, programmes jeunesse) sur une base d’abonnement. Cette division ne comprend pas la distribution des émissions par câble et autres abonnements (voir division 61). 60.1 Édition et diffusion de programmes radio "
     },
     {
-        "lib_na9": "Edition et diffusion de programmes radio",
-        "cls_na9": 60.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة برامج البث الإذاعي"
+        "cls_na9": "60.10",
+        "lib_na9": "Édition et diffusion de programmes radio",
+        "description": "- les activités de diffusion de signaux sonores par l’intermédiaire de studios et d’installations de radiodiffusion pour la transmission de programmes audio vers le public, à des stations affiliées ou à des abonnés. - les activités des réseaux de radiodiffusion, rassemblant et transmettant des programmes audio destinés à des stations affiliées ou à des abonnés, par les ondes, le câble ou le satellite - les activités de radiodiffusion via Internet (stations de radio sur Internet) - la diffusion de données intégrée à la radiodiffusion "
     },
     {
+        "cls_na9": "60.20",
         "lib_na9": "Programmation de télévision et télédiffusion",
-        "cls_na9": 60.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة برامج البث التلفزي"
+        "description": "(films, documentaires, etc.), de parties de programmes autoproduits (comme les informations locales et les reportages en direct) ou une combinaison de ces éléments. Ce programme de télévision peut être diffusé par l’unité le produisant ou être réalisé en vue d’une transmission par des distributeurs tiers, tels que des entreprises de télévision par câble ou des fournisseurs de télévision par satellite. Les programmes peuvent être généraux ou spécialisés (format réduit, informations, sport, enseignement, programmes sur une base d’abonnement. Les programmes de vidéos à la demande sont également compris dans cette classe. La télédiffusion de données intégrée aux émissions de télévision est également comprise. "
     },
     {
+        "cls_na9": "61.10",
         "lib_na9": "Télécommunications filaires",
-        "cls_na9": 61.1,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإتصالات السلكية"
+        "description": "- les activités d’exploitation, d’entretien et de fourniture de l’accès à des installations de transmission de la voix, de données, de textes, de sons et d’images en utilisant une infrastructure de télécommunications filaires. Ces activités comprennent plus précisément: • l’exploitation et l’entretien des installations de commutation et de transmission permettant les communications de point à point par l’intermédiaire de lignes terrestres, des micro-ondes ou une combinaison de lignes terrestres et de liaisons satellites • l’exploitation de systèmes de câblodistribution (par exemple: pour la transmission des données et des signaux de télévision) • la fourniture de communications par télégraphe et d’autres communications non vocales utilisant leur propre infrastructure. Les installations de transmission assurant ces activités peuvent reposer sur une seule technologie ou sur une combinaison de plusieurs technologies. - l’acquisition de l’accès et de la capacité réseau auprès des propriétaires et opérateurs de réseaux et la fourniture de services de télécommunications s’appuyant sur cette capacité aux entreprises et aux ménages. - la fourniture de l’accès à Internet par l’opérateur de l’infrastructure filaire. "
     },
     {
+        "cls_na9": "61.20",
         "lib_na9": "Télécommunications sans fil",
-        "cls_na9": 61.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإتصالات اللاسلكية"
+        "description": "- les activités d’exploitation, d’entretien et de fourniture de l’accès à des installations de transmission de la voix, de données, de textes, de sons et d’images en utilisant une infrastructure de télécommunications sans fil - les services de téléphonie cellulaire et autres réseaux de télécommunications sans fil. Ces installations permettent la transmission omnidirectionnelle par les ondes et peuvent reposer sur une seule technologie ou sur une combinaison de plusieurs technologies. - l’acquisition de l’accès et de la capacité réseau auprès des propriétaires et opérateurs de réseaux et la fourniture de services de télécommunications sans fil (à l’exception de la transmission par satellite) s’appuyant sur cette capacité aux entreprises et aux ménages - la fourniture de l’accès à Internet par l’opérateur de l’infrastructure sans fil. "
     },
     {
+        "cls_na9": "61.30",
         "lib_na9": "Télécommunications par satellite",
-        "cls_na9": 61.3,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإتصالات عبر الأقمار الصناعية"
+        "description": "- les activités d’exploitation, d’entretien et de fourniture de l’accès à des installations de transmission de la voix, de données, de textes, de sons et d’images en utilisant une infrastructure de télécommunications par satellite - la fourniture de programmes contenant des images, du son et des textes transmis aux consommateurs par des chaînes, stations ou réseaux de télévision, ou des réseaux de radio via des systèmes satellites de diffusion directe. (Les unités classées ici ne produisent en général pas le matériel de base des programmes.) - la fourniture de l’accès à Internet par l’opérateur de l’infrastructure satellite "
     },
     {
+        "cls_na9": "61.90",
         "lib_na9": "Autres activités de télécommunication",
-        "cls_na9": 61.9,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الإتصالات الأخرى"
+        "description": "- la fourniture d’applications spécialisées de télécommunications, telles que le repérage des satellites, la télémesure et l’exploitation de stations radar - l’exploitation de stations terminales de satellites et des installations connexes liées à un ou plusieurs systèmes de communications terrestres et capables d’assurer les télécommunications avec les systèmes de satellites - la fourniture de l’accès à Internet entre le client et le FSI par l’intermédiaire de réseaux dont le FSI n’est pas propriétaire, comme l’accès commuté à Internet, etc. - la fourniture de l’accès au téléphone et à Internet dans des lieux ouverts au public - la fourniture de services de télécommunications par des connexions aux télécommunications existantes • fourniture du protocole de téléphonie vocale sur Internet - les revendeurs de services de télécommunications (c’est-à-dire l’acquisition et la revente de capacité réseau sans services supplémentaires) "
     },
     {
+        "cls_na9": "62.01",
         "lib_na9": "Programmation informatique",
-        "cls_na9": 62.01,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة البرمجة في الإعلامية"
+        "description": "- la conception de la structure et du contenu et/ou l'écriture du code informatique nécessaire à la création et au lancement de: • logiciels informatiques (y compris les mises à jour et les correctifs) • applications logicielles (y compris les mises à jour et les correctifs) • bases de données • pages web - l'adaptation de logiciels, c'est-à-dire la modification et la configuration d'une application existante pour la rendre opérationnelle dans l'environnement informatique du client "
     },
     {
+        "cls_na9": "62.02",
         "lib_na9": "Conseil informatique",
-        "cls_na9": 62.02,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الخبرة الإستشارية في أنظمة الإعلامية"
+        "description": "des logiciels et celle des communications. Les services peuvent comprendre une formation des utilisateurs concernés. "
     },
     {
+        "cls_na9": "62.03",
         "lib_na9": "Gestion d'installations informatiques",
-        "cls_na9": 62.03,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إدارة الشبكات والأنظمة الإعلامية"
+        "description": "données du client, ainsi que les services d’assistance connexes. "
     },
     {
+        "cls_na9": "62.09",
         "lib_na9": "Autres activités informatiques",
-        "cls_na9": 62.09,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة أخرى متعلقة بالإعلامية"
+        "description": "ailleurs, telles que: - les services de récupération après un sinistre informatique - l'installation (configuration) d'ordinateurs personnels - les services d’installation de logiciels. "
     },
     {
+        "cls_na9": "63.11",
         "lib_na9": "Traitement de données, hébergement et activités connexes",
-        "cls_na9": 63.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تجهيز البيانات واستضافة المواقع على الشبكة وما يتصل بذلك من أنشطة",
-        "description": "- la fourniture d'infrastructures destinées aux services d’hébergement, de traitement des données et à d’autres activités\nde ce type\n- les activités d’hébergement spécialisées comme:\n• services d’hébergement de sites Web\n• services de diffusion continue\n• services d’hébergement d’applications\n- la fourniture de services applicatifs\n- la fourniture générale à temps partagé de gros ordinateurs destinés aux clients\n- les activités de traitement des données:\n• traitement complet des données fournies par le client\n• préparation de rapports spécialisés à partir des données fournies par le client\n- les services de saisie des données"
+        "description": "- la fourniture d'infrastructures destinées aux services d’hébergement, de traitement des données et à d’autres activités de ce type - les activités d’hébergement spécialisées comme: • services d’hébergement de sites Web • services de diffusion continue • services d’hébergement d’applications - la fourniture de services applicatifs - la fourniture générale à temps partagé de gros ordinateurs destinés aux clients - les activités de traitement des données: • traitement complet des données fournies par le client • préparation de rapports spécialisés à partir des données fournies par le client - les services de saisie des données "
     },
     {
+        "cls_na9": "63.12",
         "lib_na9": "Portails Internet",
-        "cls_na9": 63.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "بوابات الشبكة",
-        "description": "- l’exploitation de sites Web qui utilisent des moteurs de recherche pour produire et maintenir d’importantes bases de\ndonnées contenant des adresses et du contenu sur Internet, dans un format aisément consultable\n- l’exploitation d’autres sites Web ayant une fonction de portails, tels que les sites de médias dont le contenu est\npériodiquement mis à jour."
+        "description": "- l’exploitation de sites Web qui utilisent des moteurs de recherche pour produire et maintenir d’importantes bases de données contenant des adresses et du contenu sur Internet, dans un format aisément consultable - l’exploitation d’autres sites Web ayant une fonction de portails, tels que les sites de médias dont le contenu est périodiquement mis à jour. "
     },
     {
+        "cls_na9": "63.91",
         "lib_na9": "Activités des agences de presse",
-        "cls_na9": 63.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة وكالات الأنباء",
-        "description": "- les activités des agences de presse, c’est-à-dire la communication aux médias d’informations, de photos et d’autres\néléments divers"
+        "description": "- les activités des agences de presse, c’est-à-dire la communication aux médias d’informations, de photos et d’autres éléments divers "
     },
     {
+        "cls_na9": "63.99",
         "lib_na9": "Autres services d'information n.c.a.",
-        "cls_na9": 63.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة خدمات المعلومات الأخرى غ.م.س"
+        "description": "- les services informatiques d’information par téléphone - les services de recherche d’information, pour le compte de tiers - les services de revue de presse, etc. "
     },
     {
+        "cls_na9": "64.11",
         "lib_na9": "Activités de banque centrale",
-        "cls_na9": 64.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة البنك المركزي",
-        "description": "- l’émission et la gestion de la monnaie du pays\n- le suivi et le contrôle de la masse monétaire\n- la prise en compte de dépôts qui sont utilisés pour des opérations de compensation entre institutions financières\n- la surveillance des opérations bancaires\n- la détention de réserves de change\n- les activités de la banque centrale en tant que banque du gouvernement.\nLes activités des banques centrales varieront pour des raisons institutionnelles.\n64.19 Autres intermédiations monétaires\nCette classe comprend la réception de dépôts et/ou de proches substituts de dépôts et l’octroi de crédits ou le prêt de\nfonds. L’octroi de crédit peut prendre différentes formes (prêts, hypothèques, cartes de crédit, etc.). Ces activités sont\ngénéralement effectuées par des institutions monétaires autres que les banques centrales, comme:\n- les établissements bancaires\n- les caisses d’épargne\n- les caisses de crédit mutuel\nCette classe comprend également:\n- les activités de virements postaux et des caisses d’épargne postales\n- l’octroi de prêts au logement par des institutions spécialisées recevant des dépôts\n- les activités se rattachant à l’émission et au paiement de mandats"
+        "description": "- l’émission et la gestion de la monnaie du pays - le suivi et le contrôle de la masse monétaire - la prise en compte de dépôts qui sont utilisés pour des opérations de compensation entre institutions financières - la surveillance des opérations bancaires - la détention de réserves de change - les activités de la banque centrale en tant que banque du gouvernement. Les activités des banques centrales varieront pour des raisons institutionnelles. "
     },
     {
+        "cls_na9": "64.19",
         "lib_na9": "Autres intermédiations monétaires",
-        "cls_na9": 64.19,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "وساطة نقدية أخرى"
+        "description": "fonds. L’octroi de crédit peut prendre différentes formes (prêts, hypothèques, cartes de crédit, etc.). Ces activités sont généralement effectuées par des institutions monétaires autres que les banques centrales, comme: - les établissements bancaires - les caisses d’épargne - les caisses de crédit mutuel - les activités de virements postaux et des caisses d’épargne postales - l’octroi de prêts au logement par des institutions spécialisées recevant des dépôts - les activités se rattachant à l’émission et au paiement de mandats "
     },
     {
+        "cls_na9": "64.20",
         "lib_na9": "Activités des sociétés holding",
-        "cls_na9": 64.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الشركات القابضة"
+        "description": "contrôle des fonds propres) d’un groupe de sociétés filiales et dont la principale activité est d’être propriétaire de ce groupe. Les sociétés holding appartenant à cette classe ne fournissent aucun autre service aux entreprises dans lesquelles elles détiennent des fonds propres, en d’autres termes, elles n’administrent pas ou ne gèrent pas d’autres entités. "
     },
     {
+        "cls_na9": "64.30",
         "lib_na9": "Fonds de placement et entités financières similaires",
-        "cls_na9": 64.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "صناديق الأموال والكيانات المالية المماثلة"
+        "description": "administrer, pour le compte d’actionnaires ou de bénéficiaires. Les portefeuilles sont adaptés pour avoir des caractéristiques d’investissement spécifiques (diversification, risque, taux de rendement et volatilité des prix). Ces entités perçoivent des intérêts, des dividendes et d’autres revenus de biens, mais elles n’ont pas ou peu d’employés et ne tirent aucun revenu de la vente de services.  206 I n st i t u t N a t i o nal d e la S ta tis tiq u e    - les sociétés d’investissement à capital variable - les sociétés d’investissement à capital fixe - les fonds communs de placement - les fiducies, les comptes de patrimoine ou d’agence, administrés pour le compte des bénéficiaires selon les dispositions d’une convention de fiducie, d’un testament ou d’un contrat d’agence "
     },
     {
+        "cls_na9": "64.91",
         "lib_na9": "Crédit-bail",
-        "cls_na9": 64.91,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "التأجير المالي",
-        "description": "- le crédit-bail, lorsque le bail couvre approximativement la durée de service escomptée du bien et que le preneur\nbénéficie de tous les avantages qu’offre l’utilisation de ce bien et qu’il assume tous les risques découlant de sa propriété.\nLe bien peut être transmissible ou non. Ce type de bail couvre tous les coûts ou presque, y compris les intérêts."
+        "description": "- le crédit-bail, lorsque le bail couvre approximativement la durée de service escomptée du bien et que le preneur bénéficie de tous les avantages qu’offre l’utilisation de ce bien et qu’il assume tous les risques découlant de sa propriété. Le bien peut être transmissible ou non. Ce type de bail couvre tous les coûts ou presque, y compris les intérêts. "
     },
     {
+        "cls_na9": "64.92",
         "lib_na9": "Autre distribution de crédit",
-        "cls_na9": 64.92,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أشكال منح القروض الأخرى",
-        "description": "- les activités de services financiers consistant principalement en l’octroi de prêts par des institutions qui ne s’occupent\npas d’intermédiation monétaire, le crédit accordé pouvant prendre différentes formes (prêts, hypothèques, cartes de\ncrédit, etc.) et fournissant les types de services suivants:\n• l’octroi de crédit à la consommation\n• le financement des échanges internationaux\n• l’offre de financement à long terme à l’industrie\n• le prêt d’argent en dehors du système bancaire\n• l’octroi de prêts au logement par des institutions spécialisées ne recevant pas de dépôts\n• les sociétés de prêt sur gages"
+        "description": "- les activités de services financiers consistant principalement en l’octroi de prêts par des institutions qui ne s’occupent pas d’intermédiation monétaire, le crédit accordé pouvant prendre différentes formes (prêts, hypothèques, cartes de crédit, etc.) et fournissant les types de services suivants: • l’octroi de crédit à la consommation • le financement des échanges internationaux • l’offre de financement à long terme à l’industrie • le prêt d’argent en dehors du système bancaire • l’octroi de prêts au logement par des institutions spécialisées ne recevant pas de dépôts • les sociétés de prêt sur gages "
     },
     {
+        "cls_na9": "64.99",
         "lib_na9": "Autres activités des services financiers, hors assurance et caisses de retraite, n.c.a.",
-        "cls_na9": 64.99,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات مالية أخرى باستثناء التأمين وصناديق التقاعد غ.م.س"
+        "description": "- les autres activités de services financiers consistant principalement en placements de fonds autres que les prêts: • activités d’affacturage • opérations de crédit croisé (\"swaps\"), opérations sur options et autres opérations d’arbitrage • activités des sociétés de règlement d’assurance-viatique - les activités de placement pour compte propre, telles que celles effectuées par des sociétés de capital risque, des clubs d’investissement, etc. "
     },
     {
+        "cls_na9": "65.11",
         "lib_na9": "Assurance vie",
-        "cls_na9": 65.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "التأمين على الحياة",
-        "description": "- la souscription de contrats d’assurance de rente ou d’assurance vie, d’assurance invalidité et d’assurance en cas de\nmort ou mutilation accidentelle (avec ou sans élément d’épargne important)\n65.12 Autres assurances\nCette classe comprend:\n- la fourniture de services d’assurance autres que sur la vie:\n• assurance accident et incendie\n• assurance maladie\n• assurance voyages\n• assurance biens\n• assurance automobile, assurance maritime, assurance aérienne, assurance transports\n• assurance contre les pertes financières et assurance responsabilité civile\n65.2 Réassurance\n65.20 Réassurance\nCette classe comprend les activités consistant à prendre à son compte la totalité ou une partie du risque associé à des\npolices d’assurance émises par d’autres assureurs.\n65.3 Caisses de retraite\n65.30 Caisses de retraite\nCette classe comprend les entités juridiques (fonds, régimes et/ou programmes) organisées pour assurer le paiement des\nprestations de retraite exclusivement pour les salariés ou membres du répondant du régime. Elle comprend les régimes\nde pension avec prestations définies ainsi que les régimes individuels dans lesquels les prestations sont simplement\ndéterminées par la cotisation de l’affilié\nCette classe comprend:\n- les régimes de prestations aux salariés\n- les fonds et régimes de pension\n- les régimes de retraite"
+        "description": "- la souscription de contrats d’assurance de rente ou d’assurance vie, d’assurance invalidité et d’assurance en cas de mort ou mutilation accidentelle (avec ou sans élément d’épargne important) "
     },
     {
+        "cls_na9": "65.12",
         "lib_na9": "Autres assurances",
-        "cls_na9": 65.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أصناف أخرى من التأمين"
+        "description": "- la fourniture de services d’assurance autres que sur la vie: • assurance accident et incendie • assurance maladie • assurance voyages • assurance biens • assurance automobile, assurance maritime, assurance aérienne, assurance transports • assurance contre les pertes financières et assurance responsabilité civile 65.2 Réassurance "
     },
     {
+        "cls_na9": "65.20",
         "lib_na9": "Réassurance",
-        "cls_na9": 65.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إعادة التأمين"
+        "description": "polices d’assurance émises par d’autres assureurs. 65.3 Caisses de retraite "
     },
     {
+        "cls_na9": "65.30",
         "lib_na9": "Caisses de retraite",
-        "cls_na9": 65.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "صناديق التقاعد"
+        "description": "prestations de retraite exclusivement pour les salariés ou membres du répondant du régime. Elle comprend les régimes de pension avec prestations définies ainsi que les régimes individuels dans lesquels les prestations sont simplement déterminées par la cotisation de l’affilié - les régimes de prestations aux salariés - les fonds et régimes de pension - les régimes de retraite "
     },
     {
+        "cls_na9": "66.11",
         "lib_na9": "Administration de marchés financiers",
-        "cls_na9": 66.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إدارة الأسواق المالية"
+        "description": "- les bourses des contrats de marchandises - les bourses des contrats du marché à terme - les bourses des titres - les bourses des valeurs - les bourses des options sur actions ou marchandises I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "66.12",
         "lib_na9": "Courtage de valeurs mobilières et de marchandises",
-        "cls_na9": 66.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الوساطة المتعلقة بعقود الأوراق المالية والسلع",
-        "description": "- les opérations effectuées sur des marchés financiers pour le compte de tiers (le courtage en valeurs mobilières, par\nexemple) ainsi que les activités qui s’y rattachent\n- le courtage de titres\n- le courtage de contrats de marchandises\n- les activités des bureaux de change, etc."
+        "description": "- les opérations effectuées sur des marchés financiers pour le compte de tiers (le courtage en valeurs mobilières, par exemple) ainsi que les activités qui s’y rattachent - le courtage de titres - le courtage de contrats de marchandises - les activités des bureaux de change, etc. "
     },
     {
+        "cls_na9": "66.19",
         "lib_na9": "Autres activités auxiliaires de services financiers, hors assurance et caisses de retraite",
-        "cls_na9": 66.19,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة أخرى مساعدة للخدمات المالية باستثناء التأمين وصناديق التقاعد"
+        "description": "- les activités de traitement et de règlement des transactions financières, y compris des transactions effectuées par carte de crédit - les services de conseils en placement - les activités des conseillers et courtiers en hypothèque - les services d’investissement financier, de fiducie ou de garde pour le compte de tiers "
     },
     {
-        "lib_na9": "Evaluation des risques et dommages",
-        "cls_na9": 66.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تقييم المخاطر والأضرار"
+        "cls_na9": "66.21",
+        "lib_na9": "Évaluation des risques et dommages",
+        "description": "demandes d’indemnisation. Elle comprend: - l’évaluation des demandes d’indemnisation • liquidation de sinistres • analyse des risques • évaluation des risques et dommages • règlement d’avaries et de sinistres - le règlement des demandes d’indemnisation "
     },
     {
+        "cls_na9": "66.22",
         "lib_na9": "Activités des agents et courtiers d'assurances",
-        "cls_na9": 66.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الوكلاء وسماسرة التأمين",
-        "description": "- les activités des agents et courtiers d’assurances (intermédiaires d’assurance) consistant en la vente, la négociation ou\nle démarchage de contrats d’assurance de rente et d’autres formes de contrat d’assurance\n66.29 Autres activités auxiliaires d'assurance et de caisses de retraite"
+        "description": "- les activités des agents et courtiers d’assurances (intermédiaires d’assurance) consistant en la vente, la négociation ou le démarchage de contrats d’assurance de rente et d’autres formes de contrat d’assurance "
     },
     {
+        "cls_na9": "66.29",
         "lib_na9": "Autres activités auxiliaires d'assurance et de caisses de retraite",
-        "cls_na9": 66.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة أخرى مساعدة للتأمين وصناديق التقاعد"
+        "description": "- les activités entrant dans la gestion des assurances et des caisses de retraite ou qui lui sont étroitement liées (à l’exclusion de l’intermédiation financière, de la liquidation de sinistres et des activités des agents d’assurance): • administration des sauvetages • services actuariels "
     },
     {
+        "cls_na9": "66.30",
         "lib_na9": "Gestion de fonds",
-        "cls_na9": 66.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة إدارة الأموال"
+        "description": "et autres), telles que: - la gestion de fonds communs de placement - la gestion d’autres fonds de placement - la gestion de caisses de retraite  210 I n st i t u t N a t i o nal d e la S ta tis tiq u e   SECTION L  ACTIVITÉS IMMOBILIÈRES  Cette section comprend les activités de bailleurs, d’agents et/ou de courtiers dans l’un ou plusieurs des domaines suivants: vente ou achat de biens immobiliers, location de biens immobiliers, prestation d’autres services liés à l’immobilier tels que l’évaluation de biens immobiliers ou l’activité d’agent fiduciaire en immobilier. Les activités de cette section peuvent être effectuées sur des biens propres ou loués, éventuellement pour le compte de tiers. Sont également comprises la construction de structures, ainsi que la conservation des droits de propriété ou la location de ces structures. Cette section comprend aussi les gestionnaires de biens immobiliers.  68 Activités immobilières 68.1 Activités des marchands de biens immobiliers "
     },
     {
+        "cls_na9": "68.10",
         "lib_na9": "Activités des marchands de biens immobiliers",
-        "cls_na9": 68.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": 0,
-        "arb_na9": "أنشطة تجار الأملاك العقارية"
+        "description": "- l’achat et la vente de biens immobiliers propres ou loués: • immeubles résidentiels et maisons d’habitation • immeubles non résidentiels, y compris les salles d’exposition, les installations d’entreposage libre-service, les galeries et centres commerciaux • terres et terrains - la création de lotissements, sans amélioration foncière "
     },
     {
+        "cls_na9": "68.21",
         "lib_na9": "Location de logements",
-        "cls_na9": 68.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إيجار المساكن",
-        "description": "- la location d'appartements et de maisons, vides ou meublés destinés à l'habitation principale ou secondaire\nCette classe comprend également:\n- la promotion immobilière de logements en vue d'une exploitation propre\n- l'exploitation d'emplacements pour caravanes résidentielles"
+        "description": "- la location d'appartements et de maisons, vides ou meublés destinés à l'habitation principale ou secondaire - la promotion immobilière de logements en vue d'une exploitation propre - l'exploitation d'emplacements pour caravanes résidentielles "
     },
     {
+        "cls_na9": "68.29",
         "lib_na9": "Location de terrains et d'autres biens immobiliers",
-        "cls_na9": 68.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إيجار الأراضي والأملاك العقارية الأخرى",
-        "description": "- la location et l'exploitation d'immeubles non résidentiels (bureaux, espaces commerciaux, halls d'exposition, salles de\nconférence, de réception ou de réunion, installations d'entreposage en libre-service, etc.)\n- la location de terres et terrains, notamment à usage agricole\nCette classe comprend également:\n- la promotion immobilière d'autres biens immobiliers en vue d'une exploitation propre\n- l'exploitation d'emplacemet pour caravanes\n- la location de fonds de commerce\n- la location au mois ou à l'année de boxes ou de lieux de garage de véhicules"
+        "description": "- la location et l'exploitation d'immeubles non résidentiels (bureaux, espaces commerciaux, halls d'exposition, salles de conférence, de réception ou de réunion, installations d'entreposage en libre-service, etc.) - la location de terres et terrains, notamment à usage agricole - la promotion immobilière d'autres biens immobiliers en vue d'une exploitation propre - l'exploitation d'emplacemet pour caravanes - la location de fonds de commerce - la location au mois ou à l'année de boxes ou de lieux de garage de véhicules "
     },
     {
+        "cls_na9": "68.31",
         "lib_na9": "Agences immobilières",
-        "cls_na9": 68.31,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الوكالات العقارية"
+        "description": "- l’intermédiation en matière d’achat, de vente, de location de biens immobiliers pour le compte de tiers - les services de conseil et d’évaluation en rapport avec l’achat, la vente et la location de biens immobiliers, pour le compte de tiers - les activités des agents fiduciaires en immobilier "
     },
     {
+        "cls_na9": "68.32",
         "lib_na9": "Administration de biens immobiliers",
-        "cls_na9": 68.32,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إدارة الأملاك العقارية"
+        "description": "- le recouvrement des loyers "
     },
     {
+        "cls_na9": "69.10",
         "lib_na9": "Activités juridiques",
-        "cls_na9": 69.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة القانونية"
+        "description": "- la représentation juridique d’une partie contre une partie adverse, que ce soit ou non devant des tribunaux ou d’autres organes judiciaires, par des membres du barreau ou sous leur contrôle: • conseil et représentation dans des affaires civiles • conseil et représentation dans des affaires pénales • conseil et représentation en relation avec des conflits du travail - le conseil et l’assistance juridique de nature générale, la rédaction de documents juridiques: • statuts, accords d’association ou documents analogues relatifs à la constitution de sociétés • brevets et droits d’auteurs • rédaction d’actes, de testaments, d’actes fiduciaires, etc. - les autres activités des notaires, des huissiers, des juges d’instruction et des arbitres "
     },
     {
+        "cls_na9": "69.20",
         "lib_na9": "Activités comptables",
-        "cls_na9": 69.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة المحاسبة"
+        "description": "- l’enregistrement d’opérations commerciales pour les entreprises ou autres - l’établissement ou la vérification de comptes financiers - l’examen des comptes et la certification de leur exactitude - l’établissement de déclarations fiscales pour les particuliers et les entreprises - les activités de conseil et de représentation (autre que la représentation juridique), pour le compte de clients, devant l’administration fiscale "
     },
     {
+        "cls_na9": "70.10",
         "lib_na9": "Activités des sièges sociaux",
-        "cls_na9": 70.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة المقرّات الإجتماعية"
+        "description": "du rôle de planification et de direction stratégique ou organisationnelle de la société ou entreprise, l’exercice du contrôle opérationnel et la gestion des opérations courantes des unités rattachées. - les activités des sièges sociaux - les activités des sièges administratifs centralisés - les activités des sièges d’entreprise - les activités des bureaux locaux et régionaux - les activités de gestion des filiales. "
     },
     {
+        "cls_na9": "70.21",
         "lib_na9": "Conseil en relations publiques et communication",
-        "cls_na9": 70.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الخبرة الإستشارية في العلاقات العامة والإتصال"
+        "description": ""
     },
     {
+        "cls_na9": "70.22",
         "lib_na9": "Conseil pour les affaires et autres conseils de gestion",
-        "cls_na9": 70.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الخبرة الإستشارية في الأعمال والإستشارات الأخرى في التصرف"
+        "description": "questions de gestion, telles que la planification d’entreprise stratégique et organisationnelle, la reconfiguration de processus, la gestion du changement, la réduction des coûts et d’autres questions financières, les objectifs et les politiques de marketing, les politiques, les pratiques et la planification en matière de ressources humaines, les stratégies de rémunération et de retraite, la prévision de la production et la planification du contrôle. Ces services aux entreprises peuvent comprendre le conseil et l’assistance opérationnelle aux entreprises et aux services publics dans les domaines suivants: - la conception de méthodes ou procédures comptables, de programme de comptabilisation des dépenses, de procédures de contrôle budgétaire - le conseil et l’assistance aux entreprises et aux services publics en matière de planification, d’organisation, de recherche du rendement, de contrôle, d’information de gestion, etc. "
     },
     {
+        "cls_na9": "71.11",
         "lib_na9": "Activités d'architecture",
-        "cls_na9": 71.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة المعمارية",
-        "description": "- les activités de conseil en matière d’architecture:\n• conception de bâtiments et établissement de plans\n• urbanisme et architecture paysagère"
+        "description": "- les activités de conseil en matière d’architecture: • conception de bâtiments et établissement de plans • urbanisme et architecture paysagère "
     },
     {
+        "cls_na9": "71.12",
         "lib_na9": "Activités d'ingénierie",
-        "cls_na9": 71.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة الهندسية",
-        "description": "- les activités d’ingénierie (c’est-à-dire l’application des lois physiques et principes d’ingénierie dans la conception de\nmachines, matériaux, instruments, structures, processus et systèmes) et de conseil dans les domaines suivants:\n• machines, processus et sites industriels\n• projets comportant des activités ayant trait au génie civil, au génie hydraulique, à la technique du trafic\n• projets de gestion de l’eau\n• conception et réalisation de projets intéressant le génie électrique et électronique, le génie minier, le génie chimique,\nle génie mécanique, le génie industriel, l’ingénierie de systèmes, de techniques de sécurité\n- l’élaboration de projets faisant appel aux techniques de la climatisation, de la réfrigération, de l’assainissement et de la\nlutte contre la pollution, au génie acoustique, etc.\n- les études géophysiques, géologiques et sismiques\n- les activités de levé géodésique:\n• levé cadastral et délimitation\n• relevé hydrologique\n• levé souterrain\n• information cartographique et spatiale"
+        "description": "- les activités d’ingénierie (c’est-à-dire l’application des lois physiques et principes d’ingénierie dans la conception de machines, matériaux, instruments, structures, processus et systèmes) et de conseil dans les domaines suivants: • machines, processus et sites industriels • projets comportant des activités ayant trait au génie civil, au génie hydraulique, à la technique du trafic • projets de gestion de l’eau • conception et réalisation de projets intéressant le génie électrique et électronique, le génie minier, le génie chimique, le génie mécanique, le génie industriel, l’ingénierie de systèmes, de techniques de sécurité - l’élaboration de projets faisant appel aux techniques de la climatisation, de la réfrigération, de l’assainissement et de la lutte contre la pollution, au génie acoustique, etc. - les études géophysiques, géologiques et sismiques - les activités de levé géodésique: • levé cadastral et délimitation • relevé hydrologique • levé souterrain • information cartographique et spatiale "
     },
     {
+        "cls_na9": "71.20",
         "lib_na9": "Activités de contrôle et analyses techniques",
-        "cls_na9": 71.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة المراقبة والتحاليل التقنية"
+        "description": "y compris: • essais acoustiques et de vibration • analyses de la composition et de la pureté de minéraux, etc. • activités d’analyse dans le domaine de l’hygiène alimentaire, y compris l’analyse et le contrôle vétérinaires en relation avec la production alimentaire • contrôle des caractéristiques et performances physiques de matériaux telles que leur résistance, leur épaisseur, leur durabilité, leur radioactivité, etc. • essais de qualification et de fiabilité • essais de performance de machines complètes: moteurs, automobiles, équipements électroniques, etc. • contrôle radiographique des soudures et des joints • analyse de défaillance • contrôle et mesure d’indicateurs environnementaux: pollution de l’air et de l’eau, etc. - la certification de produits, y compris de biens de consommation, de véhicules automobiles, d’aéronefs, de conteneurs sous pression, d’installations nucléaires, etc. - le contrôle technique des véhicules automobiles - les essais à l’aide de modèles ou de maquettes (aéronefs, navires, barrages, etc.) - les services des laboratoires de police "
     },
     {
+        "cls_na9": "72.11",
         "lib_na9": "Recherche-développement en biotechnologie",
-        "cls_na9": 72.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "البحث التنموي في التكنولوجيا الحيويّة"
+        "description": "- ADN/ARN: génomique, pharmacogénomique, sondes géniques, génie génétique, séquençage/synthèse/amplification de l’ADN/ARN, profilage de l’expression génétique et utilisation de la technologie antisens - protéines et autres molécules: séquençage/synthèse/ingénierie de protéines et peptides (y compris hormones à grandes molécules); amélioration des méthodes d’administration de médicaments à grandes molécules; protéomique, isolation et purification des protéines, signalisation, identification des récepteurs cellulaires - culture et ingénierie des cellules et tissus: culture de cellules/tissus, génie tissulaire (y compris structures d’échafaudage tissulaires et génie biomédical), fusion cellulaire, stimulants vaccinaux/immunitaires, manipulation embryonnaire - techniques biotechnologiques des procédés: fermentation au moyen de bioréacteurs, biotraitement, biolessivage, biopulpage, bioblanchiment, biodésulphuration, biorestauration, biofiltration et phytorestauration - vecteurs de gènes et d’ARN: thérapie génique, vecteurs viraux - bioinformatique: construction de bases de données sur les génomes, les séquences de protéines, modélisation de processus biologiques complexes, y compris biologie systémique - nanobiotechnologie: application des outils et procédés de nano/microfabrication pour construire des dispositifs permettant d’étudier les biosystèmes, avec des applications dans l’administration des médicaments, le diagnostic, etc. "
     },
     {
+        "cls_na9": "72.19",
         "lib_na9": "Recherche-développement en autres sciences physiques et naturelles",
-        "cls_na9": 72.19,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "البحث التنموي في علوم الفيزياء والعلوم الطبيعية الأخرى",
-        "description": "- la recherche et le développement expérimental en sciences naturelles et ingénierie autres qu’en biotechnologie\n• recherche-développement en sciences naturelles\n• recherche-développement en ingénierie et technologie\n• recherche-développement en sciences médicales\n• recherche-développement en agronomie\n• recherche-développement interdisciplinaire, principalement en sciences naturelles et ingénierie\n72.2 Recherche-développement en sciences humaines et sociales\n72.20 Recherche-développement en sciences humaines et sociales"
+        "description": "- la recherche et le développement expérimental en sciences naturelles et ingénierie autres qu’en biotechnologie • recherche-développement en sciences naturelles • recherche-développement en ingénierie et technologie • recherche-développement en sciences médicales • recherche-développement en agronomie • recherche-développement interdisciplinaire, principalement en sciences naturelles et ingénierie 72.2 Recherche-développement en sciences humaines et sociales "
     },
     {
+        "cls_na9": "72.20",
         "lib_na9": "Recherche-développement en sciences humaines et sociales",
-        "cls_na9": 72.2,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "البحث التنموي في العلوم الإنسانية والإجتماعية"
+        "description": "- la recherche-développement en sciences sociales - la recherche-développement en sciences humaines - la recherche-développement interdisciplinaire, principalement en sciences humaines et sociales "
     },
     {
+        "cls_na9": "73.11",
         "lib_na9": "Activités des agences de publicité",
-        "cls_na9": 73.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة وكالات الإشهار"
+        "description": "conseil, la création publicitaire, la production de matériel publicitaire et l’achat de médias. - la conception et la réalisation de campagnes publicitaires: • conception et diffusion de publicités dans les journaux et les périodiques, à la radio et à la télévision, sur Internet et dans d’autres médias • conception et diffusion de publicités à l’extérieur, par exemple sur des panneaux, sur des vitrines, dans des magasins, sur des voitures et des autobus, etc. • publicité aérienne • distribution de prospectus et d’échantillons publicitaires • création de stands et d’autres structures et sites d’affichage - la réalisation de campagnes de marketing et d’autres services publicitaires destinés à attirer et fidéliser les consommateurs • promotion de produits • marketing dans les points de vente • publipostage • conseil en marketing "
     },
     {
+        "cls_na9": "73.12",
         "lib_na9": "Régie publicitaire de médias",
-        "cls_na9": 73.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "وكالات الإشهار في وسائل الإعلام",
-        "description": "- la régie publicitaire de médias pour la vente ou la revente de temps d’antenne et d’espaces publicitaires"
+        "description": "- la régie publicitaire de médias pour la vente ou la revente de temps d’antenne et d’espaces publicitaires "
     },
     {
-        "lib_na9": "Etudes de marché et sondages",
-        "cls_na9": 73.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "دراسة السوق وإستطلاع الرأي"
+        "cls_na9": "73.20",
+        "lib_na9": "Études de marché et sondages",
+        "description": "- les études portant sur le potentiel commercial de biens et de services, leur reconnaissance, acceptation et connaissance par le public, ainsi que sur les habitudes d’achat des consommateurs aux fins de la promotion des ventes et de la mise au point de produits nouveaux; sont comprises également les analyses statistiques des résultats - les sondages d’opinion sur des questions politiques, économiques et sociales ainsi que l’analyse statistique des résultats  74 Autres activités spécialisées, scientifiques et techniques Cette division comprend la prestation de services spécialisés, scientifiques et techniques (à l’exclusion des activités juridiques et comptables, des activités d’architecture et d’ingénierie, des activités de contrôle et analyses techniques, des activités de gestion et conseil de gestion, de la recherche-développement et des activités publicitaires).   217     74.1 Activités spécialisées de design "
     },
     {
+        "cls_na9": "74.10",
         "lib_na9": "Activités spécialisées de design",
-        "cls_na9": 74.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة التصميم المتخصصة"
+        "description": "- la création de modèles pour les articles textiles, les articles d’habillement, les chaussures, les bijoux, les meubles, les objets de décoration intérieure et autres articles de mode ainsi que pour les autres biens personnels ou domestiques - le design industriel, c’est-à-dire la création et l’élaboration d’avant-projets et de spécifications qui optimisent la fonction, la valeur et l’apparence des produits, y compris le choix des matériaux, de la structure, des mécanismes, de la forme, de la couleur et du fini de surface du produit, compte tenu des facteurs humains, de la sécurité, de l’attrait commercial et de la facilité de production, de distribution, d’utilisation et d’entretien - les activités de concepteurs graphiques - la décoration d'intérieur "
     },
     {
+        "cls_na9": "74.20",
         "lib_na9": "Activités photographiques",
-        "cls_na9": 74.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة التصوير الفوتوغرافي"
+        "description": "- la production photographique réalisée à titre commercial ou privé: • photographies d’identité, photographies de classe, de mariage, etc. • photographies publicitaires, d’édition, de mode, à des fins immobilières ou touristiques • photographie aérienne • réalisation de vidéos pour des événements: mariages, réunions, etc. - le traitement des films: • développement, tirage et agrandissement de photos ou de films réalisés par les clients • laboratoires de développement et tirage de photos et de films • boutiques photos avec développement en une heure (ne faisant pas partie d’un magasin vendant des appareils photographiques) • montage de diapositives • copie, restauration et retouche de photographies - activités de photojournalistes - le microfilmage de documents "
     },
     {
+        "cls_na9": "74.30",
         "lib_na9": "Traduction et interprétation",
-        "cls_na9": 74.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الترجمة والترجمة الفورية"
+        "description": ""
     },
     {
+        "cls_na9": "74.90",
         "lib_na9": "Autres activités spécialisées, scientifiques et techniques n.c.a.",
-        "cls_na9": 74.9,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة متخصصة أخرى علمية وتقنية غ.م.س"
+        "description": "activités requérant des niveaux de compétences professionnelles, scientifiques et techniques plus avancées, mais ne comprend pas les fonctions administratives courantes et continues qui sont généralement de courte durée. - l’intermédiation en fonds de commerce, c’est-à-dire l’organisation de l’achat ou de la vente de petits et moyens fonds de commerce, y compris de cabinets de professions libérales, à l’exclusion toutefois du courtage immobilier - le courtage de brevets (organisation de l’achat et de la vente de brevets) - les activités d’expertise autres que celles ayant trait à l’immobilier et à l’assurance (antiquités, bijoux, etc.) - la vérification de factures et l’information sur les tarifs de transport - les activités concernant les prévisions météorologiques - les services de conseil en sécurité - les services de conseil en agronomie I n st i t u t N a t i o nal d e la S ta tis tiq u e    - les services de conseil en environnement - les autres services de conseil technique - les activités des consultants autres que les consultants en architecture, ingénierie et gestion - les activités des experts-métreurs - les activités exercées par des agents ou des agences pour le compte de particuliers et consistant habituellement à leur obtenir un engagement dans des films, des productions théâtrales, d’autres spectacles ou des manifestations sportives et à placer des livres, des pièces de théâtre, des œuvres d’art, des photos, etc., chez des éditeurs, des producteurs, etc. "
     },
     {
+        "cls_na9": "75.00",
         "lib_na9": "Activités vétérinaires",
-        "cls_na9": 75.0,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الأنشطة البيطرية"
+        "description": "- les activités de soins et de contrôle vétérinaires exercées sur des animaux de ferme - les activités de soins et de contrôle vétérinaires exercées sur des animaux de compagnie Ces activités sont exercées par des vétérinaires qualifiés dans des cliniques vétérinaires, lors de la visite de fermes, de chenils ou d’asiles pour animaux, dans les salles de consultation ou d’opération des vétérinaires ou dans d’autres lieux. - les activités des assistants vétérinaires ou d’autres types de personnel vétérinaire auxiliaire - les activités clinico-pathologiques et les autres activités de diagnostic portant sur des animaux - les activités des ambulances pour animaux "
     },
     {
+        "cls_na9": "77.11",
+        "lib_na9": "Location et location-bail de voitures et de véhicules automobiles légers",
+        "description": "- la location et la location-bail des types de véhicules suivants: • voitures particulières et autres véhicules automobiles légers sans chauffeur (dont le poids est inférieur ou égal à 3,5 tonnes) "
+    },
+    {
+        "cls_na9": "77.12",
         "lib_na9": "Location et location-bail de camions",
-        "cls_na9": 77.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير الشاحنات",
-        "description": "- la location et la location-bail des types de véhicules suivants:\n• camions, remorques utilitaires et véhicules automobiles lourds (dont le poids est supérieur à 3,5 tonnes)\n• véhicules de loisirs"
+        "description": "- la location et la location-bail des types de véhicules suivants: • camions, remorques utilitaires et véhicules automobiles lourds (dont le poids est supérieur à 3,5 tonnes) • véhicules de loisirs "
     },
     {
+        "cls_na9": "77.21",
         "lib_na9": "Location et location-bail d'articles de loisirs et de sport",
-        "cls_na9": 77.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير لوازم الرياضة والترفيه"
+        "description": "- les bateaux de plaisance, canots et voiliers - les cycles - les chaises longues et parasols de plage - d’autres articles de sport - les skis "
     },
     {
+        "cls_na9": "77.22",
         "lib_na9": "Location de vidéocassettes et disques vidéo",
-        "cls_na9": 77.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير شرائط وأقراص الفيديو",
-        "description": "- la location de vidéocassettes, disques, CD, DVD, etc.\n77.29 Location et location-bail d'autres biens personnels et domestiques\nCette classe comprend:\n- la location de tous types d’articles personnels ou domestiques à des ménages ou à des entreprises (à l’exclusion\nd’articles de loisirs et de sport):\n• textiles, articles d’habillement et chaussures\n• meubles, articles de poterie et de verrerie, articles pour la cuisine et la table, appareils électriques et électroménagers\n• articles de bijouterie, instruments de musique, accessoires et costumes de scène\n• livres, journaux et magazines\n• machines et équipements utilisés par des amateurs ou dans le cadre d’un loisir (machines pour le bricolage, par exemple)\n• fleurs et plantes\n• équipements 2lectroniques pour usage domestique"
+        "description": "- la location de vidéocassettes, disques, CD, DVD, etc. "
     },
     {
+        "cls_na9": "77.29",
         "lib_na9": "Location et location-bail d'autres biens personnels et domestiques",
-        "cls_na9": 77.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير اللوازم الشخصية والمنزلية الأخرى"
+        "description": "- la location de tous types d’articles personnels ou domestiques à des ménages ou à des entreprises (à l’exclusion d’articles de loisirs et de sport): • textiles, articles d’habillement et chaussures • meubles, articles de poterie et de verrerie, articles pour la cuisine et la table, appareils électriques et électroménagers • articles de bijouterie, instruments de musique, accessoires et costumes de scène • livres, journaux et magazines • machines et équipements utilisés par des amateurs ou dans le cadre d’un loisir (machines pour le bricolage, par exemple) • fleurs et plantes • équipements 2lectroniques pour usage domestique "
     },
     {
+        "cls_na9": "77.31",
         "lib_na9": "Location et location-bail de machines et équipements agricoles",
-        "cls_na9": 77.31,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير الآلات والمعدات الفلاحية",
-        "description": "- la location et la location-bail de machines et équipements pour l’agriculture et la sylviculture, sans opérateur:\n• location des biens rangés dans la classe 28.30 (par exemple, tracteurs agricoles, etc.)"
+        "description": "- la location et la location-bail de machines et équipements pour l’agriculture et la sylviculture, sans opérateur: • location des biens rangés dans la classe 28.30 (par exemple, tracteurs agricoles, etc.) "
     },
     {
+        "cls_na9": "77.32",
         "lib_na9": "Location et location-bail de machines et équipements pour la construction",
-        "cls_na9": 77.32,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير الآلات والمعدات المخصّصة للبناء",
-        "description": "- la location et la location-bail de machines et équipements pour le bâtiment et le génie civil, sans opérateur:\n• camions-grues\n• échafaudages et plates-formes de travail, sans montage ni démontage"
+        "description": "- la location et la location-bail de machines et équipements pour le bâtiment et le génie civil, sans opérateur: • camions-grues • échafaudages et plates-formes de travail, sans montage ni démontage "
     },
     {
+        "cls_na9": "77.33",
         "lib_na9": "Location et location-bail de machines de bureau et de matériel informatique",
-        "cls_na9": 77.33,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير آلات المكتب ومعدات الإعلامية",
-        "description": "- la location et la location-bail de machines et équipements de bureau, sans opérateur:\n• ordinateurs et équipements périphériques\n• duplicateurs, machines à écrire et machines de traitement de textes\n• machines et matériels comptables: caisses enregistreuses, calculateurs électroniques, etc.\n• mobilier de bureau\n77.34 Location et location-bail de matériels de transport par eau"
+        "description": "- la location et la location-bail de machines et équipements de bureau, sans opérateur: • ordinateurs et équipements périphériques • duplicateurs, machines à écrire et machines de traitement de textes • machines et matériels comptables: caisses enregistreuses, calculateurs électroniques, etc. • mobilier de bureau "
     },
     {
+        "cls_na9": "77.34",
         "lib_na9": "Location et location-bail de matériels de transport par eau",
-        "cls_na9": 77.34,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير وسائل النقل عبر المياه"
+        "description": "- la location et la location-bail de matériels de transport maritime et fluvial, sans équipage: • bateaux et navires commerciaux "
     },
     {
+        "cls_na9": "77.35",
         "lib_na9": "Location et location-bail de matériels de transport aérien",
-        "cls_na9": 77.35,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير وسائل النقل الجوّي",
-        "description": "- la location et la location-bail de matériels de transport aérien, sans pilote:\n• avions\n• ballons à air chaud"
+        "description": "- la location et la location-bail de matériels de transport aérien, sans pilote: • avions • ballons à air chaud "
     },
     {
-        "lib_na9": "Location et location-bail dautres machines, equipements et biens materiels n.c.a.",
-        "cls_na9": 77.39,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تأجير الآلات والمعدات والبضائع المادية الأخرى غ.م.س",
-        "description": "- la location et la location-bail, sans opérateur, de machines et équipements divers généralement utilisés comme biens\nd’équipement par les entreprises:\n• moteurs et turbines\n• machines-outils\n• équipement pour exploitation minière et pétrolière\n• matériels de radiodiffusion, de télévision et de communication à usage professionnel\n• équipement pour la production cinématographique\n• matériels de mesure et de contrôle\n• autres machines et matériels à usage scientifique, commercial et industriel\n- la location et la location-bail de matériels de transport terrestre (autres que les véhicules automobiles), sans chauffeur:\n• motocycles, caravanes et autocaravanes (\"campers\"), etc.\n• véhicules de chemin de fer\nCette classe comprend également:\n- la location de conteneurs pour le logement ou le bureau\n- la location d’animaux (par exemple: troupeaux, chevaux de course)\n- la location de conteneurs\n- la location de palettes"
+        "cls_na9": "77.39",
+        "lib_na9": "Location et location-bail d’autres machines, équipements et biens matériels n.c.a.",
+        "description": "- la location et la location-bail, sans opérateur, de machines et équipements divers généralement utilisés comme biens d’équipement par les entreprises: • moteurs et turbines • machines-outils • équipement pour exploitation minière et pétrolière • matériels de radiodiffusion, de télévision et de communication à usage professionnel • équipement pour la production cinématographique • matériels de mesure et de contrôle • autres machines et matériels à usage scientifique, commercial et industriel - la location et la location-bail de matériels de transport terrestre (autres que les véhicules automobiles), sans chauffeur: • motocycles, caravanes et autocaravanes (\"campers\"), etc. • véhicules de chemin de fer - la location de conteneurs pour le logement ou le bureau - la location d’animaux (par exemple: troupeaux, chevaux de course) - la location de conteneurs - la location de palettes "
     },
     {
-        "lib_na9": "Location-bail de propriete intellectuelle et de produits similaires, à l'exception des oeuvres soumises a copyright",
-        "cls_na9": 77.4,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة تأجير منتجات الملكية الفكرية وما شابهها باستثناء الأعمال الخاضعة لحقوق النشر"
+        "cls_na9": "77.40",
+        "lib_na9": "Location-bail de propriété intellectuelle et de produits similaires, à l'exception des œuvres soumises à copyright",
+        "description": "des produits similaires, pour lesquels des redevances ou des droits de licence sont versés au propriétaire. La location-bail de ces produits peut prendre différentes formes, comme l’autorisation de reproduction, l’utilisation dans des processus ou produits ultérieurs, l’exploitation d’une entreprise dans le cadre d’une franchise, etc. Les propriétaires actuels peuvent ou non avoir créé ces produits. - la location-bail de produits liés à la propriété intellectuelle (à l’exclusion des œuvres protégées par le droit d’auteur telles que les livres ou les logiciels) - la perception de redevances ou de droits de licence pour l’utilisation de: • entités brevetées • marques déposées ou marques de service • marques • prospection minière et évaluation • accords de franchise "
     },
     {
+        "cls_na9": "78.10",
+        "lib_na9": "Activités des agences de placement de main-d'œuvre",
+        "description": "les personnes orientées ou placées n’étant pas des salariés des agences de placement. - la recherche, la sélection, l’orientation et le placement de personnel, y compris les activités de recherche et de placement de cadres - les activités des agences et bureaux de casting, telles que les agences de distribution de rôles - les activités des agences de placement de main-d’œuvre en ligne "
+    },
+    {
+        "cls_na9": "78.20",
         "lib_na9": "Activités des agences de travail temporaire",
-        "cls_na9": 78.2,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة وكالات التشغيل الوقتي"
+        "description": "temporairement ou de compléter la main-d’œuvre du client, les personnes placées étant salariées par l’agence de travail temporaire. Les agences rangées dans cette classe n’assurent toutefois pas la supervision directe de leurs salariés sur les lieux de travail du client. 78.3 Autre mise à disposition de ressources humaines "
     },
     {
+        "cls_na9": "78.30",
         "lib_na9": "Autre mise à disposition de ressources humaines",
-        "cls_na9": 78.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الإمداد بالموارد البشرية الأخرى"
+        "description": "l’employeur officiel des salariés pour les questions de paie, d’impôts, ainsi qu’en matière fiscale et de ressources humaines, mais ne sont pas responsables de la direction et de la supervision des salariés. La fourniture de ressources humaines a généralement lieu pour une longue durée ou sur une base permanente et les unités classées ici sont spécialisés dans l’exécution d’une vaste gamme de tâches de gestion des ressources humaines. "
     },
     {
+        "cls_na9": "79.11",
         "lib_na9": "Activités des agences de voyage",
-        "cls_na9": 79.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة وكالات الأسفار",
-        "description": "- les activités des agences consistant principalement à vendre, en gros ou au détail, des services de voyage, voyage\norganisé, transport et hébergement au grand public et à des clients du secteur privé.\n79.12 Activités des voyagistes\nCette classe comprend:\n- les activités consistant à planifier et à mettre sur pied des voyages organisés vendus par des agences de voyage ou\ndirectement par des voyagistes. Les voyages organisés peuvent comporter un ou plusieurs ou l’ensemble des éléments\nsuivants:\n• transport,\n• hébergement,\n• restauration,\n• visites de musées, de sites historiques ou culturels, spectacles, événements musicaux ou sportifs.\n79.9 Autres services de réservation et activités connexes\n79.90 Autres services de réservation et activités connexes\nCette classe comprend:\n- les autres services de réservation liés aux voyages\n• les réservations pour le transport, les hôtels, les restaurants, la location de véhicules, les spectacles et les événements\nsportifs\n- les services d’échange à temps partagé\n- les activités de vente de billets pour les spectacles, les manifestations sportives et tous les autres événements de\ndivertissement\n- les services d'assistance aux touristes\n• la fourniture d'informations touristiques\n• les activités des guides touristiques,\n- les activités de promotion du tourisme"
+        "description": "- les activités des agences consistant principalement à vendre, en gros ou au détail, des services de voyage, voyage organisé, transport et hébergement au grand public et à des clients du secteur privé. "
     },
     {
+        "cls_na9": "79.12",
         "lib_na9": "Activités des voyagistes",
-        "cls_na9": 79.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة  منظمي الرحلات السياحية"
+        "description": "- les activités consistant à planifier et à mettre sur pied des voyages organisés vendus par des agences de voyage ou directement par des voyagistes. Les voyages organisés peuvent comporter un ou plusieurs ou l’ensemble des éléments suivants: • transport, • hébergement, • restauration, • visites de musées, de sites historiques ou culturels, spectacles, événements musicaux ou sportifs. 79.9 Autres services de réservation et activités connexes "
     },
     {
+        "cls_na9": "79.90",
         "lib_na9": "Autres services de réservation et activités connexes",
-        "cls_na9": 79.9,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "خدمات أخرى للحجز والأنشطة المرتبطة بها"
+        "description": "- les autres services de réservation liés aux voyages • les réservations pour le transport, les hôtels, les restaurants, la location de véhicules, les spectacles et les événements sportifs - les services d’échange à temps partagé - les activités de vente de billets pour les spectacles, les manifestations sportives et tous les autres événements de divertissement - les services d'assistance aux touristes • la fourniture d'informations touristiques • les activités des guides touristiques, - les activités de promotion du tourisme "
     },
     {
+        "cls_na9": "80.10",
         "lib_na9": "Activités de sécurité privée",
-        "cls_na9": 80.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الأمن الخاص"
+        "description": "les services de ramassage et de livraison d’argent, de reçus ou d’autres objets de valeur en utilisant du personnel équipé pour protéger de tels biens pendant le transport. - les services de voitures blindées - les services de gardes du corps - les services de détecteurs de mensonges - les services de dactyloscopie - les services d’agents de sécurité - le déchiquetage d’informations sur tout support à des fins de sécurité "
     },
     {
+        "cls_na9": "80.20",
         "lib_na9": "Activités liées aux systèmes de sécurité",
-        "cls_na9": 80.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة المرتبطة بأنظمة الأمن"
+        "description": "- la surveillance et la surveillance à distance de systèmes de sécurité et d’alarme électroniques tels que les dispositifs d’alarme antivol et d’alarme incendie, y compris leur installation et maintenance - l’installation, la réparation, la réfection et l’adaptation de dispositifs de verrouillage mécaniques ou électroniques, de coffres-forts et des chambres fortes, avec, par la suite, leur surveillance ou surveillance à distance Les entreprises effectuant ces activités peuvent également vendre ces systèmes de sécurité, dispositifs de verrouillage mécaniques ou électroniques, coffres-forts et chambres fortes. "
     },
     {
+        "cls_na9": "80.30",
         "lib_na9": "Activités d'enquête",
-        "cls_na9": 80.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة التحريات (أو التحقيقات)"
+        "description": "- les services d’enquêtes et de détectives - les activités de tous les détectives privés, quels que soient le type de client et le but de l’enquête  81 Services relatifs aux bâtiments et aménagement paysager Cette division comprend la fourniture d'un certain nombre de services généraux d'appui dans les locaux du client, les activités de nettoyage intérieur et extérieur de bâtiments de tous types, le nettoyage de machines industrielles, le nettoyage de trains, autobus, avions, etc., le nettoyage de l’intérieur de citernes de transport par route ou par mer, les activités de désinfection et de destruction des parasites dans les bâtiments, les navires, les trains, etc., le nettoyage de bouteilles, le balayage des chaussées, le déblaiement de la neige et de la glace, les services d’aménagement et d’entretien paysager et la prestation de ces services en combinaison avec la conception de plans paysagers et/ou la construction (l’installation) d’allées piétonnières, de murs de soutènement, de terrasses, de clôtures, d’étangs et de structures similaires. 81.1 Activités combinées de soutien lié aux bâtiments "
     },
     {
+        "cls_na9": "81.10",
         "lib_na9": "Activités combinées de soutien lié aux bâtiments",
-        "cls_na9": 81.1,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة مختلطة لدعم المباني"
+        "description": "services comprennent le nettoyage intérieur courant, l’entretien, l’élimination des ordures, le gardiennage et la sécurité, la distribution du courrier, la blanchisserie et des services annexes destinés à soutenir les opérations au sein des installations. Ces activités de soutien sont effectuées par du personnel qui n’intervient pas dans les activités essentielles du client ou n’est pas chargé de celles ci. "
     },
     {
+        "cls_na9": "81.21",
         "lib_na9": "Nettoyage courant des bâtiments",
-        "cls_na9": 81.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة التنظيف العادي للمباني",
-        "description": "- les activités de nettoyage courant (non spécialisé) de tous types de bâtiments tels que:\n• les bureaux\n• les maisons ou appartements\n• les usines\n• les magasins\n• les institutions\n- les activités de nettoyage courant (non spécialisé) de locaux d’institutions, les autres locaux à usage commercial et\nprofessionnel et les immeubles à appartements\nCes activités comprennent principalement le nettoyage intérieur, même si elles peuvent inclure le nettoyage des espaces\nextérieurs associés tels que les vitres ou les couloirs."
+        "description": "- les activités de nettoyage courant (non spécialisé) de tous types de bâtiments tels que: • les bureaux • les maisons ou appartements • les usines • les magasins • les institutions - les activités de nettoyage courant (non spécialisé) de locaux d’institutions, les autres locaux à usage commercial et professionnel et les immeubles à appartements Ces activités comprennent principalement le nettoyage intérieur, même si elles peuvent inclure le nettoyage des espaces extérieurs associés tels que les vitres ou les couloirs. "
     },
     {
+        "cls_na9": "81.22",
         "lib_na9": "Autres activités de nettoyage des bâtiments et nettoyage industriel",
-        "cls_na9": 81.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة تنظيف المباني والتنظيف الصناعي",
-        "description": "- le nettoyage extérieur de bâtiments de tous types, y compris les bureaux, les usines, les magasins, les locaux d’institutions,\nles autres locaux à usage commercial et professionnel et les immeubles à appartements\n- les activités de nettoyage spécialisé de bâtiments, telles que le nettoyage des vitres, le ramonage des cheminées et\nle nettoyage des âtres, des fourneaux, des incinérateurs, des chaudières, des gaines de ventilation et des dispositifs\nd’évacuation des fumées\n- le nettoyage de machines industrielles\n- les autres activités de nettoyage des bâtiments et de nettoyage industriel n.c.a."
+        "description": "- le nettoyage extérieur de bâtiments de tous types, y compris les bureaux, les usines, les magasins, les locaux d’institutions, les autres locaux à usage commercial et professionnel et les immeubles à appartements - les activités de nettoyage spécialisé de bâtiments, telles que le nettoyage des vitres, le ramonage des cheminées et le nettoyage des âtres, des fourneaux, des incinérateurs, des chaudières, des gaines de ventilation et des dispositifs d’évacuation des fumées - le nettoyage de machines industrielles - les autres activités de nettoyage des bâtiments et de nettoyage industriel n.c.a. "
     },
     {
+        "cls_na9": "81.29",
         "lib_na9": "Autres activités de nettoyage",
-        "cls_na9": 81.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة التنظيف الأخرى",
-        "description": "- les activités de nettoyage et d’entretien des piscines\n- le nettoyage des trains, des autobus, des avions, etc.\n- le nettoyage de l’intérieur de citernes de transport par route ou par mer\n- les activités de désinfection et de destruction de parasites\n- le nettoyage de bouteilles\n- le balayage des chaussées et le déblaiement de la neige et de la glace\n- les autres activités de nettoyage n.c.a."
+        "description": "- les activités de nettoyage et d’entretien des piscines - le nettoyage des trains, des autobus, des avions, etc. - le nettoyage de l’intérieur de citernes de transport par route ou par mer - les activités de désinfection et de destruction de parasites - le nettoyage de bouteilles - le balayage des chaussées et le déblaiement de la neige et de la glace - les autres activités de nettoyage n.c.a. "
     },
     {
+        "cls_na9": "81.30",
         "lib_na9": "Services d'aménagement paysager",
-        "cls_na9": 81.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات تهيئة المنظر العام"
+        "description": "- la plantation, les soins et l’entretien de: - parcs et jardins pour: • bâtiments d’habitation privés et publics • bâtiments publics et semi-publics (écoles, hôpitaux, bâtiments administratifs, églises, etc.) • terrains municipaux (parcs, espaces verts, cimetières, etc.) • verdure bordant les voies de communication (axes routiers, voies ferroviaires, berges, ports) • bâtiments industriels et commerciaux - verdure pour: • bâtiments (jardins de toit, verdure de façade, jardins intérieurs, etc.) • terrains de sport (terrains de football, parcours de golf, etc.), terrains de jeu, pelouses pour bains de soleil et autres parcs récréatifs • eaux stagnantes et courantes (bassins, marécages, étangs, piscines, fossés, cours d’eau, installations d’épandage) - les plantations pour la protection contre le bruit, le vent, l’érosion, la visibilité et l’éblouissement "
     },
     {
+        "cls_na9": "82.11",
         "lib_na9": "Services administratifs combinés de bureau",
-        "cls_na9": 82.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات إدارية مكتبية مختلطة"
+        "description": "réception, la planification financière, la facturation et la tenue de livres, les activités liées au personnel, les services de courrier, etc., pour le compte de tiers. "
     },
     {
+        "cls_na9": "82.19",
         "lib_na9": "Photocopie, préparation de documents et autres activités spécialisées de soutien de bureau",
-        "cls_na9": 82.19,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "نسخ وإعداد الوثائق وخدمات أخرى مختصة في دعم المكاتب"
+        "description": "soutien de bureau. Les activités de photocopie/impression de documents rangées dans cette classe concernent uniquement des activités d’impression en petit tirage. - la préparation de documents - la révision ou la correction de documents - la frappe et le traitement de texte - les services de secrétariat de soutien - la transcription de documents et d’autres services de secrétariat - la rédaction de lettres et de curriculum vitae - la location de boîtes aux lettres et d’autres services postaux et de courrier, tels que le tri préalable, l’adressage, etc. (à l’exclusion du publipostage) - la photocopie - la duplication - le tirage de plans - d’autres services de reproduction de documents n’offrant pas de services d’impression (impression offset, impressionminute, impression numérique, services de prépresse) "
     },
     {
+        "cls_na9": "82.20",
         "lib_na9": "Activités de centres d'appels",
-        "cls_na9": 82.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة مراكز النداء"
+        "description": "- les activités des centres d’appels entrants: la réception d’appels venant de clients par des opérateurs humains, des systèmes de répartition automatique des appels, d’intégration du téléphone à l’ordinateur, de réponse vocale interactive ou des méthodes similaires pour prendre des commandes, donner des informations sur un produit, traiter les demandes d’assistance ou les réclamations des clients - les activités des centres d’appels sortants: utilisation de méthodes analogues pour vendre des biens ou des services à des clients potentiels, réaliser des études de marché ou des sondages et effectuer des activités similaires pour des clients. 82.3 Organisation de salons professionnels et congrès "
     },
     {
+        "cls_na9": "82.30",
         "lib_na9": "Organisation de salons professionnels et congrès",
-        "cls_na9": 82.3,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تنظيم المعارض المهنية والمؤتمرات"
+        "description": "commerciales, des congrès, des conférences et des réunions, incluant ou non la gestion et la mise à disposition du personnel pour exploiter les installations ou ces événements ont lieu. 82.9 Activités de soutien aux entreprises n.c.a. Ce groupe comprend les activités des agences de recouvrement de factures et des sociétés d’information financière sur la clientèle, ainsi que toutes les activités de soutien généralement fournies aux entreprises non classées ailleurs.    "
     },
     {
+        "cls_na9": "82.91",
         "lib_na9": "Activités des agences de recouvrement de factures et des sociétés d'information financière sur la clientèle",
-        "cls_na9": 82.91,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة وكالات استخلاص الفواتير ومؤسسات المعلومات المالية لدى الحرفاء",
-        "description": "- le recouvrement de créances et le versement des paiements perçus aux clients, comme les services de recouvrement de\nfactures ou de créances\n- les activités consistant à rassembler des renseignements, tels que les antécédents de crédit et d’emploi de particuliers\nou les antécédents de crédit d’entreprises, et à fournir ces informations aux institutions financières, aux détaillants et à\ndes tiers qui doivent évaluer la solvabilité de ces personnes ou entreprises"
+        "description": "- le recouvrement de créances et le versement des paiements perçus aux clients, comme les services de recouvrement de factures ou de créances - les activités consistant à rassembler des renseignements, tels que les antécédents de crédit et d’emploi de particuliers ou les antécédents de crédit d’entreprises, et à fournir ces informations aux institutions financières, aux détaillants et à des tiers qui doivent évaluer la solvabilité de ces personnes ou entreprises  228 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "82.92",
         "lib_na9": "Activités de conditionnement",
-        "cls_na9": 82.92,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة توضيب السلع (التغليف والتعبئة)",
-        "description": "- les activités de conditionnement, pour le compte de tiers, faisant appel ou non à des procédés automatiques:\n• mise en bouteilles de liquides divers, même alimentaires\n• emballage d’articles divers (mise sous blister, sous pellicules rétractables, etc.)\n• conditionnement de sécurité de préparations pharmaceutiques\n• étiquetage, estampillage et impression\n• emballage de colis et de paquets-cadeaux"
+        "description": "- les activités de conditionnement, pour le compte de tiers, faisant appel ou non à des procédés automatiques: • mise en bouteilles de liquides divers, même alimentaires • emballage d’articles divers (mise sous blister, sous pellicules rétractables, etc.) • conditionnement de sécurité de préparations pharmaceutiques • étiquetage, estampillage et impression • emballage de colis et de paquets-cadeaux "
     },
     {
+        "cls_na9": "82.99",
         "lib_na9": "Autres activités de soutien aux entreprises n.c.a.",
-        "cls_na9": 82.99,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات دعم أخرى مقدمة للمؤسسات غ.م.س",
-        "description": "- la production de comptes rendus textuels ou d’enregistrements sténographiques des délibérations des tribunaux et la\ntranscription ultérieure du matériel enregistré, telles que:\n• services de transcription des délibérations des tribunaux ou de transcription sténographique\n• services de sténographes publics\n- les services de sous-titrage codé en temps réel (simultané) d’émissions de télévision en direct, de réunions ou de\nconférences\n- les services de codage par codes-barres pour les adresses\n- les services d’impression de codes-barres\n- les services de collectes de fonds, pour le compte de tiers\n- les services de reprise de possession\n- les services de collecte des pièces de parcmètres\n- les activités des commissaires-priseurs indépendants\n- l’administration des programmes de fidélisation\n- les autres activités de soutien généralement fournies aux entreprises non classées ailleurs"
+        "description": "- la production de comptes rendus textuels ou d’enregistrements sténographiques des délibérations des tribunaux et la transcription ultérieure du matériel enregistré, telles que: • services de transcription des délibérations des tribunaux ou de transcription sténographique • services de sténographes publics - les services de sous-titrage codé en temps réel (simultané) d’émissions de télévision en direct, de réunions ou de conférences - les services de codage par codes-barres pour les adresses - les services d’impression de codes-barres - les services de collectes de fonds, pour le compte de tiers - les services de reprise de possession - les services de collecte des pièces de parcmètres - les activités des commissaires-priseurs indépendants - l’administration des programmes de fidélisation - les autres activités de soutien généralement fournies aux entreprises non classées ailleurs "
     },
     {
+        "cls_na9": "84.11",
         "lib_na9": "Administration publique centrale",
-        "cls_na9": 84.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الإدارة العمومية المركزية",
-        "description": "- les activités exécutives et législatives exercés par les pouvoirs public au niveau central\n- les activités de l'administration financiére, budgétaires, économique, statistiques et monétaire\n- les activités administratives du ministère de la défense\n- administration des douanes"
+        "description": "- les activités exécutives et législatives exercés par les pouvoirs public au niveau central - les activités de l'administration financiére, budgétaires, économique, statistiques et monétaire - les activités administratives du ministère de la défense - administration des douanes "
     },
     {
+        "cls_na9": "84.12",
         "lib_na9": "Administration des collectivités locales",
-        "cls_na9": 84.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "إدارة الجماعات المحلية"
+        "description": "- les activités exécutives et législatives exercés par les pouvoir publics aux niveaux régional, départemental et communal "
     },
     {
-        "lib_na9": "Administration publique (tutelle) de la santé, de la formation, de la culture et des services sociaux, autre que sécurité sociale",
-        "cls_na9": 84.13,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الإدارة العمومية المشرفة على أنشطة الصحة والتكوين والثقافة والخدمات الإجتماعية باستثناء الضمان الاجتماعي"
+        "cls_na9": "84.13",
+        "lib_na9": "Administration publique (tutelle) de la santé, de la formation, de la culture et des services sociaux, autre que",
+        "description": "- l’administration publique des programmes visant à accroître le bien-être des personnes: • santé • éducation • culture • sport • loisirs • environnement • logement • services sociaux - l’administration publique des politiques de R & D et des fonds associés dans ces domaines - le parrainage d’activités récréatives et culturelles - l’octroi de subventions publiques à des artistes - l’administration des programmes d’approvisionnement en eau potable - l’administration des opérations de collecte et d’élimination des déchets - l’administration des programmes de protection de l’environnement - l’administration des programmes de logement  230 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "84.14",
         "lib_na9": "Administration publique (tutelle) des activités économiques",
-        "cls_na9": 84.14,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الإدارة العمومية المشرفة على الأنشطة الإقتصادية",
-        "description": "- l’administration publique et la tutelle des différents secteurs de l’activité économique, y compris l’octroi de\nsubventions:\n• agriculture\n• aménagement du territoire\n• énergie et ressources minières\n• équipements\n• transports\n• communications\n• hôtellerie et tourisme\n• commerce de gros et de détail\n- la gestion des politiques de R & D et des fonds associés destinés à améliorer la performance économique\n- l’administration des affaires générales concernant l’emploi et le marché du travail\n- la mise en œuvre de politiques de développement régional, par exemple pour réduire le chômage"
+        "description": "- l’administration publique et la tutelle des différents secteurs de l’activité économique, y compris l’octroi de subventions: • agriculture • aménagement du territoire • énergie et ressources minières • équipements • transports • communications • hôtellerie et tourisme • commerce de gros et de détail - la gestion des politiques de R & D et des fonds associés destinés à améliorer la performance économique - l’administration des affaires générales concernant l’emploi et le marché du travail - la mise en œuvre de politiques de développement régional, par exemple pour réduire le chômage "
     },
     {
+        "cls_na9": "84.21",
         "lib_na9": "Affaires étrangères",
-        "cls_na9": 84.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الشؤون الخارجية",
-        "description": "- l’administration et la gestion du ministère des affaires étrangères et des missions diplomatiques et consulaires à\nl’étranger ou auprès des secrétariats d’organisations internationales\n- l’administration, la gestion et le soutien des services d’information et des services culturels dont le champ d’activité\ns’étend au-delà du territoire national\n- l’octroi d’une aide à des pays étrangers, directement ou par le truchement d’organisations internationales\n- la fourniture d’une aide militaire à des pays étrangers\n- la gestion du commerce extérieur ainsi que des affaires financières et techniques internationales"
+        "description": "- l’administration et la gestion du ministère des affaires étrangères et des missions diplomatiques et consulaires à l’étranger ou auprès des secrétariats d’organisations internationales - l’administration, la gestion et le soutien des services d’information et des services culturels dont le champ d’activité s’étend au-delà du territoire national - l’octroi d’une aide à des pays étrangers, directement ou par le truchement d’organisations internationales - la fourniture d’une aide militaire à des pays étrangers - la gestion du commerce extérieur ainsi que des affaires financières et techniques internationales "
     },
     {
+        "cls_na9": "84.22",
         "lib_na9": "Défense",
-        "cls_na9": 84.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الدفاع",
-        "description": "- l’administration et la supervision des activités de défense nationale et des forces armées terrestres, navales, aériennes\net spatiales telles que:\n• unités combattantes des forces terrestres, navales et aériennes\n• génie, transport, transmissions, renseignement, matériel, personnel et autres services non combattants\n• forces de réserve et forces auxiliaires de la défense nationale\n• logistique militaire (fourniture de matériel, d’ouvrages, d’approvisionnements, etc.)\n• soins médicaux pour le personnel militaire en campagne\n- l’administration, le fonctionnement et le soutien des forces de défense civile\n- la préparation aux situations d’urgence et l’organisation d’exercices auxquels participent les institutions et les\npopulations civiles\n- la gestion des politiques de R & D relatives à la défense, avec les fonds qui y sont associés"
+        "description": "- l’administration et la supervision des activités de défense nationale et des forces armées terrestres, navales, aériennes et spatiales telles que: • unités combattantes des forces terrestres, navales et aériennes • génie, transport, transmissions, renseignement, matériel, personnel et autres services non combattants • forces de réserve et forces auxiliaires de la défense nationale • logistique militaire (fourniture de matériel, d’ouvrages, d’approvisionnements, etc.) • soins médicaux pour le personnel militaire en campagne - l’administration, le fonctionnement et le soutien des forces de défense civile - la préparation aux situations d’urgence et l’organisation d’exercices auxquels participent les institutions et les populations civiles - la gestion des politiques de R & D relatives à la défense, avec les fonds qui y sont associés "
     },
     {
+        "cls_na9": "84.23",
         "lib_na9": "Justice",
-        "cls_na9": 84.23,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "العدل",
-        "description": "- l’administration et le fonctionnement des tribunaux administratifs, civils et correctionnels, des cours d’assises, des\ntribunaux militaires et du système judiciaire, y compris la représentation et le conseil juridiques fournis au nom de\nl’administration ou par l’administration, en espèces ou sous forme de services\n- le rendu de jugements et d’interprétations de la loi\n- l’arbitrage des actions civiles\n- l’administration des établissements pénitentiaires, y compris les services d’assistance aux détenus en vue de faciliter\nleur réinsertion, que cette gestion et exploitation soient assurées par des organismes publics ou par des organisations\nprivées pour le compte de cette dernière"
+        "description": "- l’administration et le fonctionnement des tribunaux administratifs, civils et correctionnels, des cours d’assises, des tribunaux militaires et du système judiciaire, y compris la représentation et le conseil juridiques fournis au nom de l’administration ou par l’administration, en espèces ou sous forme de services - le rendu de jugements et d’interprétations de la loi - l’arbitrage des actions civiles - l’administration des établissements pénitentiaires, y compris les services d’assistance aux détenus en vue de faciliter leur réinsertion, que cette gestion et exploitation soient assurées par des organismes publics ou par des organisations privées pour le compte de cette dernière "
     },
     {
-        "lib_na9": "Activités d'ordre public et de sécurité",
-        "cls_na9": 84.24,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة النظام العام والأمن",
-        "description": "- l’administration et le fonctionnement des forces de police régulières et des forces auxiliaires financées par les pouvoirs\npublics ainsi que de la police des ports, de la police des frontières, des garde-côtes et des autres forces de police\nspécialisées, notamment dans la surveillance de la circulation, l’enregistrement des étrangers et la tenue des fichiers des\npersonnes arrêtées\n- la fourniture à la population d’articles de première nécessité en cas de catastrophe survenant en temps de paix"
+        "cls_na9": "84.24",
+        "lib_na9": "Activités d’ordre public et de sécurité",
+        "description": "- l’administration et le fonctionnement des forces de police régulières et des forces auxiliaires financées par les pouvoirs publics ainsi que de la police des ports, de la police des frontières, des garde-côtes et des autres forces de police spécialisées, notamment dans la surveillance de la circulation, l’enregistrement des étrangers et la tenue des fichiers des personnes arrêtées - la fourniture à la population d’articles de première nécessité en cas de catastrophe survenant en temps de paix    "
     },
     {
+        "cls_na9": "84.25",
         "lib_na9": "Services de protection civile",
-        "cls_na9": 84.25,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "مصالح الحماية المدنية",
-        "description": "- la lutte contre les incendies et la prévention des incendies:\n• administration et fonctionnement des corps réguliers et des corps auxiliaires de pompiers chargés de la lutte contre\nles incendies, de la prévention des incendies, du sauvetage des personnes et des animaux, de l’assistance en cas de\ncatastrophe naturelle, d’inondations, d’accidents de la circulation, etc."
+        "description": "- la lutte contre les incendies et la prévention des incendies: • administration et fonctionnement des corps réguliers et des corps auxiliaires de pompiers chargés de la lutte contre les incendies, de la prévention des incendies, du sauvetage des personnes et des animaux, de l’assistance en cas de catastrophe naturelle, d’inondations, d’accidents de la circulation, etc. "
     },
     {
+        "cls_na9": "84.30",
         "lib_na9": "Sécurité sociale obligatoire",
-        "cls_na9": 84.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "الضمان الإجتماعي الإجباري"
+        "description": "- le financement et l’administration des régimes de sécurité sociale mis en place par l’administration • assurance maladie, accident et chômage • pensions de retraite • régimes couvrant les pertes de revenus en cas de maternité, invalidité temporaire, veuvage, etc. "
     },
     {
+        "cls_na9": "85.10",
         "lib_na9": "Enseignement pré-primaire",
-        "cls_na9": 85.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم ما قبل الإبتدائي"
+        "description": "- l’enseignement pré-scolaire (enseignement antérieur au premier degré). L'éducation pré-primaire est définie comme la première étape de l'instruction organisée et vise essentiellement à préparer les très jeunes enfants à un environnement scolaire, c'est-à-dire à ménager une transition entre la maison et l'école. "
     },
     {
+        "cls_na9": "85.20",
         "lib_na9": "Enseignement primaire",
-        "cls_na9": 85.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم الإبتدائي"
+        "description": "enseignement de base solide en lecture, écriture et mathématiques et une compréhension élémentaire d’autres matières telles que l’histoire, la géographie, les sciences naturelles, les sciences sociales, l’art et la musique. Cet enseignement est généralement dispensé à des enfants, les programmes d’alphabétisation au sein ou en dehors du système scolaire, dont le contenu est comparable aux programmes de l’enseignement primaire, mais qui sont destinés à des personnes considérées comme trop âgées pour entrer dans des écoles élémentaires, y sont toutefois également inclus (programmes d’alphabétisation pour adultes, par exemple). "
     },
     {
+        "cls_na9": "85.31",
         "lib_na9": "Enseignement secondaire (collège - 1er cycle)",
-        "cls_na9": 85.31,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم الثانوي (مرحلة أولى)",
-        "description": "- le premier cycle de l’enseignement secondaire général, correspondant plus ou moins à la période couverte par\nl’obligation scolaire\n85.32 Enseignement secondaire (lycée - 2ème cycle)\nCette classe comprend:\n- le deuxième cycle de l’enseignement secondaire général, donnant, en principe, accès à l’enseignement supérieur\n85.33 Enseignement secondaire technique ou professionnel\nCette classe comprend l’enseignement comportant généralement une spécialisation par matière, qui associe des\nconnaissances de base théoriques et des qualifications pratiques axées sur un emploi existant ou futur. La formation\npeut avoir pour objet de préparer l’élève à un large éventail d’emplois dans un secteur déterminé ou à un emploi bien\nprécis.\nCette classe comprend:\n- l’enseignement technique et professionnel au-dessous du niveau de l’enseignement supérieur tel qu’il est défini dans\nle groupe 85.4\nCette classe comprend également:\n- la formation des guides touristiques\n- la formation des chefs cuisiniers, hôteliers et restaurateurs\n- les écoles d’esthétique et de coiffure\n- la formation à la réparation informatique\n- les écoles de conduite pour chauffeurs professionnels de camions, autobus, autocars, etc., et les écoles de conduite\ndestinées à des pilotes professionnels."
+        "description": "- le premier cycle de l’enseignement secondaire général, correspondant plus ou moins à la période couverte par l’obligation scolaire "
     },
     {
+        "cls_na9": "85.32",
         "lib_na9": "Enseignement secondaire (lycée - 2ème cycle)",
-        "cls_na9": 85.32,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم الثانوي (مرحلة ثانية)"
+        "description": "- le deuxième cycle de l’enseignement secondaire général, donnant, en principe, accès à l’enseignement supérieur "
     },
     {
+        "cls_na9": "85.33",
         "lib_na9": "Enseignement secondaire technique ou professionnel",
-        "cls_na9": 85.33,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم الثانوي التقني والمهني"
+        "description": "connaissances de base théoriques et des qualifications pratiques axées sur un emploi existant ou futur. La formation peut avoir pour objet de préparer l’élève à un large éventail d’emplois dans un secteur déterminé ou à un emploi bien précis. - l’enseignement technique et professionnel au-dessous du niveau de l’enseignement supérieur tel qu’il est défini dans le groupe 85.4 - la formation des guides touristiques - la formation des chefs cuisiniers, hôteliers et restaurateurs - les écoles d’esthétique et de coiffure - la formation à la réparation informatique - les écoles de conduite pour chauffeurs professionnels de camions, autobus, autocars, etc., et les écoles de conduite destinées à des pilotes professionnels. "
     },
     {
+        "cls_na9": "85.41",
         "lib_na9": "Enseignement post-secondaire non supérieur",
-        "cls_na9": 85.41,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم في مرحلة ما بعد الثانوي غير العالي"
+        "description": "supérieur. Il s’agit, par exemple, de cours d’enseignement post-secondaire supplémentaires destinés à préparer les élèves à l’enseignement supérieur ou à l’enseignement post-secondaire non supérieur professionnel. "
     },
     {
+        "cls_na9": "85.42",
         "lib_na9": "Enseignement supérieur",
-        "cls_na9": 85.42,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم العالي",
-        "description": "- les premier, deuxième et troisième cycles de l’enseignement supérieur\nCette classe comprend également:\n- les écoles d’arts du spectacle vivant dispensant un enseignement supérieur\n85.5 Autres activités d'enseignement"
+        "description": "- les premier, deuxième et troisième cycles de l’enseignement supérieur - les écoles d’arts du spectacle vivant dispensant un enseignement supérieur 85.5 Autres activités d'enseignement    Ce groupe comprend la formation continue générale et professionnelle, à des fins professionnelles, de loisirs ou de développement personnel. Il comprend les camps et les écoles proposant à des groupes ou à des individuels des cours de disciplines athlétiques, de langues étrangères, d’arts, de théâtre, de musique ou d’autres cours ou formations spécialisés non comparables à l’enseignement relevant des groupes 85.1 à 85.4. Il ne comprend pas les activités d’enseignement définies dans les groupes 85.1 à 85.4, c'est-à-dire enseignement préscolaire, enseignement primaire, enseignement secondaire et enseignement supérieur.  235     "
     },
     {
+        "cls_na9": "85.51",
         "lib_na9": "Enseignement de disciplines sportives et d'activités de loisirs",
-        "cls_na9": 85.51,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم في اختصاص الرياضة وفي أنشطة الترفيه"
+        "description": "ou des écoles. Les écoles de formation sportive de jour et celles offrant un hébergement sont également incluses. Cette classe ne comprend pas la formation sportive donnée dans les écoles et universités. La formation peut être dispensée dans diverses structures telles que les installations de formation de l’unité ou du client, des établissements d’enseignement ou par d’autres moyens. La formation relevant de cette classe est formellement organisée. - la formation sportive (base-ball, basket-ball, cricket, football, etc.) - les camps offrant une formation sportive - les cours de gymnastique - les cours d’équitation donnés dans des académies ou écoles - les cours de natation - les instructeurs de sports, professeurs et entraîneurs professionnels - les cours d’arts martiaux - les cours de jeux de cartes (comme le bridge) - les cours de yoga "
     },
     {
+        "cls_na9": "85.52",
         "lib_na9": "Enseignement culturel",
-        "cls_na9": 85.52,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "التعليم الثقافي"
+        "description": "être appelées \"écoles\", \"ateliers\", \"classes\", etc. Elles offrent des cours formellement organisés, principalement à des fins récréatives, de loisirs ou de développement personnel, mais ces cours ne débouchent pas sur un diplôme professionnel. - les professeurs de piano et les autres cours de musique - les cours d’art - les cours et ateliers de danse - les écoles de théâtre (à l’exclusion des établissements universitaires) - les écoles de beaux-arts (à l’exclusion des établissements universitaires) - les écoles d’arts du spectacle vivant (à l’exclusion des établissements universitaires) - les écoles de photographies (à l’exclusion des établissements commerciaux) "
     },
     {
+        "cls_na9": "85.53",
         "lib_na9": "Enseignement de la conduite",
-        "cls_na9": 85.53,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "تعليم السياقة"
+        "description": "- les écoles de vol, voile, navigation ne délivrant pas de certificats ou de permis commerciaux    "
     },
     {
+        "cls_na9": "85.59",
         "lib_na9": "Enseignements divers",
-        "cls_na9": 85.59,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنواع أخرى من التعليم",
-        "description": "- les activités éducatives ne pouvant pas être classées par niveau\n- le tutorat universitaire\n- les centres de formation offrant des cours de rattrapage\n- les cours de révision en vue d’examens professionnels\n- les cours de langues et de compétences conversationnelles\n- la formation informatique\n- l’instruction religieuse\nCette classe comprend également:\n- la formation des maîtres nageurs\n- la formation à la survie\n- la formation à l’art oratoire\n- la formation à la lecture rapide"
+        "description": "- les activités éducatives ne pouvant pas être classées par niveau - le tutorat universitaire - les centres de formation offrant des cours de rattrapage - les cours de révision en vue d’examens professionnels - les cours de langues et de compétences conversationnelles - la formation informatique - l’instruction religieuse - la formation des maîtres nageurs - la formation à la survie - la formation à l’art oratoire - la formation à la lecture rapide "
     },
     {
+        "cls_na9": "85.60",
         "lib_na9": "Activités de soutien à l'enseignement",
-        "cls_na9": 85.6,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الدعم في مجال التعليم"
+        "description": "- les activités non pédagogiques de soutien aux processus ou systèmes éducatifs: • le conseil dans le domaine éducatif • les activités de conseil en orientation scolaire • les activités d’évaluation des tests de connaissances • les activités de tests de connaissances • l’organisation de programmes d’échanges d’étudiants "
     },
     {
+        "cls_na9": "86.10",
         "lib_na9": "Activités hospitalières",
-        "cls_na9": 86.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة الإستشفائية"
+        "description": "- les activités des établissements hospitaliers de court ou long séjour, c’est-à-dire les activités médicales de diagnostic et de soins des hôpitaux généraux (hôpitaux locaux et régionaux, hôpitaux des associations sans but lucratif, hôpitaux universitaires, militaires ou pénitentiaires) et des hôpitaux spécialisés (hôpitaux psychiatriques et de désintoxication, hôpitaux traitant des maladies infectieuses, maternités, sanatoriums spécialisés). Ces activités concernent principalement des patients hospitalisés, sont exercées sous la surveillance directe de médecins et comprennent: • les services du personnel médical et paramédical • les services des laboratoires et installations techniques, y compris les services de radiologie et d’anesthésie, • les services d’urgences • les services des salles d’opération, les services de pharmacie, de restauration et les autres services hospitaliers • les services des centres de planning familial assurant des actes médicaux tels que la stérilisation ou l’interruption de grossesse, avec hébergement "
     },
     {
+        "cls_na9": "86.21",
         "lib_na9": "Activité des médecins généralistes",
-        "cls_na9": 86.21,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة أطباء الطب العام",
-        "description": "- les consultations données et les soins dispensés dans le domaine de la médecine générale par les médecins généralistes"
+        "description": "- les consultations données et les soins dispensés dans le domaine de la médecine générale par les médecins généralistes "
     },
     {
+        "cls_na9": "86.22",
         "lib_na9": "Activité des médecins spécialistes",
-        "cls_na9": 86.22,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الأطباء المختصّين",
-        "description": "- les consultations données et les soins dispensés dans le domaine de la médecine spécialisée par les médecins spécialistes\net les chirurgiens\nCette classe comprend également:\n- les services des centres de planning familial assurant des actes médicaux tels que la stérilisation ou l’interruption de\ngrossesse, sans hébergement"
+        "description": "- les consultations données et les soins dispensés dans le domaine de la médecine spécialisée par les médecins spécialistes et les chirurgiens - les services des centres de planning familial assurant des actes médicaux tels que la stérilisation ou l’interruption de grossesse, sans hébergement "
     },
     {
+        "cls_na9": "86.23",
         "lib_na9": "Pratique dentaire",
-        "cls_na9": 86.23,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "ممارسة طب الأسنان",
-        "description": "- les activités de pratique dentaire de nature générale ou spécialisée (dentisterie, endodontique et dentisterie pédiatrique,\npathologie orale)\n- les activités d’orthodontie\nCette classe comprend également:\n- les activités de pratique dentaire en salles d’opération"
+        "description": "- les activités de pratique dentaire de nature générale ou spécialisée (dentisterie, endodontique et dentisterie pédiatrique, pathologie orale) - les activités d’orthodontie - les activités de pratique dentaire en salles d’opération "
     },
     {
+        "cls_na9": "86.91",
         "lib_na9": "Laboratoires d'analyses médicales",
-        "cls_na9": 86.91,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "مخابر التحاليل الطبية",
-        "description": "- les activités des laboratoires d'analyses médicales (sang, urine, etc.)\nCette classe comprend également:\n- les services des laboratoires de radiologie et autres centres d’imagerie diagnostique (sans interprétation)"
+        "description": "- les activités des laboratoires d'analyses médicales (sang, urine, etc.) - les services des laboratoires de radiologie et autres centres d’imagerie diagnostique (sans interprétation) "
     },
     {
+        "cls_na9": "86.92",
         "lib_na9": "Ambulances",
-        "cls_na9": 86.92,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات سيّارات الإسعاف",
-        "description": "- le transport par ambulance de patients par tout mode de transport, y compris l'avion.\nCes services sont souvent fournis à l'occasion d'une urgence médicale.\nCette classe comprend également:\n- les activités des ambulances de réanimation"
+        "description": "- le transport par ambulance de patients par tout mode de transport, y compris l'avion. Ces services sont souvent fournis à l'occasion d'une urgence médicale. - les activités des ambulances de réanimation "
     },
     {
+        "cls_na9": "86.93",
         "lib_na9": "Activités des auxiliaires médicaux",
-        "cls_na9": 86.93,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة مساعدي الأطباء",
-        "description": "- les activités exercés individuellement ou en groupe par les inférmiers, sages femme, kinésithérapeute, physiothérapeutes,\northophoniste, audioprothésiste, orthoptiste, et des autres praticiens travaillant dans les domaines de l’optométrie, de l’hydrothérapie,\ndes massages médicaux, de la praxithérapie, de la Pédicurie-Podologie, de l’homéopathie, de la chiropraxie, etc.\nCette classe comprend également:\n- les activités de psychothérapeutes et de psychanaliste\n- les activités du personnel paramédical dans le domaine des soins dentaires, tels que les hygiénistes dentaires"
+        "description": "- les activités exercés individuellement ou en groupe par les inférmiers, sages femme, kinésithérapeute, physiothérapeutes, orthophoniste, audioprothésiste, orthoptiste, et des autres praticiens travaillant dans les domaines de l’optométrie, de l’hydrothérapie, des massages médicaux, de la praxithérapie, de la Pédicurie-Podologie, de l’homéopathie, de la chiropraxie, etc. - les activités de psychothérapeutes et de psychanaliste - les activités du personnel paramédical dans le domaine des soins dentaires, tels que les hygiénistes dentaires "
     },
     {
+        "cls_na9": "86.99",
         "lib_na9": "Autres activités pour la santé humaine",
-        "cls_na9": 86.99,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "أنشطة أخرى متصلة بصحة الإنسان غ.م.س",
-        "description": "- les activités pour la santé humaine non répertoriées dans les classes précédentes,\néventuellement exercées hors d'un cadre réglementé (acupuncteur, chiropracteurs, guérisseurs, rebouteux, etc.)\nles activités des banques de sang, des banques de sperme, des banques d'organes aux fins de transplantation, etc.\n- les lactariums\nCette classe ne comprend pas :\n- la transformation du sang, voir 21.10 et la fabrication de sérums thérapeutiques et autres constituants du sang, voir 21.20"
+        "description": "- les activités pour la santé humaine non répertoriées dans les classes précédentes, éventuellement exercées hors d'un cadre réglementé (acupuncteur, chiropracteurs, guérisseurs, rebouteux, etc.) les activités des banques de sang, des banques de sperme, des banques d'organes aux fins de transplantation, etc. - les lactariums Cette classe ne comprend pas : - la transformation du sang, voir 21.10 et la fabrication de sérums thérapeutiques et autres constituants du sang, voir 21.20  87 Hébergement médico-social et social Cette division comprend les soins résidentiels associés à des services infirmiers, des services de surveillance ou des soins divers aux malades. Les installations représentent une part importante du processus de production et les soins dispensés combinent des services médicaux et sociaux, le volet médical se composant dans une large mesure de soins infirmiers. 87.1 Hébergement médicalisé "
     },
     {
+        "cls_na9": "87.10",
         "lib_na9": "Hébergement médicalisé",
-        "cls_na9": 87.1,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإيواء المقترن بالتمريض"
+        "description": "- les activités des: • résidences pour personnes âgées dispensant des soins infirmiers • maisons de convalescence • maisons de repos dispensant des soins infirmiers • établissements de soins infirmiers • maisons de soins "
     },
     {
+        "cls_na9": "87.20",
         "lib_na9": "Hébergement social pour personnes handicapées mentales, malades mentales et toxicomanes",
-        "cls_na9": 87.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإيواء الإجتماعي لذوي الاعاقة الذهنية وذوي الأمراض العقلية والمدمنين"
+        "description": "souffrant d’une déficience mentale, d’une maladie mentale, d’alcoolisme ou de toxicomanie. Les établissements concernés procurent hébergement, nourriture, surveillance, conseil, ainsi que certains soins de santé. - les activités des: • établissements pour alcooliques et toxicomanes • maisons de convalescence psychiatrique • foyers résidentiels de groupe pour les personnes présentant des troubles affectifs • établissements pour déficients mentaux • foyers de transition spécialisés en santé mentale - les soins résidentiels et le traitement prodigués aux patients souffrant d’une maladie mentale, d’alcoolisme ou de toxicomanie. "
     },
     {
+        "cls_na9": "87.30",
         "lib_na9": "Hébergement social pour personnes âgées ou handicapées physiques",
-        "cls_na9": 87.3,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الإيواء الإجتماعي لكبار السن وذوي الإعاقة البدنية"
+        "description": "sont incapables de s’occuper d’elles-mêmes et/ou qui ne désirent plus vivre de manière autonome. Les soins comprennent généralement l’hébergement, la nourriture, la surveillance et l’aide dans les activités quotidiennes de la vie, telles que les travaux domestiques. Dans certains cas, ces établissements procurent des services infirmiers professionnels aux résidents dans des installations distinctes. - les activités des: • installations d’aide à la vie autonome • centres d’hébergement de soins de longue durée • résidences pour personnes âgées dispensant des soins infirmiers minimaux • maisons de repos ne dispensant pas de soins infirmiers "
     },
     {
+        "cls_na9": "87.90",
         "lib_na9": "Autres activités d'hébergement social",
-        "cls_na9": 87.9,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الإيواء الإجتماعي الأخرى"
+        "description": "âgées et handicapées, qui sont incapables de s’occuper d’elles-mêmes ou qui ne désirent plus vivre de manière autonome. - les activités exercées 24 heures sur 24 et visant à fournir une assistance sociale aux enfants et à des catégories particulières de personnes dont l’autonomie est limitée, sans toutefois que les soins médicaux, l’enseignement ou la formation jouent un rôle prédominant: • orphelinats • foyers et résidences pour enfants • foyers d’accueil temporaire pour sans-abri • établissements s’occupant des mères célibataires et de leurs enfants Ces activités peuvent être effectuées par des services publics ou des organismes privés. - les activités des: • maisons de transition pour personnes ayant des problèmes sociaux ou personnels • maisons de transition pour délinquants • établissements correctionnels pour jeunes  241    "
     },
     {
+        "cls_na9": "88.10",
         "lib_na9": "Action sociale sans hébergement pour personnes âgées et pour personnes handicapées",
-        "cls_na9": 88.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة إجتماعية بدون إيواء لفائدة كبار السن والمعوقين"
+        "description": "- les services sociaux, de consultation, de protection sociale, d’orientation et autres services similaires destinés aux personnes âgées et handicapées à leur domicile ou dans d’autres lieux. Ces services peuvent être fournis par des services publics ou par des organismes privés, des organisations d’entraide nationales ou locales ou des spécialistes proposant des services de consultation: • visites aux personnes âgées et handicapées • activités des centres de jour pour personnes âgées ou pour adultes handicapés • réadaptation professionnelle et réinsertion des handicapés, à condition que ces activités ne comportent qu’un élément pédagogique limité "
     },
     {
+        "cls_na9": "88.91",
         "lib_na9": "Action sociale sans hébergement pour jeunes enfants",
-        "cls_na9": 88.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة إجتماعية أخرى بدون إيواء للأطفال"
+        "description": "- les activités des garderies périscolaires, y compris les activités de garderies d’enfants handicapés "
     },
     {
+        "cls_na9": "88.99",
         "lib_na9": "Autre action sociale sans hébergement n.c.a.",
-        "cls_na9": 88.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أعمال إجتماعية أخرى بدون إيواء"
+        "description": "- les services sociaux, de consultation, de protection sociale, d’orientation et d’aide aux réfugiés et autres services similaires apportés aux individus et aux familles à leur domicile ou dans d’autres lieux. Ces services peuvent être fournis par des services publics ou par des organismes privés, des organisations d’aide aux victimes de catastrophes, des organisations d’entraide nationales ou locales ou des spécialistes proposant des services de consultation: • protection sociale et conseil d’orientation pour enfants et adolescents • activités d’adoption et de protection des enfants et d’autres personnes contre les mauvais traitements • conseils d’économie domestique, consultations conjugales et familiales, services de conseil en matière de crédit à la consommation et d’endettement • activités au niveau des collectivités et des quartiers • aide aux victimes de catastrophes, aux réfugiés, aux immigrés, etc., y compris l’hébergement transitoire offert à ces personnes • réadaptation professionnelle et réinsertion des chômeurs, à condition que ces activités ne comportent qu’un élément pédagogique limité • détermination des droits à l’aide sociale, aux allocations de logement ou à des bons d’alimentation • centres de jour pour les sans-abri et les autres groupes sociaux démunis • activités de bienfaisance telles que la collecte de fonds ou d’autres activités apparentées relevant des œuvres sociales "
     },
     {
+        "cls_na9": "90.01",
         "lib_na9": "Arts du spectacle vivant",
-        "cls_na9": 90.01,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "فنون العروض الحية",
-        "description": "- la production de spectacles, de productions théâtrales, de concerts, de spectacles d’opéra, de spectacles de danse et\nd’autres productions analogues:\n• activités de groupes, de cirques ou de compagnies, d’orchestres ou d’autres formations\n• activités exercées par des artistes indépendants tels que des acteurs, danseurs, musiciens, conteurs ou conférenciers"
+        "description": "- la production de spectacles, de productions théâtrales, de concerts, de spectacles d’opéra, de spectacles de danse et d’autres productions analogues: • activités de groupes, de cirques ou de compagnies, d’orchestres ou d’autres formations • activités exercées par des artistes indépendants tels que des acteurs, danseurs, musiciens, conteurs ou conférenciers "
     },
     {
+        "cls_na9": "90.02",
         "lib_na9": "Activités de soutien au spectacle vivant",
-        "cls_na9": 90.02,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الدعم للعروض الحيّة",
-        "description": "- les activités de soutien au spectacle vivant pour la production de spectacles, de productions théâtrales, de concerts, de\nspectacles d’opéra, de spectacles de danse et d’autres productions analogues:\n• activités des metteurs en scène, producteurs, concepteurs et réalisateurs de décors, préposés au changement de décors,\ningénieurs lumière, etc.\nCette classe comprend également:\n- les activités de producteurs ou d’organisateurs de spectacles vivants, disposant ou non de leurs propres installations"
+        "description": "- les activités de soutien au spectacle vivant pour la production de spectacles, de productions théâtrales, de concerts, de spectacles d’opéra, de spectacles de danse et d’autres productions analogues: • activités des metteurs en scène, producteurs, concepteurs et réalisateurs de décors, préposés au changement de décors, ingénieurs lumière, etc. - les activités de producteurs ou d’organisateurs de spectacles vivants, disposant ou non de leurs propres installations "
     },
     {
+        "cls_na9": "90.03",
         "lib_na9": "Création artistique",
-        "cls_na9": 90.03,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الإبداع الفني"
+        "description": "- les activités exercées par des artistes indépendants tels que des sculpteurs, peintres, dessinateurs-caricaturistes, graveurs au burin, aquafortistes, etc. - les activités des écrivains indépendants, pour tous les sujets, y compris la fiction, les ouvrages techniques, etc. - les activités des journalistes indépendants - la restauration d’œuvres d’art telles que les peintures, etc. "
     },
     {
+        "cls_na9": "90.04",
         "lib_na9": "Gestion de salles de spectacles",
-        "cls_na9": 90.04,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "التصرف في قاعات العروض",
-        "description": "- l’exploitation de salles de concert et de théâtre et d’autres salles de spectacles"
+        "description": "- l’exploitation de salles de concert et de théâtre et d’autres salles de spectacles "
     },
     {
+        "cls_na9": "91.01",
         "lib_na9": "Gestion des bibliothèques et des archives",
-        "cls_na9": 91.01,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إدارة المكتبات ودور المحفوظات",
-        "description": "- les activités de documentation et d’information des bibliothèques de tous types, salles de lecture, auditoriums,\nmédiathèques et archives publiques qui fournissent des services au public en général ou à une catégorie particulière\nd’utilisateurs, par exemple les étudiants, les scientifiques, le personnel d’une entreprise, les membres d’une\nassociation, ainsi que la gestion des archives des administrations:\n• gestion de collections d’ouvrages spécialisés ou non\n• catalogage des collections\n• prêt et stockage de livres, de cartes, de périodiques, de films, de disques, de cassettes, d’œuvres d’art, etc.\n• activités de recherche visant à répondre aux demandes d’information, etc.\n- bibliothèques et services d’archives photographiques et cinématographiques\n91.02 Gestion des musées\nCette classe comprend:\n- la gestion des musées de toute nature:\n• musées d’art, d’orfèvrerie, de meubles, de costumes, de céramiques, d’argenterie\n• musées d’histoire naturelle, musées des sciences et techniques, musées d’histoire, y compris les musées militaires\n• autres musées spécialisés\n• musées en plein air"
+        "description": "- les activités de documentation et d’information des bibliothèques de tous types, salles de lecture, auditoriums, médiathèques et archives publiques qui fournissent des services au public en général ou à une catégorie particulière d’utilisateurs, par exemple les étudiants, les scientifiques, le personnel d’une entreprise, les membres d’une association, ainsi que la gestion des archives des administrations: • gestion de collections d’ouvrages spécialisés ou non • catalogage des collections • prêt et stockage de livres, de cartes, de périodiques, de films, de disques, de cassettes, d’œuvres d’art, etc. • activités de recherche visant à répondre aux demandes d’information, etc. - bibliothèques et services d’archives photographiques et cinématographiques "
     },
     {
+        "cls_na9": "91.02",
         "lib_na9": "Gestion des musées",
-        "cls_na9": 91.02,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إدارة المتاحف"
+        "description": "- la gestion des musées de toute nature: • musées d’art, d’orfèvrerie, de meubles, de costumes, de céramiques, d’argenterie • musées d’histoire naturelle, musées des sciences et techniques, musées d’histoire, y compris les musées militaires • autres musées spécialisés • musées en plein air "
     },
     {
+        "cls_na9": "91.03",
         "lib_na9": "Gestion des sites et monuments historiques et des attractions touristiques similaires",
-        "cls_na9": 91.03,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إدارة المواقع الأثرية والمعالم التاريخية والمواقع السياحية المماثلة",
-        "description": "- la gestion et la préservation des sites et bâtiments historiques"
+        "description": "- la gestion et la préservation des sites et bâtiments historiques "
     },
     {
+        "cls_na9": "91.04",
         "lib_na9": "Gestion des jardins botaniques et zoologiques et des réserves naturelles",
-        "cls_na9": 91.04,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إدارة الحدائق النباتية والحيوانية والمحميات الطبيعية",
-        "description": "- la gestion des jardins botaniques et zoologiques, y compris les zoos pour enfants\n- la gestion des réserves naturelles, y compris la protection de la flore et de la faune, etc."
+        "description": "- la gestion des jardins botaniques et zoologiques, y compris les zoos pour enfants - la gestion des réserves naturelles, y compris la protection de la flore et de la faune, etc. "
     },
     {
+        "cls_na9": "92.00",
         "lib_na9": "Organisation de jeux de hasard et d'argent",
-        "cls_na9": 92.0,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "تنظيم ألعاب الحظ والقمار"
+        "description": "- la vente de billets de loterie - l’exploitation de jeux fonctionnant au moyen de pièces de monnaie - l’exploitation de sites web de jeux de hasard virtuels - la prise de paris et autres opérations de pari - les paris mutuels hors hippodrome - l’exploitation de casinos, y compris de \"casinos flottants\"  93 Activités sportives, récréatives et de loisirs Cette division comprend les activités sportives, récréatives et de loisirs (à l’exclusion des activités des musées, de la préservation des sites et monuments historiques, des jardins botaniques et zoologiques, des activités des réserves naturelles et de l’organisation de jeux de hasard et d’argent). Ne sont pas compris dans cette division les arts dramatiques, la musique et les autres arts et divertissements tels que la production de spectacles, de productions théâtrales, de concerts, de spectacles d’opéra, de spectacles de danse et d’autres productions analogues, voir division 90. 93.1 Activités liées au sport Ce groupe comprend l’exploitation d’installations sportives, les activités des équipes ou clubs sportifs participant principalement à des manifestations sportives devant un public payant, les activités des athlètes indépendants participants à des courses ou manifestations sportives devant un public payant, l’activité des propriétaires de voitures, chiens, chevaux, etc., de course consistant principalement à engager ceux-ci dans des courses ou d’autres manifestations de sports-spectacles, les activités des entraîneurs sportifs fournissant des services spécialisés de soutien aux participants de manifestations ou compétitions sportives, les activités des exploitants de stades et les autres activités d’organisation, de promotion ou de gestion de manifestations sportives n.c.a. "
     },
     {
+        "cls_na9": "93.11",
         "lib_na9": "Gestion d'installations sportives",
-        "cls_na9": 93.11,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إدارة المنشآت الرياضية",
-        "description": "- l’exploitation d’installations destinées à accueillir des manifestations sportives, couvertes ou non couvertes, avec ou\nsans tribunes ou enceintes réservées aux spectateurs:\n• stade de football, hockey, cricket, rugby\n• pistes de courses pour voitures, chiens, chevaux\n• piscines et stades\n• stades d’athlétisme\n• terrains et stades pour les sports d’hiver\n• stades de hockey sur glace\n• salles de boxe\n• terrains de golf\n• bowlings\n- l’organisation et la gestion d’activités sportives en salle ou en plein air pour des professionnels ou des amateurs par des\norganisations disposant de leurs propres installations\nCette classe comprend également la gestion et la mise à disposition de personnel pour exploiter ces installations."
+        "description": "- l’exploitation d’installations destinées à accueillir des manifestations sportives, couvertes ou non couvertes, avec ou sans tribunes ou enceintes réservées aux spectateurs: • stade de football, hockey, cricket, rugby • pistes de courses pour voitures, chiens, chevaux • piscines et stades • stades d’athlétisme • terrains et stades pour les sports d’hiver • stades de hockey sur glace • salles de boxe • terrains de golf • bowlings - l’organisation et la gestion d’activités sportives en salle ou en plein air pour des professionnels ou des amateurs par des organisations disposant de leurs propres installations à leurs membres la possibilité de pratiquer des activités sportives.    "
     },
     {
+        "cls_na9": "93.12",
         "lib_na9": "Activités de clubs de sports",
-        "cls_na9": 93.12,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة النوادي الرياضية"
+        "description": "- l’exploitation des clubs de sports: • clubs de football • clubs de bowling • clubs de natation • clubs de golf • clubs de boxe • clubs de sports d’hiver • clubs d’échecs • clubs d’athlétisme • clubs de tir, etc. "
     },
     {
+        "cls_na9": "93.13",
         "lib_na9": "Activités des centres de culture physique",
-        "cls_na9": 93.13,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة مراكز التربية البدنية",
-        "description": "- les clubs et centres de culture physique et de musculation"
+        "description": "- les clubs et centres de culture physique et de musculation "
     },
     {
+        "cls_na9": "93.19",
         "lib_na9": "Autres activités liées au sport",
-        "cls_na9": 93.19,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة رياضية أخرى",
-        "description": "- les activités des producteurs ou promoteurs d’événements sportifs, disposant ou non de leurs propres installations\n- les activités des sportifs professionnels, des arbitres, des juges, des chronométreurs, etc.\n- les activités des ligues sportives et organismes de réglementation\n- les activités liées à la promotion de manifestations sportives\n- les activités des écuries de chevaux de course, des chenils de lévriers de course et des écuries de voitures de course\n- l’exploitation de réserves pour la pêche et la chasse sportive\n- les activités des guides de montagne\n- les activités de soutien à la pêche et à la chasse sportives ou récréatives"
+        "description": "- les activités des producteurs ou promoteurs d’événements sportifs, disposant ou non de leurs propres installations - les activités des sportifs professionnels, des arbitres, des juges, des chronométreurs, etc. - les activités des ligues sportives et organismes de réglementation - les activités liées à la promotion de manifestations sportives - les activités des écuries de chevaux de course, des chenils de lévriers de course et des écuries de voitures de course - l’exploitation de réserves pour la pêche et la chasse sportive - les activités des guides de montagne - les activités de soutien à la pêche et à la chasse sportives ou récréatives "
     },
     {
+        "cls_na9": "93.21",
         "lib_na9": "Activités des parcs d'attractions et parcs à thèmes",
-        "cls_na9": 93.21,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة منتزهات الترفيه والتسلية"
+        "description": "attractions, telles que les manèges mécaniques, ballades aquatiques, jeux, spectacles, expositions thématiques et aires de pique-nique.  246 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "93.29",
         "lib_na9": "Autres activités récréatives et de loisirs",
-        "cls_na9": 93.29,
-        "sec_pri": -1,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الترفيه والتسلية الأخرى"
+        "description": "classées ailleurs: - l’exploitation de machines à sous automatiques - les activités des parcs de loisirs (sans hébergement) - l’exploitation d’installations de transport de plaisance (marinas) - l’exploitation des domaines skiables - la location d’équipements de loisirs et d’agrément dans le cadre d’installations récréatives - les foires et salons de nature récréative - les activités des plages, y compris la location de matériels tels que les cabines de bain, vestiaires, sièges, etc. - l’exploitation de pistes de danse ou manifestations sportives, disposant ou non de leurs propres installations. "
     },
     {
+        "cls_na9": "94.11",
         "lib_na9": "Activités des organisations patronales et consulaires",
-        "cls_na9": 94.11,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة منظمات الأعراف والهيئات القنصلية",
-        "description": "- les activités des organisations dont les membres ont pour intérêt essentiel le développement et la prospérité des\nentreprises relevant d’une certaine activité ou profession, y compris l’agriculture, ou la croissance économique et la vie\nd’une région géographique ou d’une subdivision politique déterminée, indépendamment du genre d’activité\n- les activités des fédérations d’associations de ce type\n- les activités des chambres de commerce, des corporations et d’autres organisations similaires\n- la diffusion d’informations, la représentation auprès des organismes publics, les relations publiques et les négociations\ncollectives des organisations patronales et consulaires"
+        "description": "- les activités des organisations dont les membres ont pour intérêt essentiel le développement et la prospérité des entreprises relevant d’une certaine activité ou profession, y compris l’agriculture, ou la croissance économique et la vie d’une région géographique ou d’une subdivision politique déterminée, indépendamment du genre d’activité - les activités des fédérations d’associations de ce type - les activités des chambres de commerce, des corporations et d’autres organisations similaires - la diffusion d’informations, la représentation auprès des organismes publics, les relations publiques et les négociations collectives des organisations patronales et consulaires "
     },
     {
+        "cls_na9": "94.12",
         "lib_na9": "Activités des organisations professionnelles",
-        "cls_na9": 94.12,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة المنظمات المهنية",
-        "description": "- les activités des organisations dont les membres s’intéressent principalement à une discipline, à une profession ou\nà un domaine technique particulier, telles que les associations de médecins, de juristes, de comptables, d’ingénieurs,\nd’architectes, etc.\n- les activités des associations de spécialistes qui exercent des activités à caractère scientifique, intellectuel ou culturel,\ntelles que les associations d’écrivains, de peintres, d’artistes, de journalistes, etc.\n- la diffusion d’informations, l’élaboration de normes déontologiques et le contrôle de leur respect, la représentation\nauprès des organismes publics et les relations publiques des organisations professionnelles\nCette classe comprend également:\n- les activités des sociétés savantes"
+        "description": "- les activités des organisations dont les membres s’intéressent principalement à une discipline, à une profession ou à un domaine technique particulier, telles que les associations de médecins, de juristes, de comptables, d’ingénieurs, d’architectes, etc. - les activités des associations de spécialistes qui exercent des activités à caractère scientifique, intellectuel ou culturel, telles que les associations d’écrivains, de peintres, d’artistes, de journalistes, etc. - la diffusion d’informations, l’élaboration de normes déontologiques et le contrôle de leur respect, la représentation auprès des organismes publics et les relations publiques des organisations professionnelles - les activités des sociétés savantes "
     },
     {
+        "cls_na9": "94.20",
         "lib_na9": "Activités des syndicats de salariés",
-        "cls_na9": 94.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة نقابات الأجراء"
+        "description": "- la promotion des intérêts des salariés organisés en syndicats - les activités des associations dont les membres sont des salariés ayant pour objectif essentiel de faire connaître leurs vues sur les conditions salariales et les conditions de travail et de s’organiser en vue d’une action concertée - les activités des syndicats de salariés d’une entreprise, des fédérations et confédérations syndicales organisées selon des critères professionnels, régionaux, structurels ou autres "
     },
     {
+        "cls_na9": "94.91",
         "lib_na9": "Activités des organisations religieuses",
-        "cls_na9": 94.91,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة المنظمات الدينية",
-        "description": "- les activités des organisations religieuses ou des particuliers fournissant des services directement aux fidèles dans les\néglises, mosquées, temples, synagogues ou dans d’autres lieux\n- les activités des monastères, des couvents et des institutions similaires\n- les activités de retraite religieuse\nCette classe comprend également:\n- les services religieux liés aux funérailles"
+        "description": "- les activités des organisations religieuses ou des particuliers fournissant des services directement aux fidèles dans les églises, mosquées, temples, synagogues ou dans d’autres lieux - les activités des monastères, des couvents et des institutions similaires - les activités de retraite religieuse - les services religieux liés aux funérailles "
     },
     {
+        "cls_na9": "94.92",
         "lib_na9": "Activités des organisations politiques",
-        "cls_na9": 94.92,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة المنظمات السياسية",
-        "description": "- les activités des organisations politiques et des organisations auxiliaires comme les groupements de jeunes associés\nà un parti politique. Ces activités visent principalement à faire accéder des membres ou des sympathisants d’un parti\nà des postes politiques de manière à influer sur les décisions des pouvoirs publics et peuvent comprendre la diffusion\nd’informations, les relations publiques, la collecte de fonds, etc.\n94.99 Activités des organisations associatives n.c.a.\nCette classe comprend:\n- les activités des organisations (non affiliées directement à un parti politique) qui militent en faveur d’une cause ou\nd’une question d’intérêt public en sensibilisant l’opinion publique, en faisant pression sur les milieux politiques, en\ncollectant des fonds, etc.:\n• initiatives individuelles ou mouvements de protestation\n• mouvements pour la protection de l’environnement et mouvements écologiques\n• organisations apportant leur soutien à des activités communautaires et éducatives n.c.a.\n• organisations pour la protection et la défense des intérêts de groupes spéciaux, par exemple de minorités ou de groupes ethniques\n• associations à caractère patriotique, y compris les associations d’anciens combattants\n- les associations de consommateurs\n- les associations d’automobilistes\n- les associations dont l’objet consiste à organiser des réunions et des rencontres, par exemple le Rotary, les loges\nmaçonniques, etc.\n- les associations de jeunes, les associations d’étudiants, les clubs universitaires, les amicales d’étudiants, etc.\n- les associations spécialisées dans des occupations culturelles ou récréatives (autres que les clubs sportifs et les cercles\nde jeux), par exemple les cercles de poésie, les cercles littéraires, les associations historiques, les clubs de jardinage,\nles ciné-clubs et les photos-clubs, les clubs d’amis de la musique et des arts, les clubs de travaux manuels, les clubs de\ncollectionneurs, les clubs sociaux, les sociétés carnavalesques, etc.\nCette classe comprend également:\n- l’octroi de subventions par des organisations associatives ou autres"
+        "description": "- les activités des organisations politiques et des organisations auxiliaires comme les groupements de jeunes associés à un parti politique. Ces activités visent principalement à faire accéder des membres ou des sympathisants d’un parti à des postes politiques de manière à influer sur les décisions des pouvoirs publics et peuvent comprendre la diffusion d’informations, les relations publiques, la collecte de fonds, etc. "
     },
     {
+        "cls_na9": "94.99",
         "lib_na9": "Activités des organisations associatives n.c.a.",
-        "cls_na9": 94.99,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة منظمات جمعياتية أخرى غ.م.س"
+        "description": "- les activités des organisations (non affiliées directement à un parti politique) qui militent en faveur d’une cause ou d’une question d’intérêt public en sensibilisant l’opinion publique, en faisant pression sur les milieux politiques, en collectant des fonds, etc.: • initiatives individuelles ou mouvements de protestation • mouvements pour la protection de l’environnement et mouvements écologiques • organisations apportant leur soutien à des activités communautaires et éducatives n.c.a. • organisations pour la protection et la défense des intérêts de groupes spéciaux, par exemple de minorités ou de groupes ethniques • associations à caractère patriotique, y compris les associations d’anciens combattants - les associations de consommateurs - les associations d’automobilistes - les associations dont l’objet consiste à organiser des réunions et des rencontres, par exemple le Rotary, les loges maçonniques, etc. - les associations de jeunes, les associations d’étudiants, les clubs universitaires, les amicales d’étudiants, etc. - les associations spécialisées dans des occupations culturelles ou récréatives (autres que les clubs sportifs et les cercles de jeux), par exemple les cercles de poésie, les cercles littéraires, les associations historiques, les clubs de jardinage, les ciné-clubs et les photos-clubs, les clubs d’amis de la musique et des arts, les clubs de travaux manuels, les clubs de collectionneurs, les clubs sociaux, les sociétés carnavalesques, etc. - l’octroi de subventions par des organisations associatives ou autres "
     },
     {
+        "cls_na9": "95.11",
         "lib_na9": "Réparation d'ordinateurs et d'équipements périphériques",
-        "cls_na9": 95.11,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الحاسوب والمعدات الطرفية للحاسوب"
+        "description": "informatiques, ainsi que les équipements périphériques. - ordinateurs de bureau - ordinateurs portables - lecteurs de disques magnétiques, lecteurs flash et autres systèmes de stockage - lecteurs de disques optiques (CD-RW, CD-ROM, DVD-ROM, DVD-RW) - imprimantes - moniteurs - claviers - souris, manettes et boules roulantes et leurs accessoires - modems informatiques internes et externes - terminaux informatiques spécialisés - serveurs informatiques - scanneurs, y compris lecteurs de codes-barres - lecteurs de cartes à puce - casques de réalité virtuelle - vidéoprojecteurs - terminaux informatiques, comme les guichets automatiques de banque (GAB), les terminaux point de vente, sans mécanisme - ordinateurs de poche (assistants personnels) "
     },
     {
+        "cls_na9": "95.12",
         "lib_na9": "Réparation d'équipements de communication",
-        "cls_na9": 95.12,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح أدوات الإتصال"
+        "description": "- les téléphones sans fil - les téléphones portables - les modems, équipement porteur - les télécopieurs - les équipements de transmission des communications (routeurs, ponts, modems) - les appareils radio émetteur-récepteur - les caméras vidéo et TV destinées à un usage commercial    95.2 Réparation de biens personnels et domestiques Ce groupe comprend la réparation et l’entretien de biens personnels et domestiques.  250 I n st i t u t N a t i o nal d e la S ta tis tiq u e    "
     },
     {
+        "cls_na9": "95.21",
         "lib_na9": "Réparation de produits électroniques grand public",
-        "cls_na9": 95.21,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الآلات الإلكترونية ذات الإستعمال الواسع"
+        "description": "- la réparation de produits électroniques grand public: • télévisions, récepteurs radio • magnétoscopes • lecteurs de CD • caméscopes destinés à un usage domestique "
     },
     {
+        "cls_na9": "95.22",
         "lib_na9": "Réparation d'appareils électroménagers et d'équipements pour la maison et le jardin",
-        "cls_na9": 95.22,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الآلات الكهربائية المنزلية ومعدات المنازل والحدائق"
+        "description": "jardin: - la réparation et l’entretien des appareils ménagers • réfrigérateurs, poêles, lave-linge, sèche-linge, matériel de conditionnement d’air, etc. - la réparation et l’entretien d’équipements pour la maison et le jardin • tondeuses à gazon, coupe-bordures, souffleurs à neige et à feuilles, ébrancheurs, etc. "
     },
     {
+        "cls_na9": "95.23",
         "lib_na9": "Réparation de chaussures et d'articles en cuir",
-        "cls_na9": 95.23,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الأحذية والمصنوعات الجلدية"
+        "description": "- la réparation de chaussures, de bagages et d’articles similaires - la pose de talons "
     },
     {
+        "cls_na9": "95.24",
         "lib_na9": "Réparation de meubles et d'équipements du foyer",
-        "cls_na9": 95.24,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الأثاث وتجهيزات المنازل",
-        "description": "- le rembourrage, la remise à neuf, la réparation et la restauration de meubles et d’équipements du foyer, y compris de\nmeubles de bureau\n95.25 Réparation d'articles d'horlogerie et de bijouterie\nCette classe comprend:\n- la réparation de montres, horloges et de leurs éléments, tels que boîtiers de montres et cages et cabinets d’horlogerie\nen tous types de matériaux, mouvements, chronomètres, etc.\n- la réparation de bijoux"
+        "description": "- le rembourrage, la remise à neuf, la réparation et la restauration de meubles et d’équipements du foyer, y compris de meubles de bureau "
     },
     {
+        "cls_na9": "95.25",
         "lib_na9": "Réparation d'articles d'horlogerie et de bijouterie",
-        "cls_na9": 95.25,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الساعات بأنواعها والمجوهرات"
+        "description": "- la réparation de montres, horloges et de leurs éléments, tels que boîtiers de montres et cages et cabinets d’horlogerie en tous types de matériaux, mouvements, chronomètres, etc. - la réparation de bijoux "
     },
     {
+        "cls_na9": "95.29",
         "lib_na9": "Réparation d'autres biens personnels et domestiques",
-        "cls_na9": 95.29,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "إصلاح الأدوات الشخصية والأدوات المنزلية غ.م.س"
+        "description": "- la réparation de cycles - la réparation et la transformation d’articles d’habillement - la réparation d’articles de sport (à l’exclusion des fusils pour le tir sportif) et de matériel de camping - la réparation de livres - la réparation d’instruments de musique (à l’exclusion des orgues et instruments de musique historiques) - la réparation de jouets et articles similaires - la réparation d’autres articles personnels et domestiques - l’accordage de pianos    "
     },
     {
+        "cls_na9": "96.01",
         "lib_na9": "Blanchisserie teinturerie",
-        "cls_na9": 96.01,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "المغاسل والمصابغ",
-        "description": "- le blanchissage, le nettoyage à sec, le repassage, etc., de tous les articles d’habillement (y compris les fourrures) et de\nmatières textiles, effectués mécaniquement, manuellement ou dans les laveries automatiques pour le compte de particuliers\nou d’entreprises\n- le ramassage et la livraison du linge\n- le nettoyage des tapis, des moquettes, des tentures et des rideaux, dans les locaux des clients ou non\n- la fourniture, par les blanchisseries, de linge, de vêtements de travail et d’articles similaires\n- les services de fourniture de couches-culottes"
+        "description": "- le blanchissage, le nettoyage à sec, le repassage, etc., de tous les articles d’habillement (y compris les fourrures) et de matières textiles, effectués mécaniquement, manuellement ou dans les laveries automatiques pour le compte de particuliers ou d’entreprises - le ramassage et la livraison du linge - le nettoyage des tapis, des moquettes, des tentures et des rideaux, dans les locaux des clients ou non - la fourniture, par les blanchisseries, de linge, de vêtements de travail et d’articles similaires - les services de fourniture de couches-culottes "
     },
     {
+        "cls_na9": "96.02",
         "lib_na9": "Coiffure et soins de beauté",
-        "cls_na9": 96.02,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "الحلاقة والتجميل",
-        "description": "- le lavage, la coupe, la mise en plis, la teinture, la coloration, l’ondulation, le défrisage de cheveux et les services\nanalogues pour hommes et femmes\n- le rasage et la taille de la barbe\n- les massages faciaux, les soins de manucure et de pédicure, le maquillage, etc."
+        "description": "- le lavage, la coupe, la mise en plis, la teinture, la coloration, l’ondulation, le défrisage de cheveux et les services analogues pour hommes et femmes - le rasage et la taille de la barbe - les massages faciaux, les soins de manucure et de pédicure, le maquillage, etc. "
     },
     {
+        "cls_na9": "96.03",
         "lib_na9": "Services funéraires",
-        "cls_na9": 96.03,
-        "sec_pri": 0,
-        "ndv_rgn": -1,
-        "cod_api": -1,
-        "arb_na9": "خدمات الجنازات",
-        "description": "- l’inhumation et l’incinération des corps (êtres humains ou animaux) et les activités connexes:\n• préparation des corps pour la sépulture ou l’incinération, embaumement et services fournis par les entreprises de\npompes funèbres\n• services d’inhumation et d’incinération\n• location de locaux aménagés dans les funérariums\n- la location ou la vente de concessions\n- l’entretien de tombes et de mausolées"
+        "description": "- l’inhumation et l’incinération des corps (êtres humains ou animaux) et les activités connexes: • préparation des corps pour la sépulture ou l’incinération, embaumement et services fournis par les entreprises de pompes funèbres • services d’inhumation et d’incinération • location de locaux aménagés dans les funérariums - la location ou la vente de concessions - l’entretien de tombes et de mausolées "
     },
     {
+        "cls_na9": "96.04",
         "lib_na9": "Activités thermales et de thalassothérapie",
-        "cls_na9": 96.04,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة محطات المياه المعدنية وحمّامات البحر"
+        "description": ""
     },
     {
+        "cls_na9": "96.05",
         "lib_na9": "Bains et autres soins corporels",
-        "cls_na9": 96.05,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "إستحمام وعلاجات جسمية أخرى",
-        "description": "- les activités lieés au bien être et au confort physique telles que celles fournies par les bains, douches, hammams, saunas,\nsolariums, instituts de massage et de relaxation, etc."
+        "description": "- les activités lieés au bien être et au confort physique telles que celles fournies par les bains, douches, hammams, saunas, solariums, instituts de massage et de relaxation, etc. "
     },
     {
+        "cls_na9": "96.09",
         "lib_na9": "Autres services personnels n.c.a.",
-        "cls_na9": 96.09,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "خدمات شخصية أخرى غ.م.س",
-        "description": "- les activités des astrologues et des spirites\n- les activités liées à la vie sociale, par exemple les activités des hôtesses, des agences de rencontres et des agences\nmatrimoniales\n- les services pour animaux de compagnie: hébergement, soins et dressage\n- les services de recherche généalogique\n- les activités des studios de tatouage et de perçage corporel\n- les services des cireurs, des porteurs, des préposés au parcage des véhicules, etc.\n- l’exploitation de machines de services personnels fonctionnant avec des pièces de monnaie (photomatons, pèsepersonnes, appareils de mesure de la tension artérielle, consignes à pièces, etc.)"
+        "description": "- les activités des astrologues et des spirites - les activités liées à la vie sociale, par exemple les activités des hôtesses, des agences de rencontres et des agences matrimoniales - les services pour animaux de compagnie: hébergement, soins et dressage - les services de recherche généalogique - les activités des studios de tatouage et de perçage corporel - les services des cireurs, des porteurs, des préposés au parcage des véhicules, etc. - l’exploitation de machines de services personnels fonctionnant avec des pièces de monnaie (photomatons, pèsepersonnes, appareils de mesure de la tension artérielle, consignes à pièces, etc.) "
     },
     {
+        "cls_na9": "97.00",
         "lib_na9": "Activités des ménages en tant qu'employeurs de personnel domestique",
-        "cls_na9": 97.0,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "أنشطة الأسر باعتبارها مشغلة لأفراد قصد أداء الأعمال المنزلية"
+        "description": "serveurs, valets de chambre, maîtres d’hôtel, blanchisseuses, jardiniers, portiers, palefreniers, chauffeurs, concierges, gouvernantes, gardiennes d’enfants à domicile (baby-sitters), précepteurs, secrétaires, etc. Elle permet aux domestiques salariés d’indiquer l’activité de l’employeur lors des recensements ou enquêtes, bien que l’employeur soit un particulier. Le service produit par cette activité est consommé par le ménage employeur. "
     },
     {
+        "cls_na9": "98.10",
         "lib_na9": "Activités indifférenciées des ménages en tant que producteurs de biens pour usage propre",
-        "cls_na9": 98.1,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة غير المميزة للأسر باعتبارها منتجة للبضائع للإستعمال الخاص"
+        "description": "activités comprennent la chasse et la cueillette, la culture et l’élevage, la fabrication d’abris et de vêtements et d’autres biens produits par le ménage pour assurer sa propre subsistance. Si les ménages produisent également des biens destinés à la vente, ils sont classés dans la branche de production de biens correspondante de la NAT. S’ils sont principalement engagés dans une activité de subsistance spécifique de production de biens, ils sont classés dans la branche de production de biens correspondante de la NAT. 98.2 Activités indifférenciées des ménages en tant que producteurs de services pour usage propre "
     },
     {
+        "cls_na9": "98.20",
         "lib_na9": "Activités indifférenciées des ménages en tant que producteurs de services pour usage propre",
-        "cls_na9": 98.2,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": -1,
-        "arb_na9": "الأنشطة غير المميزة للأسر باعتبارها منتجة للخدمات للإستعمال الخاص"
+        "description": "propre usage. Ces activités comprennent la cuisine, l’enseignement, les soins aux membres du ménage et les autres services produits par le ménage pour assurer sa propre subsistance.    Si les ménages produisent également des biens multiples destinés à leur propre utilisation, ils sont classés dans les activités indifférenciées des ménages en tant que producteurs de biens pour usage propre.  254 I n st i t u t N a t i o nal d e la S ta tis tiq u e   SECTION U ACTIVITÉS EXTRA TERRITORIALES 99 Activités des organisations et organismes extraterritoriaux 99.0 Activités des organisations et organismes extraterritoriaux "
     },
     {
+        "cls_na9": "99.00",
         "lib_na9": "Activités des organisations et organismes extraterritoriaux",
-        "cls_na9": 99.0,
-        "sec_pri": 0,
-        "ndv_rgn": 0,
-        "cod_api": 0,
-        "arb_na9": "أنشطة المنظمات والهيئات الدولية"
+        "description": "- les activités des organisations internationales telles que l’Organisation des Nations unies, ses institutions spécialisées, ses organismes régionaux, etc., le Fonds monétaire international, la Banque mondiale, l’Organisation mondiale des douanes, l’Organisation de coopération et de développement économiques, l’Organisation des pays exportateurs de pétrole, les Communautés européennes, l’Association européenne de libre-échange, l'Union du Maghreb Arabe, etc. - les activités des missions diplomatiques et consulaires lorsqu’elles sont recensées par le pays d’implantation plutôt que par le pays qu’elles représentent.   255    "
     }
 ];
 
@@ -13073,10 +10829,6 @@ activities: any[] = [
     {
         "code": "23.32.99",
         "name": "Opérations sous-traitées intervenant dans la fabrication de tuiles, "
-    },
-    {
-        "code": "23.4",
-        "name": "Autres produits en porcelaine et céramique"
     },
     {
         "code": "23.41",
