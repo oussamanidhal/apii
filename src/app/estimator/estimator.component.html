@@ -149,13 +149,13 @@
                 <div class="input-wrapper">
                     <label for="field8">{{ 'fondder' | translate }}</label>
                     <div class="input-container">
-                        <input id="field8" type="number" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (input)="onInputChange($event , 'fondsRoulement')" (ngModelChange)="calculateTotal()" placeholder="0">
-                        <div class="info-circle" matTooltip="Fond de roulemet <= max 10% du total de l'invistissement retenue">?</div>
+                        <input id="field8" type="number" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (input)="onInputChange($event , 'fondsRoulement')" (ngModelChange)="calculateTotal()" placeholder="0" readonly>
+                        <div class="info-circle" matTooltip="Fond de roulemet <= max 10% du total de l'investissement retenue">?</div>
                         <span class="currency-text">TND</span>
                     </div>
                 </div>
             </div>
-
+            
 
 
             <h2>Total: {{ totalCash }} TND</h2>

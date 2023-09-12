@@ -50,7 +50,7 @@ export class ActivitiesComponent {
 
     // Filter activities based on search value, valid format, and the activities associated with products
     this.filteredActivities = this.activities.filter(activity => {
-        let activityCode = Number(activity.cls_na9).toFixed(2);
+        let activityCode = activity.cls_na9;
         let isValidFormat = /^\d{2}\.\d{2}$/.test(activityCode);
 
         return isValidFormat && (
@@ -351,7 +351,7 @@ activities: any[] = [
     {
         "cls_na9": "08.99",
         "lib_na9": "Autres activités extractives n.c.a.",
-        "description": "- l’extraction de minéraux et de matériaux divers: • matières abrasives, amiante, farines siliceuses fossiles, graphite naturel, stéatite (talc), feldspath, etc. • asphaltes naturels, asphaltites et roches asphaltiques, bitumes solides naturels • pierres gemmes, quartz, mica, etc.  09 Services de soutien aux industries extractives Cette division comprend les services spécialisés de soutien à l’extraction exécutés pour le compte de tiers. Elle comprend les services d’exploration par les méthodes classiques de prospection, comme le prélèvement d’échantillons et les observations géologiques, ainsi que les forages, les forages d’essai ou les reforages des puits de pétrole ou pour les minerais métalliques et non métalliques. D’autres services couvrent la construction des fondations de puits de pétrole ou de gaz, la cimentation des revêtements (tubages) de puits de pétrole ou de gaz, le nettoyage, le vidage, le pompage à vide des puits de pétrole et de gaz, le drainage ou le pompage des mines, les services d’enlèvement des déblais dans les mines, etc. 09.1 Activités de soutien à l'extraction d'hydrocarbures    "
+        "description": "- l’extraction de minéraux et de matériaux divers: • matières abrasives, amiante, farines siliceuses fossiles, graphite naturel, stéatite (talc), feldspath, etc. • asphaltes naturels, asphaltites et roches asphaltiques, bitumes solides naturels • pierres gemmes, quartz, mica, etc."
     },
     {
         "cls_na9": "09.10",
