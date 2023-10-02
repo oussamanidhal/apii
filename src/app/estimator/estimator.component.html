@@ -76,7 +76,7 @@
                 <div class="input-wrapper">
                   <label for="field1">{{ 'Land' | translate }} </label>
                   <div class="input-container">
-                    <input id="field1" type="text" class="form-control custom-input" [(ngModel)]="terrain" name="terrain" (input)="onInputChange($event , 'terrain')" (ngModelChange)="calculateTotal()" placeholder="0">
+                    <input id="field1" type="number" class="form-control custom-input" [(ngModel)]="terrain" name="terrain" (input)="onInputChange($event , 'terrain')" (ngModelChange)="calculateTotal()" placeholder="0">
                     <span class="currency-text">TND</span>
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                <div class="input-wrapper">
                 <label for="field1">{{ 'Géniecivil' | translate }}  </label>
                 <div class="input-container">
-                  <input id="field2" type="text" class="form-control custom-input" [(ngModel)]="genieCivil" name="genieCivil" (input)="onInputChange($event , 'genieCivil')" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field2" type="number" class="form-control custom-input" [(ngModel)]="genieCivil" name="genieCivil" (input)="onInputChange($event , 'genieCivil')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -96,7 +96,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'Amenagement' | translate }} </label>
                 <div class="input-container">
-                  <input id="field3" type="text" class="form-control custom-input" [(ngModel)]="amenagement" name="amenagement" (input)="onInputChange($event , 'amenagement')" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field3" type="number" class="form-control custom-input" [(ngModel)]="amenagement" name="amenagement" (input)="onInputChange($event , 'amenagement')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -106,7 +106,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'EquipmentsImportés' | translate }}</label>
                 <div class="input-container">
-                  <input id="field4" type="text" class="form-control custom-input" [(ngModel)]="equipmentsImportes" name="equipmentsImportes" (input)="onInputChange($event , 'equipmentsImportes')" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field4" type="number" class="form-control custom-input" [(ngModel)]="equipmentsImportes" name="equipmentsImportes" (input)="onInputChange($event , 'equipmentsImportes')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'EquipmentsLocals' | translate }}</label>
                 <div class="input-container">
-                  <input id="field5" type="text" class="form-control custom-input" [(ngModel)]="equipmentsLocaux" name="equipmentsLocaux" (input)="onInputChange($event , 'equipmentsLocaux')" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field5" type="number" class="form-control custom-input" [(ngModel)]="equipmentsLocaux" name="equipmentsLocaux" (input)="onInputChange($event , 'equipmentsLocaux')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -126,7 +126,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'Materieldetransport' | translate }}</label>
                 <div class="input-container">
-                  <input id="field6" type="text" class="form-control custom-input" [(ngModel)]="materielDeTransport" name="materielDeTransport" (input)="onInputChange($event , 'materielDeTransport')" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field6" type="number" class="form-control custom-input" [(ngModel)]="materielDeTransport" name="materielDeTransport" (input)="onInputChange($event , 'materielDeTransport')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -136,7 +136,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'FraisDaipproche' | translate }}</label>
                 <div class="input-container">
-                  <input id="field7" type="text" class="form-control custom-input" [(ngModel)]="fraisAipprocheVevers" name="fraisAipprocheVevers" (input)="onInputChange($event , 'fraisAipprocheVevers')" (ngModelChange)="calculateTotal()" placeholder="0">
+                  <input id="field7" type="number" class="form-control custom-input" [(ngModel)]="fraisAipprocheVevers" name="fraisAipprocheVevers" (input)="onInputChange($event , 'fraisAipprocheVevers')" (ngModelChange)="calculateTotal()" placeholder="0">
                   <span class="currency-text">TND</span>
                 </div>
               </div>
@@ -149,13 +149,13 @@
                 <div class="input-wrapper">
                     <label for="field8">{{ 'fondder' | translate }}</label>
                     <div class="input-container">
-                        <input id="field8" type="text" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (input)="onInputChange($event , 'fondsRoulement')" (ngModelChange)="calculateTotal()" placeholder="0">
-                        <div class="info-circle" matTooltip="Fond de roulemet <= max 10% du total de l'invistissement retenue">?</div>
+                        <input id="field8" type="number" class="form-control custom-input" [(ngModel)]="fondsRoulement" name="fondsRoulement" (input)="onInputChange($event , 'fondsRoulement')" (ngModelChange)="calculateTotal()" placeholder="0" readonly>
+                        <div class="info-circle" matTooltip="Fond de roulemet <= max 10% du total de l'investissement retenue">?</div>
                         <span class="currency-text">TND</span>
                     </div>
                 </div>
             </div>
-
+            
 
 
             <h2>Total: {{ totalCash }} TND</h2>
@@ -176,7 +176,7 @@
                 <div class="input-wrapper">
                 <label for="field1">{{ 'Fondspropres' | translate }}</label>
                 <div class="input-container">
-                  <input id="field10" type="text" class="form-control custom-input" 
+                  <input id="field10" type="number" class="form-control custom-input" 
                   [ngModel]="fondsPropres" name="fondsPropres" 
                   (ngModelChange)="calculateTotal()" (input)="onInputChange($event , 'fondsPropres')" placeholder="0">
                   <div class="info-circle" matTooltip="le fond propre >= 30% de investissment  ">?</div>
@@ -193,7 +193,7 @@
                         <span class="currency-text">TND</span>
                     </div>
                 </div>
-            </div>
+            </div> 
 
             </div>
           </div>
@@ -210,12 +210,15 @@
     <h2><img src="assets/blue-state.png" alt="blue icon" style="height: 24px; width: 24px; margin-right: 8px;">{{ '4rd group' | translate }}</h2>
   </div>
 
+
+
   <div class="map-wrapper">
     <div class="selected-governorate-label">{{selectedGovernorateName}}</div>
     <div class="mapdiv">
 
       <!-- Paste your SVG code here -->
-      <svg width="50%" height="50%" viewBox="0 0 1000 2158" xmlns="http://www.w3.org/2000/svg">
+      
+      <svg class="svg-wrapper" width="50%" height="50%" viewBox="0 0 1000 2158" xmlns="http://www.w3.org/2000/svg">
 
         <a class="shlok" id="">
            <path d="M815.6 127.6l2.3 3.9-1.7 0-3.3-0.3-1.6 0.3-1.4-2.8 0.8-1.4 1.3-1 0.4-1 1.3-0.7 0.6 1.4 1.3 1.6z m-453.6-123.1l0.4 3.8-2.2 0.3-3.1-1-2.7 1.2-2.5 1.5-3.8-1.8 2.6-2.4 3.1-1.7 4-1.4 1.5-2 1.7 1.1 0 1.3 1 1.1z" id="TUN99" name="">
@@ -346,41 +349,84 @@
         <circle cx="499.6" cy="579.9" id="2">
         </circle>
        </svg>
+
+
+       <div class="estimate-card-desktop">
+        <!-- <h2> {{ 'estimation primes' | translate }}</h2>-->
+        
+        <!-- Regional Development -->
+        <div class="calculation-breakdown">
+            <h3>1- {{ 'Development Regional' | translate }}</h3>
+            <p>
+              (+{{ getRegionalPercentage() }}%) * M.Investissement 
+              ({{ 'Plafond' | translate }} : {{ regionalPlafond | number }} - {{ selectedDelegation.group }}) 
+              = {{ getRegionalBonus() | number }} TND
+            </p>
+        </div>
+      
+        <!-- Secteur Prioritaire -->
+        <div class="calculation-breakdown">
+            <h3>2- {{ 'Secteur Prioritaire' | translate }}</h3>
+            <p>
+              15% * M.Investissement 
+              ({{ 'Plafond' | translate }} : 1 Milliard) 
+              = {{ getSecteurBonus() | number }} TND
+            </p>
+        </div>
+      
+        <!-- Montant de la prime -->
+        <h3>{{ 'Montant de la prime' | translate }}:</h3>
+        <p>{{ 'Plafond' | translate }}: {{ plafond | number }}</p>
+        <p>{{ 'Pourcentage' | translate }}: {{ percentage*100 | number }}%</p>
+        <p>{{ 'Montant de la prime total' | translate }}: {{ incentive | number }} TND</p>
+      </div>
+       
+
     </div>
+
+    
+
+
+ 
+    
   </div>
+
+  
+  <div class="estimate-card">
+    <!-- <h2> {{ 'estimation primes' | translate }}</h2>-->
+    
+    <!-- Regional Development -->
+    <div class="calculation-breakdown">
+        <h3>1- {{ 'Development Regional' | translate }}</h3>
+        <p>
+          (+{{ getRegionalPercentage() }}%) * M.Investissement 
+          ({{ 'Plafond' | translate }} : {{ regionalPlafond | number }} - {{ selectedDelegation.group }}) 
+          = {{ getRegionalBonus() | number }} TND
+        </p>
+    </div>
+  
+    <!-- Secteur Prioritaire -->
+    <div class="calculation-breakdown">
+        <h3>2- {{ 'Secteur Prioritaire' | translate }}</h3>
+        <p>
+          15% * M.Investissement 
+          ({{ 'Plafond' | translate }} : 1 Milliard) 
+          = {{ getSecteurBonus() | number }} TND
+        </p>
+    </div>
+  
+    <!-- Montant de la prime -->
+    <h3>{{ 'Montant de la prime' | translate }}:</h3>
+    <p>{{ 'Plafond' | translate }}: {{ plafond | number }}</p>
+    <p>{{ 'Pourcentage' | translate }}: {{ percentage*100 | number }}%</p>
+    <p>{{ 'Montant de la prime total' | translate }}: {{ incentive | number }} TND</p>
+  </div>
+
+
 </div>
 
 <button class="calculate-button" (click)="calculateTotal()">{{ 'estimate' | translate }}</button>
 
-<div class="estimate-card">
-  <!-- <h2> {{ 'estimation primes' | translate }}</h2>-->
-  
-  <!-- Regional Development -->
-  <div class="calculation-breakdown">
-      <h3>1- {{ 'Development Regional' | translate }}</h3>
-      <p>
-        (+{{ getRegionalPercentage() }}%) * M.Investissement 
-        ({{ 'Plafond' | translate }} : {{ regionalPlafond | number }} - {{ selectedDelegation.group }}) 
-        = {{ getRegionalBonus() | number }} TND
-      </p>
-  </div>
-
-  <!-- Secteur Prioritaire -->
-  <div class="calculation-breakdown">
-      <h3>2- {{ 'Secteur Prioritaire' | translate }}</h3>
-      <p>
-        15% * M.Investissement 
-        ({{ 'Plafond' | translate }} : 1 Milliard) 
-        = {{ getSecteurBonus() | number }} TND
-      </p>
-  </div>
-
-  <!-- Montant de la prime -->
-  <h3>{{ 'Montant de la prime' | translate }}:</h3>
-  <p>{{ 'Plafond' | translate }}: {{ plafond | number }}</p>
-  <p>{{ 'Pourcentage' | translate }}: {{ percentage*100 | number }}%</p>
-  <p>{{ 'Montant de la prime total' | translate }}: {{ incentive | number }} TND</p>
-</div>
 
 
 

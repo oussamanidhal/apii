@@ -316,6 +316,7 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     font-weight: 500;
+    margin-bottom: 20px;
   }
   .calculate-button:hover {
     background-color: #0069D9;
@@ -324,7 +325,8 @@
 .notee {
   color: #fd0404;
 }
-  .estimate-card {
+  .estimate-card  {
+    display: none;
     margin: 30px auto;
     width: 80%;
     padding: 20px;
@@ -335,17 +337,30 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-.estimate-card h2 {
+
+.estimate-card-desktop {
+  margin: 30px auto;
+  width: 80%;
+  padding: 20px;
+  background-color: rgb(239, 239, 239);
+  box-shadow: 0px 10px 30px 0px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+.estimate-card h2 , .estimate-card-desktop h2 {
     font-size: 24px;
     margin-bottom: 20px;
 }
 
-.estimate-card h3 {
+.estimate-card h3 , .estimate-card-desktop h3 {
     font-size: 20px;
     margin-bottom: 10px;
 }
 
-.estimate-card p {
+.estimate-card p , .estimate-card-desktop p {
     font-size: 14px;
     color: #888;
 }
@@ -422,11 +437,32 @@
 @media (max-width: 992px) {
   .container {
     flex-direction: column; /* Stack children vertically */
+    margin-bottom: 10%; /* Add some space at the bottom */
   }
   
-  .card-container, .mapdiv, .map-wrapper {
+  .text-container , .map-wrapper {
+    order: -1;
+}
+
+.estimate-card {
+  display: block;
+    order: 3; /* Move it to the very bottom */
+    position: relative; /* Ensure the card is positioned relative to its parent */
+    z-index: 1; /* Raise it above other content, to prevent overlap */
+    margin-top: 20px; /* Add some space above the card */
+}
+
+.estimate-card-desktop {
+  display: none;
+}
+  
+  
+  .card-container, .mapdiv , .map-wrapper {
     width: 100%;
   }
+
+ 
+
 
   .form-row {
     flex-direction: column; /* Stack form elements vertically */
@@ -450,6 +486,9 @@
     width: 90%;
   }
 
+  .calculate-button {
+    display : "none"
+  }
 }
 
 /* Small devices (landscape phones, less than 768px) */
@@ -457,6 +496,7 @@
   .card {
     width: 100%;
   }
+
 
   .mapdiv {
     height: 360px;
